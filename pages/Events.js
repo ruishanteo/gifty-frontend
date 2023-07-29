@@ -3,7 +3,7 @@ import { View } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import { enGB, registerTranslation } from "react-native-paper-dates";
 
-import { NewEvent } from "../components/NewEvent.js";
+import { NewEvent } from "../subpages/NewEvent.js";
 
 export function Events() {
   const theme = useTheme();
