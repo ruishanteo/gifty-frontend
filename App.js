@@ -1,10 +1,21 @@
-import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View, useColorScheme } from "react-native";
+import { StyleSheet, useColorScheme } from "react-native";
 import { MD3DarkTheme, MD3LightTheme, PaperProvider } from "react-native-paper";
 import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+
 import { BottomNav } from "./components/BottomNav.js";
+import { Register } from "./pages/Register.js";
+import { Login } from "./pages/Login.js";
+
+const Stack = createNativeStackNavigator();
+
+const getIsSignedIn = () => {
+  return true;
+};
 
 export default function App() {
+  const isSignedIn = getIsSignedIn();
+
   const colorScheme = useColorScheme();
   const paperTheme =
     colorScheme === "dark"
@@ -32,11 +43,18 @@ export default function App() {
   return (
     <PaperProvider theme={paperTheme}>
       <NavigationContainer>
-        {/* <View style={styles.container}>
-          <Text>Test </Text>
-          <StatusBar style="auto" />
-        </View> */}
-        <BottomNav />
+        {isSignedIn ? (
+          <>
+            <BottomNav />
+          </>
+        ) : (
+          <>
+            <Stack.Navigator>
+              <Stack.Screen name="Login" component={Login} />
+              <Stack.Screen name="Register" component={Register} />
+            </Stack.Navigator>
+          </>
+        )}
       </NavigationContainer>
     </PaperProvider>
   );
