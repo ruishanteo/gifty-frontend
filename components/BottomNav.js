@@ -1,7 +1,7 @@
-import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-
 import { useTheme } from "react-native-paper";
+import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
+
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { Events } from "../pages/Events.js";
 import { Explore } from "../pages/Explore.js";
@@ -31,7 +31,7 @@ export function BottomNav() {
           tabBarLabel: "Events",
           tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons
-              name="calendar-account-outline"
+              name="calendar-account"
               color={color}
               size={26}
             />
