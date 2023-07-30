@@ -78,7 +78,7 @@ export function Register({ navigation }) {
       </View>
       <Button
         mode="contained"
-        textColor="white"
+        textColor={theme.colors.surface}
         buttonColor={theme.colors.secondary}
         style={{
           marginTop: 10,

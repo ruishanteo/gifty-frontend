@@ -68,11 +68,11 @@ export function NewEvent() {
         <Button
           onPress={() => setOpen(true)}
           buttonColor={theme.colors.secondary}
-          textColor="#ffffff"
+          textColor={theme.colors.surface}
           padding="3%"
         >
-          <MaterialCommunityIcons name="plus" color="#ffffff" />
-          <Text style={{ color: "white" }}>{"  "}Event</Text>
+          <MaterialCommunityIcons name="plus" color={theme.colors.surface} />
+          <Text>{"  "}Event</Text>
         </Button>
 
         <Modal
@@ -136,8 +136,11 @@ export function NewEvent() {
                   padding="2%"
                   style={{ marginTop: 80 }}
                 >
-                  <MaterialCommunityIcons name="check" color="#ffffff" />
-                  <Text style={{ color: "white" }}>{"  "}Done</Text>
+                  <MaterialCommunityIcons
+                    name="check"
+                    color={theme.colors.surface}
+                  />
+                  <Text>{"  "}Done</Text>
                 </Button>
               </View>
 
