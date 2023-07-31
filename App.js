@@ -1,7 +1,10 @@
+import React from "react";
 import { StyleSheet, useColorScheme } from "react-native";
 import { MD3DarkTheme, MD3LightTheme, PaperProvider } from "react-native-paper";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import * as SplashScreen from "expo-splash-screen";
+import * as Font from "expo-font";
 
 import { BottomNav } from "./components/BottomNav.js";
 import { Register } from "./pages/Register.js";
@@ -13,8 +16,16 @@ const getIsSignedIn = () => {
   return true;
 };
 
+async function cacheFonts(fonts) {
+  for (let i = 0; i < fonts.length; i++) {
+    const element = fonts[i];
+    await Font.loadAsync(element);
+  }
+}
+
 export default function App() {
   const isSignedIn = getIsSignedIn();
+  const [appIsReady, setAppIsReady] = React.useState(false);
 
   const colorScheme = useColorScheme();
   const paperTheme =
@@ -39,6 +50,29 @@ export default function App() {
             surface: MD3LightTheme.colors.background,
           },
         };
+
+  React.useEffect(() => {
+    async function loadResourcesAndDataAsync() {
+      try {
+        await SplashScreen.preventAutoHideAsync();
+
+        await cacheFonts([
+          { BestMoment: require("./assets/fonts/Best-Moment.otf") },
+        ]);
+      } catch (e) {
+        console.warn(e);
+      } finally {
+        setAppIsReady(true);
+        SplashScreen.hideAsync();
+      }
+    }
+
+    loadResourcesAndDataAsync();
+  }, []);
+
+  if (!appIsReady) {
+    return null;
+  }
 
   return (
     <PaperProvider theme={paperTheme}>
