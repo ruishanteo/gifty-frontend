@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, useColorScheme } from "react-native";
+import { useColorScheme } from "react-native";
 import { MD3DarkTheme, MD3LightTheme, PaperProvider } from "react-native-paper";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -33,21 +33,25 @@ export default function App() {
       ? {
           ...MD3DarkTheme,
           colors: {
+            ...MD3DarkTheme.colors,
             primary: "#bc9c9b",
             secondary: "#d1c1c1",
             tertiary: "#b5a596",
             quaternary: "#efd9c6",
-            surface: MD3DarkTheme.colors.background,
+            background: "black",
+            surface: "#78736f",
+            font: "white",
           },
         }
       : {
           ...MD3LightTheme,
           colors: {
+            ...MD3LightTheme.colors,
             primary: "#d1c1c1",
             secondary: "#bc9c9b",
             tertiary: "#efd9c6",
             quaternary: "#b5a596",
-            surface: MD3LightTheme.colors.background,
+            font: "black",
           },
         };
 
@@ -76,7 +80,9 @@ export default function App() {
 
   return (
     <PaperProvider theme={paperTheme}>
-      <NavigationContainer>
+      <NavigationContainer
+        theme={{ colors: { background: paperTheme.colors.background } }}
+      >
         {isSignedIn ? (
           <>
             <BottomNav />
@@ -93,12 +99,3 @@ export default function App() {
     </PaperProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
