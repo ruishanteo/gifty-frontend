@@ -50,7 +50,9 @@ export function NewEvent() {
         }}
       >
         <View style={{ width: 150 }}>
-          <Text variant="titleMedium">{title}</Text>
+          <Text variant="titleMedium" style={{ color: theme.colors.font }}>
+            {title}
+          </Text>
         </View>
         <View style={{ width: 150 }}>{object}</View>
       </View>
@@ -68,11 +70,11 @@ export function NewEvent() {
         <Button
           onPress={() => setOpen(true)}
           buttonColor={theme.colors.secondary}
-          textColor={theme.colors.surface}
+          textColor={theme.colors.background}
           padding="3%"
+          icon="plus"
         >
-          <MaterialCommunityIcons name="plus" color={theme.colors.surface} />
-          <Text>{"  "}Event</Text>
+          Event
         </Button>
 
         <Modal
@@ -102,7 +104,12 @@ export function NewEvent() {
                   alignItems: "center",
                 }}
               >
-                <Text style={styles.titleText}>Add Event</Text>
+                <Text
+                  variant="headlineMedium"
+                  style={{ color: theme.colors.font }}
+                >
+                  Add Event
+                </Text>
 
                 {inputFields(
                   "Name",
@@ -132,15 +139,12 @@ export function NewEvent() {
 
                 <Button
                   buttonColor={theme.colors.quaternary}
-                  textColor={theme.colors.surface}
+                  textColor={theme.colors.background}
                   padding="2%"
                   style={{ marginTop: 80 }}
+                  icon="check"
                 >
-                  <MaterialCommunityIcons
-                    name="check"
-                    color={theme.colors.surface}
-                  />
-                  <Text>{"  "}Done</Text>
+                  Done
                 </Button>
               </View>
 
@@ -179,7 +183,6 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
     width: "100%",
-    backgroundColor: "#fff",
   },
   titleText: {
     fontSize: 30,
