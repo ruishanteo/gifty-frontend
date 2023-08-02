@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useColorScheme } from "react-native";
 import { MD3DarkTheme, MD3LightTheme, PaperProvider } from "react-native-paper";
 import { NavigationContainer } from "@react-navigation/native";
@@ -9,12 +9,11 @@ import * as Font from "expo-font";
 import { BottomNav } from "./components/BottomNav.js";
 import { Register } from "./pages/Register.js";
 import { Login } from "./pages/Login.js";
-
-const Stack = createNativeStackNavigator();
-
-const getIsSignedIn = () => {
-  return true;
-};
+import { NotificationProvider } from "./providers/NotificationProvider.js";
+import { AuthProvider } from "./providers/AuthProvider.js";
+import { useAuth } from "./providers/hooks.js";
+import { AxiosProvider } from "./providers/AxiosProvider.js";
+import { UserProvider } from "./providers/UserProvider.js";
 
 async function cacheFonts(fonts) {
   for (let i = 0; i < fonts.length; i++) {
@@ -23,9 +22,30 @@ async function cacheFonts(fonts) {
   }
 }
 
+const Stack = createNativeStackNavigator();
+function GetRoutes() {
+  const authContext = useAuth();
+
+  return (
+    <>
+      {authContext?.authState?.authenticated ? (
+        <UserProvider>
+          <BottomNav />
+        </UserProvider>
+      ) : (
+        <>
+          <Stack.Navigator>
+            <Stack.Screen name="Login" component={Login} />
+            <Stack.Screen name="Register" component={Register} />
+          </Stack.Navigator>
+        </>
+      )}
+    </>
+  );
+}
+
 export default function App() {
-  const isSignedIn = getIsSignedIn();
-  const [appIsReady, setAppIsReady] = React.useState(false);
+  const [appIsReady, setAppIsReady] = useState(false);
 
   const colorScheme = useColorScheme();
   const paperTheme =
@@ -39,6 +59,7 @@ export default function App() {
             tertiary: "#b5a596",
             quaternary: "#efd9c6",
             background: "black",
+            error: "#ff0000",
             surface: "#78736f",
             font: "white",
           },
@@ -51,11 +72,12 @@ export default function App() {
             secondary: "#bc9c9b",
             tertiary: "#efd9c6",
             quaternary: "#b5a596",
+            error: "#ff0000",
             font: "black",
           },
         };
 
-  React.useEffect(() => {
+  useEffect(() => {
     async function loadResourcesAndDataAsync() {
       try {
         await SplashScreen.preventAutoHideAsync();
@@ -80,22 +102,17 @@ export default function App() {
 
   return (
     <PaperProvider theme={paperTheme}>
-      <NavigationContainer
-        theme={{ colors: { background: paperTheme.colors.background } }}
-      >
-        {isSignedIn ? (
-          <>
-            <BottomNav />
-          </>
-        ) : (
-          <>
-            <Stack.Navigator>
-              <Stack.Screen name="Login" component={Login} />
-              <Stack.Screen name="Register" component={Register} />
-            </Stack.Navigator>
-          </>
-        )}
-      </NavigationContainer>
+      <AuthProvider>
+        <AxiosProvider>
+          <NotificationProvider>
+            <NavigationContainer
+              theme={{ colors: { background: paperTheme.colors.background } }}
+            >
+              <GetRoutes />
+            </NavigationContainer>
+          </NotificationProvider>
+        </AxiosProvider>
+      </AuthProvider>
     </PaperProvider>
   );
 }

@@ -16,11 +16,14 @@ import {
 } from "react-native-paper";
 import { Image } from "@rneui/themed";
 import { SafeAreaView } from "react-native-safe-area-context";
-
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+
+import { useUser } from "../providers/hooks";
 
 export function Profile({ navigation }) {
   const theme = useTheme();
+  const { user } = useUser();
+
   const windowWidth = Dimensions.get("window").width;
 
   const listings = [
@@ -100,11 +103,13 @@ export function Profile({ navigation }) {
           <Avatar.Image
             size={120}
             source={{
-              url: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
+              url:
+                user.avatarURL ||
+                "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
             }}
           />
           <Text variant="displaySmall" style={{ marginVertical: 15 }}>
-            username
+            {user.username}
           </Text>
 
           <Card

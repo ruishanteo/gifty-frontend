@@ -3,6 +3,7 @@ import { Dimensions, StyleSheet, TouchableOpacity, View } from "react-native";
 import {
   Avatar,
   Button,
+  HelperText,
   IconButton,
   Text,
   TextInput,
@@ -14,16 +15,23 @@ import {
   registerTranslation,
 } from "react-native-paper-dates";
 import Modal from "react-native-modal";
-
 import { SafeAreaView } from "react-native-safe-area-context";
-
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { Formik } from "formik";
+import * as Yup from "yup";
+
+import { useUpdateUser } from "../api/auth";
+import { useUser } from "../providers/hooks";
+import moment from "moment";
 
 const inputFields = (name) => {
   const theme = useTheme();
+  const updateUser = useUpdateUser();
+  const { user } = useUser();
   const [open, setOpen] = React.useState(false);
 
   const windowHeight = Dimensions.get("window").height;
+  const nameInUser = name.toLowerCase();
 
   return (
     <>
@@ -33,7 +41,7 @@ const inputFields = (name) => {
         style={{ width: "60%", marginTop: 10 }}
         textColor={theme.colors.font}
       >
-        {name}
+        {name}: {user[nameInUser]}
       </Button>
       <Modal
         animationType="slide"
@@ -55,19 +63,53 @@ const inputFields = (name) => {
                 <MaterialCommunityIcons name="close" size={26} />
               </TouchableOpacity>
             </View>
-            <View style={{ marginTop: 10, justifyContent: "center" }}>
-              <Text variant="titleLarge">Edit {name}</Text>
-              <TextInput placeholder={name} />
-              <Button
-                icon="check"
-                mode="contained"
-                buttonColor={theme.colors.quaternary}
-                textColor={theme.colors.surface}
-                onPress={() => setOpen(false)}
-              >
-                Done
-              </Button>
-            </View>
+            <Formik
+              validationSchema={Yup.object().shape({
+                [name]: Yup.string().required(`${name} is required`),
+              })}
+              initialValues={{ [name]: user[nameInUser] }}
+              onSubmit={(values) => {
+                updateUser({ [`new${name}`]: values[name] });
+                setOpen(false);
+              }}
+            >
+              {({
+                isSubmitting,
+                handleChange,
+                handleBlur,
+                handleSubmit,
+                values,
+                errors,
+                touched,
+              }) => (
+                <View style={{ marginTop: 10, justifyContent: "center" }}>
+                  <Text variant="titleLarge">Edit {name}</Text>
+                  <TextInput
+                    placeholder={name}
+                    onChangeText={handleChange(name)}
+                    onBlur={handleBlur(name)}
+                    value={values[name]}
+                    error={errors[name] && touched[name]}
+                  />
+                  <HelperText
+                    type="error"
+                    visible={Boolean(errors[name] && touched[name])}
+                  >
+                    {errors[name]}
+                  </HelperText>
+                  <Button
+                    onPress={handleSubmit}
+                    disabled={isSubmitting}
+                    icon="check"
+                    mode="contained"
+                    buttonColor={theme.colors.quaternary}
+                    textColor={theme.colors.surface}
+                  >
+                    Done
+                  </Button>
+                </View>
+              )}
+            </Formik>
           </View>
         </View>
       </Modal>
@@ -77,7 +119,8 @@ const inputFields = (name) => {
 
 export const EditProfile = ({ navigation }) => {
   const theme = useTheme();
-  const [date, setDate] = React.useState(undefined);
+  const updateUser = useUpdateUser();
+  const { user } = useUser();
 
   const [openDatePicker, setOpenDatePicker] = React.useState(false);
 
@@ -86,11 +129,11 @@ export const EditProfile = ({ navigation }) => {
   }, [setOpenDatePicker]);
 
   const onConfirmSingle = React.useCallback(
-    (params) => {
+    async (params) => {
+      await updateUser({ newBirthday: params.date });
       setOpenDatePicker(false);
-      setDate(params.date);
     },
-    [setOpenDatePicker, setDate]
+    [setOpenDatePicker]
   );
 
   registerTranslation("en-GB", enGB);
@@ -118,13 +161,9 @@ export const EditProfile = ({ navigation }) => {
           mode="contained"
           style={{ width: "60%", marginTop: 10 }}
         >
-          {date ? (
-            <Text style={{ color: theme.colors.font }}>
-              {moment(date).format("DD MMM YYYY")}
-            </Text>
-          ) : (
-            <Text style={{ color: theme.colors.font }}>Birthday</Text>
-          )}
+          <Text style={{ color: theme.colors.font }}>
+            Birthday: {moment(user.birthday).format("DD MMM YYYY")}
+          </Text>
         </Button>
         {inputFields("Password")}
         <DatePickerModal
@@ -132,7 +171,6 @@ export const EditProfile = ({ navigation }) => {
           mode="single"
           visible={openDatePicker}
           onDismiss={onDismissSingle}
-          date={date}
           onConfirm={onConfirmSingle}
         />
       </View>

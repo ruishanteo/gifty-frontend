@@ -1,21 +1,14 @@
 import { ListItem } from "@rneui/themed";
 import React from "react";
-import { Dimensions, StyleSheet, TouchableOpacity, View } from "react-native";
-import {
-  Avatar,
-  Button,
-  IconButton,
-  Switch,
-  Text,
-  useTheme,
-} from "react-native-paper";
+import { View } from "react-native";
+import { Button, IconButton, Switch, Text, useTheme } from "react-native-paper";
 
 import { SafeAreaView } from "react-native-safe-area-context";
-
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { useAuth } from "../providers/hooks";
 
 export const Settings = ({ navigation }) => {
   const theme = useTheme();
+  const { logout } = useAuth();
 
   return (
     <SafeAreaView>
@@ -89,7 +82,7 @@ export const Settings = ({ navigation }) => {
             <Button
               mode="contained"
               buttonColor={theme.colors.secondary}
-              onPress={console.log("logout")}
+              onPress={() => logout()}
             >
               Logout
             </Button>
