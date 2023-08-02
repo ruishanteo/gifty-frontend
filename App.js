@@ -10,6 +10,7 @@ import { BottomNav } from "./components/BottomNav.js";
 import { Register } from "./pages/Register.js";
 import { Login } from "./pages/Login.js";
 import { getJWT } from "./storage/securestorage.js";
+import { NotificationProvider } from "./providers/NotificationProvider.js";
 import { AuthProvider } from "./providers/AuthProvider.js";
 import { useAuth } from "./providers/hooks.js";
 import { AxiosProvider } from "./providers/AxiosProvider.js";
@@ -120,11 +121,13 @@ export default function App() {
     <PaperProvider theme={paperTheme}>
       <AuthProvider>
         <AxiosProvider>
-          <NavigationContainer
-            theme={{ colors: { background: paperTheme.colors.background } }}
-          >
-            <GetRoutes />
-          </NavigationContainer>
+          <NotificationProvider>
+            <NavigationContainer
+              theme={{ colors: { background: paperTheme.colors.background } }}
+            >
+              <GetRoutes />
+            </NavigationContainer>
+          </NotificationProvider>
         </AxiosProvider>
       </AuthProvider>
     </PaperProvider>
