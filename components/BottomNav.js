@@ -12,15 +12,17 @@ import { Wishlist } from "../pages/Wishlist.js";
 
 import { DetailedListing } from "../subpages/DetailedListing.js";
 
+import { Settings } from "../subpages/Settings.js";
 import { EditProfile } from "../subpages/EditProfile.js";
+import { TNC } from "../subpages/TNC.js";
 import { WishResult } from "../subpages/WishResult.js";
 import { GiftedHistory } from "../subpages/GiftedHistory.js";
 import { SavedList } from "../subpages/SavedList.js";
 
 const Tab = createBottomTabNavigator();
 
+const ExploreStack = createNativeStackNavigator();
 function ExploreStackScreen() {
-  const ExploreStack = createNativeStackNavigator();
   return (
     <ExploreStack.Navigator>
       <ExploreStack.Screen
@@ -37,8 +39,8 @@ function ExploreStackScreen() {
   );
 }
 
+const ProfileStack = createNativeStackNavigator();
 function ProfileStackScreen() {
-  const ProfileStack = createNativeStackNavigator();
   return (
     <ProfileStack.Navigator>
       <ProfileStack.Screen
@@ -47,8 +49,18 @@ function ProfileStackScreen() {
         options={{ headerShown: false }}
       />
       <ProfileStack.Screen
+        name="Settings"
+        component={Settings}
+        options={{ headerShown: false }}
+      />
+      <ProfileStack.Screen
         name="EditProfile"
         component={EditProfile}
+        options={{ headerShown: false }}
+      />
+      <ProfileStack.Screen
+        name="TNC"
+        component={TNC}
         options={{ headerShown: false }}
       />
       <ProfileStack.Screen
@@ -70,8 +82,8 @@ function ProfileStackScreen() {
   );
 }
 
+const WishlistStack = createNativeStackNavigator();
 function WishlistStackScreen() {
-  const WishlistStack = createNativeStackNavigator();
   return (
     <WishlistStack.Navigator>
       <WishlistStack.Screen
