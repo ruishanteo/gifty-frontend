@@ -21,8 +21,8 @@ import { useLogin } from "../api/auth";
 
 const loginValidationSchema = Yup.object().shape({
   email: Yup.string()
-    .email("Please enter valid email")
-    .required("Email Address is Required"),
+    .email("Please enter a valid email")
+    .required("Email is required"),
   password: Yup.string().required("Password is required"),
 });
 
@@ -60,7 +60,6 @@ export function Login({ navigation }) {
                 <TextInput
                   mode="outlined"
                   label="Email"
-                  placeholder="Email"
                   onChangeText={handleChange("email")}
                   onBlur={handleBlur("email")}
                   value={values.email}
@@ -68,14 +67,13 @@ export function Login({ navigation }) {
                 />
                 <HelperText
                   type="error"
-                  visible={errors.email && touched.email}
+                  visible={Boolean(errors.email && touched.email)}
                 >
                   {errors.email}
                 </HelperText>
                 <TextInput
                   mode="outlined"
                   label="Password"
-                  placeholder="Password"
                   onChangeText={handleChange("password")}
                   onBlur={handleBlur("password")}
                   value={values.password}
@@ -83,7 +81,7 @@ export function Login({ navigation }) {
                 />
                 <HelperText
                   type="error"
-                  visible={errors.password && touched.password}
+                  visible={Boolean(errors.password && touched.password)}
                 >
                   {errors.password}
                 </HelperText>

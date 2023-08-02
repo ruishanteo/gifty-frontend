@@ -29,32 +29,20 @@ import { useRegister } from "../api/auth";
 const registerValidationSchema = Yup.object().shape({
   username: Yup.string().required("Username is Required"),
   email: Yup.string()
-    .email("Please enter valid email")
-    .required("Email Address is Required"),
+    .email("Please enter a valid email")
+    .required("Email is required"),
   password: Yup.string().required("Password is required"),
   confirmPassword: Yup.string()
     .required("Password is required")
-    .oneOf([Yup.ref("password"), null], "Passwords must match"),
+    .oneOf([Yup.ref("password"), null], "Passwords do not match"),
+  birthday: Yup.string().required("Birthday is required"),
 });
 
 export function Register({ navigation }) {
   const theme = useTheme();
   const register = useRegister();
 
-  const [date, setDate] = React.useState(undefined);
   const [openDatePicker, setOpenDatePicker] = React.useState(false);
-
-  const onDismissSingle = React.useCallback(() => {
-    setOpenDatePicker(false);
-  }, [setOpenDatePicker]);
-
-  const onConfirmSingle = React.useCallback(
-    (params) => {
-      setOpenDatePicker(false);
-      setDate(params.date);
-    },
-    [setOpenDatePicker, setDate]
-  );
 
   registerTranslation("en-GB", enGB);
 
@@ -76,14 +64,16 @@ export function Register({ navigation }) {
             email: "",
             password: "",
             confirmPassword: "",
+            birthday: "",
           }}
-          onSubmit={(values) => register({ ...values, birthday: date })}
+          onSubmit={(values) => register(values)}
         >
           {({
             isSubmitting,
             handleChange,
             handleBlur,
             handleSubmit,
+            setFieldValue,
             values,
             errors,
             touched,
@@ -93,7 +83,6 @@ export function Register({ navigation }) {
                 <TextInput
                   mode="outlined"
                   label="Username"
-                  placeholder="Username"
                   onChangeText={handleChange("username")}
                   onBlur={handleBlur("username")}
                   value={values.username}
@@ -101,14 +90,13 @@ export function Register({ navigation }) {
                 />
                 <HelperText
                   type="error"
-                  visible={errors.username && touched.username}
+                  visible={Boolean(errors.username && touched.username)}
                 >
                   {errors.username}
                 </HelperText>
                 <TextInput
                   mode="outlined"
                   label="Email"
-                  placeholder="Email"
                   onChangeText={handleChange("email")}
                   onBlur={handleBlur("email")}
                   value={values.email}
@@ -116,14 +104,13 @@ export function Register({ navigation }) {
                 />
                 <HelperText
                   type="error"
-                  visible={errors.email && touched.email}
+                  visible={Boolean(errors.email && touched.email)}
                 >
                   {errors.email}
                 </HelperText>
                 <TextInput
                   mode="outlined"
                   label="Password"
-                  placeholder="Password"
                   onChangeText={handleChange("password")}
                   onBlur={handleBlur("password")}
                   value={values.password}
@@ -131,14 +118,13 @@ export function Register({ navigation }) {
                 />
                 <HelperText
                   type="error"
-                  visible={errors.password && touched.password}
+                  visible={Boolean(errors.password && touched.password)}
                 >
                   {errors.password}
                 </HelperText>
                 <TextInput
                   mode="outlined"
                   label="Confirm Password"
-                  placeholder="Confirm Password"
                   onChangeText={handleChange("confirmPassword")}
                   onBlur={handleBlur("confirmPassword")}
                   value={values.confirmPassword}
@@ -146,7 +132,9 @@ export function Register({ navigation }) {
                 />
                 <HelperText
                   type="error"
-                  visible={errors.confirmPassword && touched.confirmPassword}
+                  visible={Boolean(
+                    errors.confirmPassword && touched.confirmPassword
+                  )}
                 >
                   {errors.confirmPassword}
                 </HelperText>
@@ -164,20 +152,31 @@ export function Register({ navigation }) {
                       borderRadius: 5,
                     }}
                   >
-                    {date ? (
-                      <Text>{moment(date).format("DD MMM YYYY")}</Text>
+                    {values.birthday ? (
+                      <Text>
+                        {moment(values.birthday).format("DD MMM YYYY")}
+                      </Text>
                     ) : (
                       <Text>Please select your birthday</Text>
                     )}
                   </View>
                 </TouchableOpacity>
+                <HelperText
+                  type="error"
+                  visible={Boolean(errors.birthday && touched.birthday)}
+                >
+                  {errors.birthday}
+                </HelperText>
                 <DatePickerModal
                   locale="en-GB"
                   mode="single"
                   visible={openDatePicker}
-                  onDismiss={onDismissSingle}
-                  date={date}
-                  onConfirm={onConfirmSingle}
+                  onDismiss={() => setOpenDatePicker(false)}
+                  date={values.birthday}
+                  onConfirm={(params) => {
+                    setOpenDatePicker(false);
+                    setFieldValue("birthday", params.date);
+                  }}
                 />
               </View>
               <Button
