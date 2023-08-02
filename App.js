@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useColorScheme } from "react-native";
 import { MD3DarkTheme, MD3LightTheme, PaperProvider } from "react-native-paper";
 import { NavigationContainer } from "@react-navigation/native";
@@ -9,11 +9,11 @@ import * as Font from "expo-font";
 import { BottomNav } from "./components/BottomNav.js";
 import { Register } from "./pages/Register.js";
 import { Login } from "./pages/Login.js";
-import { getJWT } from "./storage/securestorage.js";
 import { NotificationProvider } from "./providers/NotificationProvider.js";
 import { AuthProvider } from "./providers/AuthProvider.js";
 import { useAuth } from "./providers/hooks.js";
 import { AxiosProvider } from "./providers/AxiosProvider.js";
+import { UserProvider } from "./providers/UserProvider.js";
 
 async function cacheFonts(fonts) {
   for (let i = 0; i < fonts.length; i++) {
@@ -25,30 +25,13 @@ async function cacheFonts(fonts) {
 const Stack = createNativeStackNavigator();
 function GetRoutes() {
   const authContext = useAuth();
-  const [loading, setLoading] = useState(true);
-
-  const loadJWT = useCallback(async () => {
-    const jwt = getJWT();
-    authContext.setAuthState({
-      accessToken: jwt.accessToken || null,
-      refreshToken: jwt.refreshToken || null,
-      authenticated: (jwt.accessToken && true) || false,
-    });
-    setLoading(false);
-  }, []);
-
-  useEffect(() => {
-    loadJWT();
-  }, [loadJWT]);
-
-  if (loading) return null;
 
   return (
     <>
       {authContext?.authState?.authenticated ? (
-        <>
+        <UserProvider>
           <BottomNav />
-        </>
+        </UserProvider>
       ) : (
         <>
           <Stack.Navigator>

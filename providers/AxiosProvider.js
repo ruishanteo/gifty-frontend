@@ -12,15 +12,15 @@ const { Provider } = AxiosContext;
 function AxiosProvider({ children }) {
   const authContext = useContext(AuthContext);
 
-  const authAxios = axios.create({
-    baseURL: API_URL,
-  });
-
   const publicAxios = axios.create({
-    baseURL: API_URL,
+    baseURL: `${API_URL}/public/`,
   });
 
-  authAxios.interceptors.request.use(
+  const protectedAxios = axios.create({
+    baseURL: `${API_URL}/api/`,
+  });
+
+  protectedAxios.interceptors.request.use(
     (config) => {
       config.headers.Accept = "application/json";
       if (!config.headers.Authorization) {
@@ -66,12 +66,12 @@ function AxiosProvider({ children }) {
       });
   };
 
-  createAuthRefreshInterceptor(authAxios, refreshAuthLogic, {});
+  createAuthRefreshInterceptor(protectedAxios, refreshAuthLogic, {});
 
   return (
     <Provider
       value={{
-        authAxios,
+        protectedAxios,
         publicAxios,
       }}
     >

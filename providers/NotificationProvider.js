@@ -54,7 +54,6 @@ function NotificationProvider({ children }) {
   }
 
   function showNotification(content) {
-    console.log(content);
     Notifier.showNotification({
       duration: 3000,
       showAnimationDuration: 800,
