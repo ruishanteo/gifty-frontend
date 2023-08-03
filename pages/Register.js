@@ -57,6 +57,8 @@ export function Register({ navigation }) {
         <Text variant="headlineMedium">Get Started</Text>
         <Formik
           validationSchema={registerValidationSchema}
+          validateOnChange={false}
+          validateOnBlur={false}
           initialValues={{
             username: "",
             email: "",

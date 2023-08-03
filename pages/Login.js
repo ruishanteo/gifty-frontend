@@ -41,6 +41,8 @@ export function Login({ navigation }) {
         <Text variant="headlineMedium">Welcome back</Text>
         <Formik
           validationSchema={loginValidationSchema}
+          validateOnChange={false}
+          validateOnBlur={false}
           initialValues={{ email: "", password: "" }}
           onSubmit={(values) => login(values)}
         >
