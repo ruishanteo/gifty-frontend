@@ -8,7 +8,6 @@ import {
 import {
   Button,
   HelperText,
-  IconButton,
   Text,
   TextInput,
   useTheme,
@@ -26,6 +25,7 @@ import * as Yup from "yup";
 
 import { useUpdatePassword, useUpdateUser } from "../api/auth";
 import { useUser } from "../providers/hooks";
+import Layout from "../components/Layout";
 import UserAvatar from "../components/UserAvatar";
 
 const FieldModal = ({ buttonDisplayText, name, open, setOpen, children }) => {
@@ -63,38 +63,20 @@ const FieldModal = ({ buttonDisplayText, name, open, setOpen, children }) => {
                   },
                 ]}
               >
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    width: "100%",
-                    marginBottom: 20,
-                  }}
+                <Layout
+                  iconName="close"
+                  title={`Edit ${name}`}
+                  onAction={() => setOpen(false)}
                 >
-                  <IconButton
-                    style={{ position: "absolute", left: 0 }}
-                    onPress={() => setOpen(false)}
-                    icon="close"
-                  />
-                  <Text
-                    variant="titleLarge"
+                  <View
                     style={{
-                      color: theme.colors.font,
-                      textAlign: "center",
+                      width: "100%",
+                      justifyContent: "center",
                     }}
                   >
-                    Edit {name}
-                  </Text>
-                </View>
-                <View
-                  style={{
-                    width: "100%",
-                    justifyContent: "center",
-                  }}
-                >
-                  {children}
-                </View>
+                    {children}
+                  </View>
+                </Layout>
               </View>
             </View>
           </KeyboardAvoidingView>
@@ -331,33 +313,36 @@ export const EditProfile = ({ navigation }) => {
 
   return (
     <SafeAreaView>
-      <View style={{ justifyContent: "center", alignItems: "center" }}>
-        <Text variant="titleLarge" style={{ marginBottom: 20 }}>
-          Edit Profile
-        </Text>
-        <Button onPress={() => navigation.navigate("EditAvatar")}>
-          <UserAvatar />
-        </Button>
-        {UpdateParticular("Username")}
-        {UpdateParticular("Email")}
-        <Button
-          onPress={() => setOpenDatePicker(true)}
-          mode="contained"
-          style={{ width: "60%", marginTop: 10 }}
-        >
-          <Text style={{ color: theme.colors.font }}>
-            Birthday: {moment(user.birthday).format("DD MMM YYYY")}
-          </Text>
-        </Button>
-        {UpdatePassword()}
-        <DatePickerModal
-          locale="en-GB"
-          mode="single"
-          visible={openDatePicker}
-          onDismiss={onDismissSingle}
-          onConfirm={onConfirmSingle}
-        />
-      </View>
+      <Layout
+        iconName="chevron-left"
+        title="Edit Profile"
+        onAction={() => navigation.goBack()}
+      >
+        <View style={{ justifyContent: "center", alignItems: "center" }}>
+          <Button onPress={() => navigation.navigate("EditAvatar")}>
+            <UserAvatar />
+          </Button>
+          {UpdateParticular("Username")}
+          {UpdateParticular("Email")}
+          <Button
+            onPress={() => setOpenDatePicker(true)}
+            mode="contained"
+            style={{ width: "60%", marginTop: 10 }}
+          >
+            <Text style={{ color: theme.colors.font }}>
+              Birthday: {moment(user.birthday).format("DD MMM YYYY")}
+            </Text>
+          </Button>
+          {UpdatePassword()}
+          <DatePickerModal
+            locale="en-GB"
+            mode="single"
+            visible={openDatePicker}
+            onDismiss={onDismissSingle}
+            onConfirm={onConfirmSingle}
+          />
+        </View>
+      </Layout>
     </SafeAreaView>
   );
 };

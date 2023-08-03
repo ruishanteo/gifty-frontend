@@ -1,19 +1,12 @@
 import React from "react";
-import {
-  Dimensions,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
 import { Button, Switch, Text, useTheme } from "react-native-paper";
 import { DatePickerModal } from "react-native-paper-dates";
 import Modal from "react-native-modal";
-import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import moment from "moment";
 
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import Layout from "../components/Layout";
 
 export function NewEvent() {
   const theme = useTheme();
@@ -22,8 +15,6 @@ export function NewEvent() {
   const [open, setOpen] = React.useState(false);
   const [openDatePicker, setOpenDatePicker] = React.useState(false);
   const [isSwitchOn, setIsSwitchOn] = React.useState(false);
-
-  const windowHeight = Dimensions.get("window").height;
 
   const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
 
@@ -60,57 +51,45 @@ export function NewEvent() {
   };
 
   return (
-    <SafeAreaProvider>
-      <View
-        style={{
-          justifyContent: "center",
-          flex: 1,
-        }}
+    <View
+      style={{
+        justifyContent: "center",
+        flex: 1,
+      }}
+    >
+      <Button
+        onPress={() => setOpen(true)}
+        buttonColor={theme.colors.secondary}
+        textColor={theme.colors.background}
+        padding={5}
+        icon="plus"
       >
-        <Button
-          onPress={() => setOpen(true)}
-          buttonColor={theme.colors.secondary}
-          textColor={theme.colors.background}
-          padding="3%"
-          icon="plus"
-        >
-          Event
-        </Button>
+        Event
+      </Button>
 
-        <Modal
-          animationType="slide"
-          visible={open}
-          onRequestClose={() => setOpen(false)}
-        >
-          <View style={styles.centeredView}>
-            <View
-              style={[
-                styles.modalView,
-                {
-                  backgroundColor: theme.colors.tertiary,
-                  height: windowHeight * 0.5,
-                },
-              ]}
+      <Modal
+        animationType="slide"
+        visible={open}
+        onRequestClose={() => setOpen(false)}
+      >
+        <View style={styles.centeredView}>
+          <View
+            style={[
+              styles.modalView,
+              { backgroundColor: theme.colors.tertiary },
+            ]}
+          >
+            <Layout
+              title="Add Event"
+              onAction={() => setOpen(false)}
+              iconName="close"
             >
-              <View style={{ width: "100%" }}>
-                <TouchableOpacity onPress={() => setOpen(false)}>
-                  <MaterialCommunityIcons name="close" size={26} />
-                </TouchableOpacity>
-              </View>
-
               <View
                 style={{
                   justifyContent: "center",
                   alignItems: "center",
                 }}
               >
-                <Text
-                  variant="headlineMedium"
-                  style={{ color: theme.colors.font }}
-                >
-                  Add Event
-                </Text>
-
                 {inputFields(
                   "Name",
                   <TextInput
@@ -140,27 +119,27 @@ export function NewEvent() {
                 <Button
                   buttonColor={theme.colors.quaternary}
                   textColor={theme.colors.background}
-                  padding="2%"
-                  style={{ marginTop: 80 }}
+                  padding={5}
+                  style={{ marginTop: 50 }}
                   icon="check"
                 >
                   Done
                 </Button>
               </View>
+            </Layout>
 
-              <DatePickerModal
-                locale="en-GB"
-                mode="single"
-                visible={openDatePicker}
-                onDismiss={onDismissSingle}
-                date={date}
-                onConfirm={onConfirmSingle}
-              />
-            </View>
+            <DatePickerModal
+              locale="en-GB"
+              mode="single"
+              visible={openDatePicker}
+              onDismiss={onDismissSingle}
+              date={date}
+              onConfirm={onConfirmSingle}
+            />
           </View>
-        </Modal>
-      </View>
-    </SafeAreaProvider>
+        </View>
+      </Modal>
+    </View>
   );
 }
 

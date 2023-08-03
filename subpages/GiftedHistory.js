@@ -1,10 +1,11 @@
 import React from "react";
 import { Dimensions, FlatList, View } from "react-native";
-import { IconButton, Text, useTheme } from "react-native-paper";
+import { useTheme } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { SearchBar } from "@rneui/themed";
 
 import { Listing } from "../components/Listing";
+import Layout from "../components/Layout";
 
 export const GiftedHistory = ({ navigation }) => {
   const theme = useTheme();
@@ -40,51 +41,47 @@ export const GiftedHistory = ({ navigation }) => {
 
   return (
     <SafeAreaView>
-      <View
-        style={{
-          alignItems: "center",
-          width: windowWidth,
-        }}
-        flexDirection="row"
+      <Layout
+        title="Gifted"
+        iconName="chevron-left"
+        onAction={() => navigation.goBack()}
       >
-        <IconButton icon="chevron-left" onPress={() => navigation.goBack()} />
-        <Text variant="headlineMedium">Gifted</Text>
-      </View>
-      <View
-        style={{
-          alignItems: "center",
-          justifyContent: "center",
-          width: windowWidth,
-        }}
-      >
-        <SearchBar
-          placeholder="Search"
-          onChangeText={onChangeSearch}
-          value={searchQuery}
-          containerStyle={{
-            backgroundColor: "transparent",
-            borderBottomColor: "transparent",
-            borderTopColor: "transparent",
+        <View
+          style={{
+            alignItems: "center",
+            justifyContent: "center",
+            width: windowWidth,
           }}
-          inputContainerStyle={{
-            backgroundColor: theme.colors.primary,
-            width: windowWidth * 0.95,
-          }}
-          round={true}
-        />
-      </View>
+        >
+          <SearchBar
+            placeholder="Search"
+            onChangeText={onChangeSearch}
+            value={searchQuery}
+            containerStyle={{
+              backgroundColor: "transparent",
+              borderBottomColor: "transparent",
+              borderTopColor: "transparent",
+            }}
+            inputContainerStyle={{
+              backgroundColor: theme.colors.primary,
+              width: windowWidth * 0.95,
+            }}
+            round={true}
+          />
+        </View>
 
-      <FlatList
-        style={{ height: "100%", marginHorizontal: 15 }}
-        data={listings}
-        renderItem={({ item }) => (
-          <Listing listing={item} navigation={navigation} />
-        )}
-        keyExtractor={(item) => item.id}
-        numColumns={2}
-        ItemSeparatorComponent={() => <View style={{ height: "2%" }} />}
-        columnWrapperStyle={{ justifyContent: "space-between" }}
-      />
+        <FlatList
+          style={{ height: "100%", marginHorizontal: 15 }}
+          data={listings}
+          renderItem={({ item }) => (
+            <Listing listing={item} navigation={navigation} />
+          )}
+          keyExtractor={(item) => item.id}
+          numColumns={2}
+          ItemSeparatorComponent={() => <View style={{ height: "2%" }} />}
+          columnWrapperStyle={{ justifyContent: "space-between" }}
+        />
+      </Layout>
     </SafeAreaView>
   );
 };

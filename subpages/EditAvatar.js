@@ -1,6 +1,11 @@
 import React from "react";
-import { ScrollView, View, useColorScheme } from "react-native";
-import { Button, IconButton, Text, useTheme } from "react-native-paper";
+import {
+  ScrollView,
+  TouchableOpacity,
+  View,
+  useColorScheme,
+} from "react-native";
+import { Button, IconButton, useTheme } from "react-native-paper";
 import { Icon } from "@rneui/themed";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { createIconSetFromFontello } from "react-native-vector-icons";
@@ -8,6 +13,7 @@ import { createIconSetFromFontello } from "react-native-vector-icons";
 import noseIconConfig from "../assets/noseConfig.json";
 import lipsIconConfig from "../assets/lipsConfig.json";
 import UserAvatar from "../components/UserAvatar";
+import Layout from "../components/Layout";
 import { useUser } from "../providers/hooks";
 import { useUpdateAvatar } from "../api/auth";
 
@@ -83,158 +89,140 @@ const iconMap = {
   },
 };
 
-export const EditAvatar = ({ navigation }) => {
+const PropButton = ({ name, avatarProps, setAvatarProps }) => {
+  const props = iconMap[name];
   const theme = useTheme();
   const colorScheme = useColorScheme();
-  const { user } = useUser();
-  const updateAvatar = useUpdateAvatar();
-  const [avatarProps, setAvatarProps] = React.useState(
-    user.avatar
-      ? user.avatar
-      : {
-          bgColor: "",
-          faceColor: "",
-          hairStyle: "",
-          hairColor: "",
-          hatColor: "",
-          hatStyle: "",
-          shirtStyle: "",
-          shirtColor: "",
-          earSize: "",
-          eyeStyle: "",
-          glassesStyle: "",
-          noseStyle: "",
-          mouthStyle: "",
-        }
-  );
-  const [colorIndexes, setColorIndexes] = React.useState({
-    ...properties.reduce((acc, curr) => ({ ...acc, [curr]: 0 }), {}),
-  });
-  const [styleIndexes, setStyleIndexes] = React.useState({
-    ...properties.reduce((acc, curr) => ({ ...acc, [curr]: 0 }), {}),
-  });
+
+  const [colorIndex, setColorIndex] = React.useState(0);
+  const [styleIndex, setStyleIndex] = React.useState(0);
 
   function updateColorIndex(name, delta) {
-    const props = iconMap[name];
-    if (!props.colors) return;
-
-    const colorIndex = colorIndexes[name];
-    const newIndex = (colorIndex + delta) % props.colors.length;
-    setAvatarProps({
-      ...avatarProps,
-      [`${name}Color`]: props.colors[newIndex],
-    });
-    setColorIndexes({ ...colorIndexes, [name]: newIndex });
+    const colors = props.colors;
+    if (!colors) return;
+    const index = (colorIndex + delta + colors.length) % colors.length;
+    setColorIndex(index);
+    setAvatarProps({ ...avatarProps, [`${name}Color`]: colors[index] });
   }
 
   function updateStyleIndex(name) {
-    const props = iconMap[name];
-    if (!props.styles) return;
-
-    const styleIndex = styleIndexes[name];
-    const newIndex = (styleIndex + 1) % props.styles.length;
-    setAvatarProps({
-      ...avatarProps,
-      [`${name}Style`]: props.styles[newIndex],
-    });
-    setStyleIndexes({ ...styleIndexes, [name]: newIndex });
+    const styles = props.styles;
+    if (!styles) return;
+    const index = (styleIndex + 1) % styles.length;
+    setStyleIndex(index);
+    setAvatarProps({ ...avatarProps, [`${name}Style`]: styles[index] });
   }
 
-  const PropButton = ({ name }) => {
-    const props = iconMap[name];
+  return (
+    <View
+      flexDirection="row"
+      style={{
+        alignItems: "center",
+        height: 45,
+      }}
+    >
+      {props.colors && (
+        <IconButton
+          icon="chevron-left"
+          onPress={() => updateColorIndex(name, -1)}
+        />
+      )}
 
-    return (
-      <View
-        flexDirection="row"
+      <TouchableOpacity
         style={{
+          backgroundColor: props.styles
+            ? theme.colors.tertiary
+            : theme.colors.quaternary,
           alignItems: "center",
-          height: 45,
+          justifyContent: "center",
+          width: 200,
+          height: 40,
+          borderRadius: 25,
         }}
+        disabled={!props.styles}
+        onPress={() => updateStyleIndex(name)}
       >
-        {props.colors && (
-          <IconButton
-            icon="chevron-left"
-            onPress={() => updateColorIndex(name, -1)}
+        {name === "nose" ? (
+          <NoseIcon
+            name="nose"
+            size={25}
+            color={colorScheme === "dark" ? "white" : "black"}
+          />
+        ) : name === "mouth" ? (
+          <LipsIcon
+            name="lips"
+            size={25}
+            color={colorScheme === "dark" ? "white" : "black"}
+          />
+        ) : (
+          <Icon
+            name={props.iconName}
+            type="material-community"
+            color={theme.colors.font}
+            iconProps={{ size: 25 }}
           />
         )}
+      </TouchableOpacity>
+      {props.colors && (
+        <IconButton
+          icon="chevron-right"
+          onPress={() => updateColorIndex(name, 1)}
+        />
+      )}
+    </View>
+  );
+};
 
-        <Button
-          onPress={() => updateStyleIndex(name)}
-          buttonColor={theme.colors.tertiary}
-          style={{
-            alignItems: "center",
-            width: 200,
-          }}
-        >
-          {name === "nose" ? (
-            <NoseIcon
-              onPress={() => updateStyleIndex(name)}
-              name="nose"
-              size={25}
-              color={colorScheme === "dark" ? "white" : "black"}
-            />
-          ) : name === "mouth" ? (
-            <LipsIcon
-              onPress={() => updateStyleIndex(name)}
-              name="lips"
-              size={25}
-              color={colorScheme === "dark" ? "white" : "black"}
-            />
-          ) : (
-            <Icon
-              name={props.iconName}
-              type="material-community"
-              color={theme.colors.font}
-              iconProps={{ size: 25 }}
-            />
-          )}
-        </Button>
-        {props.colors && (
-          <IconButton
-            icon="chevron-right"
-            onPress={() => updateColorIndex(name, 1)}
-          />
-        )}
-      </View>
-    );
-  };
+export const EditAvatar = ({ navigation }) => {
+  const theme = useTheme();
+  const { user } = useUser();
+  const updateAvatar = useUpdateAvatar();
+
+  const [avatarProps, setAvatarProps] = React.useState(user.avatar);
+
   return (
     <SafeAreaView>
       <ScrollView>
-        <IconButton icon="chevron-left" onPress={() => navigation.goBack()} />
-        <View
-          style={{ justifyContent: "center", alignItems: "center", gap: 10 }}
+        <Layout
+          iconName="chevron-left"
+          title="Edit Avatar"
+          onAction={() => navigation.goBack()}
         >
-          <Text variant="titleLarge" style={{ marginBottom: 10 }}>
-            Edit Avatar
-          </Text>
-          <View style={{ marginBottom: 15 }}>
+          <View
+            style={{ justifyContent: "center", alignItems: "center", gap: 10 }}
+          >
             <UserAvatar avatarProps={avatarProps} />
-          </View>
-          {properties.map((property, index) => (
-            <PropButton name={property} key={index} />
-          ))}
+            {properties.map((property, index) => (
+              <PropButton
+                name={property}
+                key={index}
+                avatarProps={avatarProps}
+                setAvatarProps={setAvatarProps}
+              />
+            ))}
 
-          <View flexDirection="row" style={{ gap: 10 }}>
-            <Button
-              onPress={() => updateAvatar(avatarProps)}
-              buttonColor={theme.colors.secondary}
-              textColor={theme.colors.background}
-              style={{ width: 150 }}
-              icon="content-save"
-            >
-              Save
-            </Button>
-            <Button
-              buttonColor={theme.colors.secondary}
-              textColor={theme.colors.background}
-              style={{ width: 150 }}
-              icon="close"
-            >
-              Discard
-            </Button>
+            <View flexDirection="row" style={{ gap: 10 }}>
+              <Button
+                onPress={() => updateAvatar(avatarProps)}
+                buttonColor={theme.colors.secondary}
+                textColor={theme.colors.background}
+                style={{ width: 150 }}
+                icon="content-save"
+              >
+                Save
+              </Button>
+              <Button
+                onPress={() => setAvatarProps(user.avatar)}
+                buttonColor={theme.colors.secondary}
+                textColor={theme.colors.background}
+                style={{ width: 150 }}
+                icon="close"
+              >
+                Discard
+              </Button>
+            </View>
           </View>
-        </View>
+        </Layout>
       </ScrollView>
     </SafeAreaView>
   );
