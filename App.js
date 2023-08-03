@@ -84,6 +84,8 @@ export default function App() {
 
         await cacheFonts([
           { BestMoment: require("./assets/fonts/Best-Moment.otf") },
+          { nose: require("./assets/fonts/nose.ttf") },
+          { lips: require("./assets/fonts/lips.ttf") },
         ]);
       } catch (e) {
         console.warn(e);

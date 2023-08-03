@@ -18,6 +18,7 @@ import { TNC } from "../subpages/TNC.js";
 import { WishResult } from "../subpages/WishResult.js";
 import { GiftedHistory } from "../subpages/GiftedHistory.js";
 import { SavedList } from "../subpages/SavedList.js";
+import { EditAvatar } from "../subpages/EditAvatar.js";
 
 const Tab = createBottomTabNavigator();
 
@@ -56,6 +57,11 @@ function ProfileStackScreen() {
       <ProfileStack.Screen
         name="EditProfile"
         component={EditProfile}
+        options={{ headerShown: false }}
+      />
+      <ProfileStack.Screen
+        name="EditAvatar"
+        component={EditAvatar}
         options={{ headerShown: false }}
       />
       <ProfileStack.Screen

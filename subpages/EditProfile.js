@@ -59,9 +59,7 @@ const inputFields = (name) => {
             ]}
           >
             <View style={{ width: "100%" }}>
-              <TouchableOpacity onPress={() => setOpen(false)}>
-                <MaterialCommunityIcons name="close" size={26} />
-              </TouchableOpacity>
+              <IconButton onPress={() => setOpen(false)} icon="close" />
             </View>
             <Formik
               validationSchema={Yup.object().shape({
@@ -146,7 +144,7 @@ export const EditProfile = ({ navigation }) => {
         <Text variant="titleLarge" style={{ marginBottom: 20 }}>
           Edit Profile
         </Text>
-        <Button onPress={() => console.log("changed picture")}>
+        <Button onPress={() => navigation.navigate("EditAvatar")}>
           <Avatar.Image
             size={150}
             source={{
