@@ -27,15 +27,13 @@ import logo from "../assets/logo.png";
 import { useRegister } from "../api/auth";
 
 const registerValidationSchema = Yup.object().shape({
-  username: Yup.string().required("Username is Required"),
-  email: Yup.string()
-    .email("Please enter a valid email")
-    .required("Email is required"),
-  password: Yup.string().required("Password is required"),
+  username: Yup.string().required("Required"),
+  email: Yup.string().email("Please enter a valid email").required("Required"),
+  password: Yup.string().required("Required"),
   confirmPassword: Yup.string()
-    .required("Password is required")
+    .required("Required")
     .oneOf([Yup.ref("password"), null], "Passwords do not match"),
-  birthday: Yup.string().required("Birthday is required"),
+  birthday: Yup.string().required("Required"),
 });
 
 export function Register({ navigation }) {
@@ -59,6 +57,8 @@ export function Register({ navigation }) {
         <Text variant="headlineMedium">Get Started</Text>
         <Formik
           validationSchema={registerValidationSchema}
+          validateOnChange={false}
+          validateOnBlur={false}
           initialValues={{
             username: "",
             email: "",

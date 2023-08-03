@@ -1,10 +1,13 @@
 import React from "react";
-import { Dimensions, StyleSheet, TouchableOpacity, View } from "react-native";
 import {
-  Avatar,
+  KeyboardAvoidingView,
+  ScrollView,
+  StyleSheet,
+  View,
+} from "react-native";
+import {
   Button,
   HelperText,
-  IconButton,
   Text,
   TextInput,
   useTheme,
@@ -16,22 +19,17 @@ import {
 } from "react-native-paper-dates";
 import Modal from "react-native-modal";
 import { SafeAreaView } from "react-native-safe-area-context";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { Formik } from "formik";
+import moment from "moment";
 import * as Yup from "yup";
 
-import { useUpdateUser } from "../api/auth";
+import { useUpdatePassword, useUpdateUser } from "../api/auth";
 import { useUser } from "../providers/hooks";
-import moment from "moment";
+import Layout from "../components/Layout";
+import UserAvatar from "../components/UserAvatar";
 
-const inputFields = (name) => {
+const FieldModal = ({ buttonDisplayText, name, open, setOpen, children }) => {
   const theme = useTheme();
-  const updateUser = useUpdateUser();
-  const { user } = useUser();
-  const [open, setOpen] = React.useState(false);
-
-  const windowHeight = Dimensions.get("window").height;
-  const nameInUser = name.toLowerCase();
 
   return (
     <>
@@ -41,77 +39,254 @@ const inputFields = (name) => {
         style={{ width: "60%", marginTop: 10 }}
         textColor={theme.colors.font}
       >
-        {name}: {user[nameInUser]}
+        {buttonDisplayText}
       </Button>
       <Modal
         animationType="slide"
         visible={open}
         onRequestClose={() => setOpen(false)}
       >
-        <View style={styles.centeredView}>
-          <View
-            style={[
-              styles.modalView,
-              {
-                backgroundColor: theme.colors.tertiary,
-                height: windowHeight * 0.25,
-              },
-            ]}
-          >
-            <View style={{ width: "100%" }}>
-              <IconButton onPress={() => setOpen(false)} icon="close" />
+        <ScrollView
+          contentContainerStyle={{
+            height: "100%",
+            width: "100%",
+            alignItems: "center",
+          }}
+        >
+          <KeyboardAvoidingView behavior="height" style={styles.container}>
+            <View style={styles.centeredView}>
+              <View
+                style={[
+                  styles.modalView,
+                  {
+                    backgroundColor: theme.colors.tertiary,
+                  },
+                ]}
+              >
+                <Layout
+                  iconName="close"
+                  title={`Edit ${name}`}
+                  onAction={() => setOpen(false)}
+                >
+                  <View
+                    style={{
+                      width: "100%",
+                      justifyContent: "center",
+                    }}
+                  >
+                    {children}
+                  </View>
+                </Layout>
+              </View>
             </View>
-            <Formik
-              validationSchema={Yup.object().shape({
-                [name]: Yup.string().required(`${name} is required`),
-              })}
-              initialValues={{ [name]: user[nameInUser] }}
-              onSubmit={(values) => {
-                updateUser({ [`new${name}`]: values[name] });
-                setOpen(false);
-              }}
-            >
-              {({
-                isSubmitting,
-                handleChange,
-                handleBlur,
-                handleSubmit,
-                values,
-                errors,
-                touched,
-              }) => (
-                <View style={{ marginTop: 10, justifyContent: "center" }}>
-                  <Text variant="titleLarge">Edit {name}</Text>
-                  <TextInput
-                    placeholder={name}
-                    onChangeText={handleChange(name)}
-                    onBlur={handleBlur(name)}
-                    value={values[name]}
-                    error={errors[name] && touched[name]}
-                  />
-                  <HelperText
-                    type="error"
-                    visible={Boolean(errors[name] && touched[name])}
-                  >
-                    {errors[name]}
-                  </HelperText>
-                  <Button
-                    onPress={handleSubmit}
-                    disabled={isSubmitting}
-                    icon="check"
-                    mode="contained"
-                    buttonColor={theme.colors.quaternary}
-                    textColor={theme.colors.surface}
-                  >
-                    Done
-                  </Button>
-                </View>
-              )}
-            </Formik>
-          </View>
-        </View>
+          </KeyboardAvoidingView>
+        </ScrollView>
       </Modal>
     </>
+  );
+};
+
+const UpdateParticular = (name) => {
+  const theme = useTheme();
+  const updateUser = useUpdateUser();
+  const { user } = useUser();
+  const nameInUser = name.toLowerCase();
+  const [open, setOpen] = React.useState(false);
+
+  return (
+    <FieldModal
+      buttonDisplayText={`${name}: ${user[nameInUser]}`}
+      name={name}
+      open={open}
+      setOpen={setOpen}
+    >
+      <Formik
+        validationSchema={Yup.object().shape({
+          [name]: Yup.string().required(`${name} is required`),
+        })}
+        validateOnChange={false}
+        validateOnBlur={false}
+        initialValues={{ [name]: user[nameInUser] }}
+        onSubmit={(values) => {
+          updateUser({ [`new${name}`]: values[name] });
+          setOpen(false);
+        }}
+      >
+        {({
+          isSubmitting,
+          handleChange,
+          handleBlur,
+          handleSubmit,
+          values,
+          errors,
+          touched,
+        }) => (
+          <>
+            <TextInput
+              mode="flat"
+              style={{
+                backgroundColor: theme.colors.tertiary,
+              }}
+              theme={{
+                colors: { onSurfaceVariant: theme.colors.font },
+              }}
+              textColor={theme.colors.font}
+              activeUnderlineColor={theme.colors.font}
+              placeholder={name}
+              onChangeText={handleChange(name)}
+              onBlur={handleBlur(name)}
+              value={values[name]}
+              error={errors[name] && touched[name]}
+            />
+            <HelperText
+              type="error"
+              visible={Boolean(errors[name] && touched[name])}
+            >
+              {errors[name]}
+            </HelperText>
+            <Button
+              onPress={handleSubmit}
+              disabled={isSubmitting}
+              icon="check"
+              mode="contained"
+              buttonColor={theme.colors.quaternary}
+              textColor={theme.colors.surface}
+            >
+              Done
+            </Button>
+          </>
+        )}
+      </Formik>
+    </FieldModal>
+  );
+};
+
+const UpdatePassword = () => {
+  const theme = useTheme();
+  const updatePassword = useUpdatePassword();
+  const [open, setOpen] = React.useState(false);
+
+  return (
+    <FieldModal
+      buttonDisplayText="Change password"
+      name="Password"
+      open={open}
+      setOpen={setOpen}
+    >
+      <Formik
+        validationSchema={Yup.object().shape({
+          currentPassword: Yup.string().required("Required"),
+          newPassword: Yup.string().required("Required"),
+          confirmNewPassword: Yup.string()
+            .required("Required")
+            .oneOf([Yup.ref("newPassword"), null], "Passwords do not match"),
+        })}
+        validateOnChange={false}
+        validateOnBlur={false}
+        initialValues={{
+          currentPassword: "",
+          newPassword: "",
+          confirmNewPassword: "",
+        }}
+        onSubmit={(values) => {
+          updatePassword(values);
+          setOpen(false);
+        }}
+      >
+        {({
+          isSubmitting,
+          handleChange,
+          handleBlur,
+          handleSubmit,
+          values,
+          errors,
+          touched,
+        }) => (
+          <>
+            <TextInput
+              mode="flat"
+              style={{
+                backgroundColor: theme.colors.tertiary,
+              }}
+              theme={{
+                colors: { onSurfaceVariant: theme.colors.font },
+              }}
+              textColor={theme.colors.font}
+              activeUnderlineColor={theme.colors.font}
+              label="Current password"
+              onChangeText={handleChange("currentPassword")}
+              onBlur={handleBlur("currentPassword")}
+              value={values.currentPassword}
+              error={errors.currentPassword && touched.currentPassword}
+            />
+            <HelperText
+              type="error"
+              visible={Boolean(
+                errors.currentPassword && touched.currentPassword
+              )}
+            >
+              {errors.newPassword}
+            </HelperText>
+            <TextInput
+              mode="flat"
+              style={{
+                backgroundColor: theme.colors.tertiary,
+              }}
+              theme={{
+                colors: { onSurfaceVariant: theme.colors.font },
+              }}
+              textColor={theme.colors.font}
+              activeUnderlineColor={theme.colors.font}
+              label="New password"
+              onChangeText={handleChange("newPassword")}
+              onBlur={handleBlur("newPassword")}
+              value={values.newPassword}
+              error={errors.newPassword && touched.newPassword}
+            />
+            <HelperText
+              type="error"
+              visible={Boolean(errors.newPassword && touched.newPassword)}
+            >
+              {errors.newPassword}
+            </HelperText>
+            <TextInput
+              mode="flat"
+              style={{
+                backgroundColor: theme.colors.tertiary,
+              }}
+              theme={{
+                colors: { onSurfaceVariant: theme.colors.font },
+              }}
+              textColor={theme.colors.font}
+              activeUnderlineColor={theme.colors.font}
+              label="Confirm new password"
+              onChangeText={handleChange("confirmNewPassword")}
+              onBlur={handleBlur("confirmNewPassword")}
+              value={values.confirmNewPassword}
+              error={errors.confirmNewPassword && touched.confirmNewPassword}
+            />
+            <HelperText
+              type="error"
+              visible={Boolean(
+                errors.confirmNewPassword && touched.confirmNewPassword
+              )}
+            >
+              {errors.confirmNewPassword}
+            </HelperText>
+            <Button
+              onPress={handleSubmit}
+              disabled={isSubmitting}
+              icon="check"
+              mode="contained"
+              buttonColor={theme.colors.quaternary}
+              textColor={theme.colors.surface}
+            >
+              Done
+            </Button>
+          </>
+        )}
+      </Formik>
+    </FieldModal>
   );
 };
 
@@ -138,40 +313,36 @@ export const EditProfile = ({ navigation }) => {
 
   return (
     <SafeAreaView>
-      <IconButton icon="chevron-left" onPress={() => navigation.goBack()} />
-
-      <View style={{ justifyContent: "center", alignItems: "center" }}>
-        <Text variant="titleLarge" style={{ marginBottom: 20 }}>
-          Edit Profile
-        </Text>
-        <Button onPress={() => navigation.navigate("EditAvatar")}>
-          <Avatar.Image
-            size={150}
-            source={{
-              url: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
-            }}
+      <Layout
+        iconName="chevron-left"
+        title="Edit Profile"
+        onAction={() => navigation.goBack()}
+      >
+        <View style={{ justifyContent: "center", alignItems: "center" }}>
+          <Button onPress={() => navigation.navigate("EditAvatar")}>
+            <UserAvatar />
+          </Button>
+          {UpdateParticular("Username")}
+          {UpdateParticular("Email")}
+          <Button
+            onPress={() => setOpenDatePicker(true)}
+            mode="contained"
+            style={{ width: "60%", marginTop: 10 }}
+          >
+            <Text style={{ color: theme.colors.font }}>
+              Birthday: {moment(user.birthday).format("DD MMM YYYY")}
+            </Text>
+          </Button>
+          {UpdatePassword()}
+          <DatePickerModal
+            locale="en-GB"
+            mode="single"
+            visible={openDatePicker}
+            onDismiss={onDismissSingle}
+            onConfirm={onConfirmSingle}
           />
-        </Button>
-        {inputFields("Username")}
-        {inputFields("Email")}
-        <Button
-          onPress={() => setOpenDatePicker(true)}
-          mode="contained"
-          style={{ width: "60%", marginTop: 10 }}
-        >
-          <Text style={{ color: theme.colors.font }}>
-            Birthday: {moment(user.birthday).format("DD MMM YYYY")}
-          </Text>
-        </Button>
-        {inputFields("Password")}
-        <DatePickerModal
-          locale="en-GB"
-          mode="single"
-          visible={openDatePicker}
-          onDismiss={onDismissSingle}
-          onConfirm={onConfirmSingle}
-        />
-      </View>
+        </View>
+      </Layout>
     </SafeAreaView>
   );
 };
@@ -194,6 +365,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
+    width: "100%",
+  },
+  container: {
+    flex: 1,
     width: "100%",
   },
 });

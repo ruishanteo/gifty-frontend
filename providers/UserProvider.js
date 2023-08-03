@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 
+import { AuthContext } from "./AuthProvider";
 import { AxiosContext } from "./AxiosProvider";
+import { NotificationContext } from "./NotificationProvider";
 
 const UserContext = createContext(null);
 const { Provider } = UserContext;
@@ -8,6 +10,8 @@ const { Provider } = UserContext;
 function UserProvider({ children }) {
   const [user, setUser] = useState(null);
   const { protectedAxios } = useContext(AxiosContext);
+  const { logout } = useContext(AuthContext);
+  const { showNotification } = useContext(NotificationContext);
 
   const reloadUser = async () => {
     const user = await protectedAxios
@@ -18,7 +22,13 @@ function UserProvider({ children }) {
         return currentUser;
       })
       .catch((error) => {
+        showNotification({
+          title: "An error as occured",
+          description: "Please try again later.",
+          type: "error",
+        });
         setUser(null);
+        logout();
       });
     return user;
   };
