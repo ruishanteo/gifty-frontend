@@ -1,5 +1,10 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import {
+  KeyboardAvoidingView,
+  ScrollView,
+  StyleSheet,
+  View,
+} from "react-native";
 import {
   Avatar,
   Button,
@@ -41,31 +46,59 @@ const FieldModal = ({ buttonDisplayText, name, open, setOpen, children }) => {
         visible={open}
         onRequestClose={() => setOpen(false)}
       >
-        <View style={styles.centeredView}>
-          <View
-            style={[
-              styles.modalView,
-              {
-                backgroundColor: theme.colors.tertiary,
-                heigh: "50%",
-              },
-            ]}
-          >
-            <View
-              style={{ width: "100%", flexDirection: "row", marginBottom: 10 }}
-            >
-              <Text variant="titleLarge" style={{ flexGrow: 1 }}>
-                Edit {name}
-              </Text>
-              <IconButton onPress={() => setOpen(false)} icon="close" />
+        <ScrollView
+          contentContainerStyle={{
+            height: "100%",
+            width: "100%",
+            alignItems: "center",
+          }}
+        >
+          <KeyboardAvoidingView behavior="height" style={styles.container}>
+            <View style={styles.centeredView}>
+              <View
+                style={[
+                  styles.modalView,
+                  {
+                    backgroundColor: theme.colors.tertiary,
+                  },
+                ]}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    width: "100%",
+                    marginBottom: 20,
+                  }}
+                >
+                  <IconButton
+                    style={{ position: "absolute", left: 0 }}
+                    onPress={() => setOpen(false)}
+                    icon="close"
+                  />
+                  <Text
+                    variant="titleLarge"
+                    style={{
+                      color: theme.colors.font,
+                      textAlign: "center",
+                    }}
+                  >
+                    Edit {name}
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    width: "100%",
+                    justifyContent: "center",
+                  }}
+                >
+                  {children}
+                </View>
+              </View>
             </View>
-            <View
-              style={{ width: "100%", marginTop: 10, justifyContent: "center" }}
-            >
-              {children}
-            </View>
-          </View>
-        </View>
+          </KeyboardAvoidingView>
+        </ScrollView>
       </Modal>
     </>
   );
@@ -89,6 +122,8 @@ const UpdateParticular = (name) => {
         validationSchema={Yup.object().shape({
           [name]: Yup.string().required(`${name} is required`),
         })}
+        validateOnChange={false}
+        validateOnBlur={false}
         initialValues={{ [name]: user[nameInUser] }}
         onSubmit={(values) => {
           updateUser({ [`new${name}`]: values[name] });
@@ -107,6 +142,14 @@ const UpdateParticular = (name) => {
           <>
             <TextInput
               mode="flat"
+              style={{
+                backgroundColor: theme.colors.tertiary,
+              }}
+              theme={{
+                colors: { onSurfaceVariant: theme.colors.font },
+              }}
+              textColor={theme.colors.font}
+              activeUnderlineColor={theme.colors.font}
               placeholder={name}
               onChangeText={handleChange(name)}
               onBlur={handleBlur(name)}
@@ -144,7 +187,7 @@ const UpdatePassword = () => {
   return (
     <FieldModal
       buttonDisplayText="Change password"
-      name="password"
+      name="Password"
       open={open}
       setOpen={setOpen}
     >
@@ -156,6 +199,8 @@ const UpdatePassword = () => {
             .required("Required")
             .oneOf([Yup.ref("newPassword"), null], "Passwords do not match"),
         })}
+        validateOnChange={false}
+        validateOnBlur={false}
         initialValues={{
           currentPassword: "",
           newPassword: "",
@@ -178,6 +223,14 @@ const UpdatePassword = () => {
           <>
             <TextInput
               mode="flat"
+              style={{
+                backgroundColor: theme.colors.tertiary,
+              }}
+              theme={{
+                colors: { onSurfaceVariant: theme.colors.font },
+              }}
+              textColor={theme.colors.font}
+              activeUnderlineColor={theme.colors.font}
               label="Current password"
               onChangeText={handleChange("currentPassword")}
               onBlur={handleBlur("currentPassword")}
@@ -194,6 +247,14 @@ const UpdatePassword = () => {
             </HelperText>
             <TextInput
               mode="flat"
+              style={{
+                backgroundColor: theme.colors.tertiary,
+              }}
+              theme={{
+                colors: { onSurfaceVariant: theme.colors.font },
+              }}
+              textColor={theme.colors.font}
+              activeUnderlineColor={theme.colors.font}
               label="New password"
               onChangeText={handleChange("newPassword")}
               onBlur={handleBlur("newPassword")}
@@ -208,6 +269,14 @@ const UpdatePassword = () => {
             </HelperText>
             <TextInput
               mode="flat"
+              style={{
+                backgroundColor: theme.colors.tertiary,
+              }}
+              theme={{
+                colors: { onSurfaceVariant: theme.colors.font },
+              }}
+              textColor={theme.colors.font}
+              activeUnderlineColor={theme.colors.font}
               label="Confirm new password"
               onChangeText={handleChange("confirmNewPassword")}
               onBlur={handleBlur("confirmNewPassword")}
@@ -262,8 +331,6 @@ export const EditProfile = ({ navigation }) => {
 
   return (
     <SafeAreaView>
-      <IconButton icon="chevron-left" onPress={() => navigation.goBack()} />
-
       <View style={{ justifyContent: "center", alignItems: "center" }}>
         <Text variant="titleLarge" style={{ marginBottom: 20 }}>
           Edit Profile
@@ -320,6 +387,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
+    width: "100%",
+  },
+  container: {
+    flex: 1,
     width: "100%",
   },
 });
