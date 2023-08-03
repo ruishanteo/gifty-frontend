@@ -19,6 +19,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { useUser } from "../providers/hooks";
+import UserAvatar from "../components/UserAvatar";
 
 export function Profile({ navigation }) {
   const theme = useTheme();
@@ -100,14 +101,7 @@ export function Profile({ navigation }) {
               onPress={() => navigation.navigate("Settings")}
             />
           </View>
-          <Avatar.Image
-            size={120}
-            source={{
-              url:
-                user.avatarURL ||
-                "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
-            }}
-          />
+          <UserAvatar />
           <Text variant="displaySmall" style={{ marginVertical: 15 }}>
             {user.username}
           </Text>

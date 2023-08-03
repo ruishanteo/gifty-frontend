@@ -15,6 +15,7 @@
     "@react-navigation/native-stack": "^6.9.13",
     "@rneui/base": "^4.0.0-rc.7",
     "@rneui/themed": "^4.0.0-rc.7",
+    "@zamplyy/react-native-nice-avatar": "^1.1.2",
     "axios": "^1.4.0",
     "axios-auth-refresh": "^3.3.6",
     "expo": "~49.0.5",
@@ -36,6 +37,7 @@
     "react-native-paper-dates": "^0.18.12",
     "react-native-safe-area-context": "^4.7.1",
     "react-native-screens": "^3.23.0",
+    "react-native-svg": "^13.10.0",
     "react-native-vector-icons": "^10.0.0",
     "yup": "^1.2.0"
   },

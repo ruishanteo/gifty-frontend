@@ -6,7 +6,6 @@ import {
   View,
 } from "react-native";
 import {
-  Avatar,
   Button,
   HelperText,
   IconButton,
@@ -27,6 +26,7 @@ import * as Yup from "yup";
 
 import { useUpdatePassword, useUpdateUser } from "../api/auth";
 import { useUser } from "../providers/hooks";
+import UserAvatar from "../components/UserAvatar";
 
 const FieldModal = ({ buttonDisplayText, name, open, setOpen, children }) => {
   const theme = useTheme();
@@ -336,14 +336,7 @@ export const EditProfile = ({ navigation }) => {
           Edit Profile
         </Text>
         <Button onPress={() => navigation.navigate("EditAvatar")}>
-          <Avatar.Image
-            size={150}
-            source={{
-              url:
-                user.avatarURL ||
-                "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
-            }}
-          />
+          <UserAvatar />
         </Button>
         {UpdateParticular("Username")}
         {UpdateParticular("Email")}

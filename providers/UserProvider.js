@@ -37,8 +37,6 @@ function UserProvider({ children }) {
     reloadUser();
   }, []);
 
-  console.log("ya1");
-
   if (!user) return null;
 
   return (

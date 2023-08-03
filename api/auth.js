@@ -110,3 +110,31 @@ export function useUpdatePassword() {
       });
   };
 }
+
+export function useUpdateAvatar() {
+  const { protectedAxios } = useAxios();
+  const { reloadUser } = useUser();
+  const { showNotification } = useNotification();
+
+  return async (updateRequest) => {
+    console.log(updateRequest);
+    return await protectedAxios
+      .put("auth/updateAvatar", updateRequest)
+      .then((res) => {
+        reloadUser();
+        showNotification({
+          title: "Update Successful",
+          description: "Updated your avatar",
+          type: "success",
+        });
+        return res;
+      })
+      .catch((error) => {
+        showNotification({
+          title: "Update failed",
+          description: error.response.data?.message || "Please try again.",
+          type: "error",
+        });
+      });
+  };
+}
