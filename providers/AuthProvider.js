@@ -22,12 +22,13 @@ function AuthProvider({ children }) {
     });
   };
 
-  const setAccessToken = async (accessToken) => {
-    await setJWT(accessToken, "");
+  const setTokens = async (tokens) => {
+    await setJWT(tokens.accessToken, tokens.refreshToken);
     setAuthState({
       ...authState,
-      accessToken,
-      authenticated: accessToken ? true : false,
+      accessToken: tokens.accessToken,
+      refreshToken: tokens.refreshToken,
+      authenticated: tokens.accessToken ? true : false,
     });
   };
 
@@ -56,7 +57,7 @@ function AuthProvider({ children }) {
       value={{
         authState,
         getAccessToken,
-        setAccessToken,
+        setTokens,
         logout,
       }}
     >

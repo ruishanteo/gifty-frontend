@@ -40,29 +40,17 @@ function AxiosProvider({ children }) {
     const options = {
       method: "POST",
       data,
-      url: `${API_URL}/api/refreshToken`,
+      url: `${API_URL}/public/auth/refreshToken`,
     };
     return axios(options)
       .then(async (tokenRefreshResponse) => {
+        await authContext.setTokens(tokenRefreshResponse.data.tokens);
         failedRequest.response.config.headers.Authorization =
           tokenRefreshResponse.data.accessToken;
-        authContext.setAuthState({
-          ...authContext.authState,
-          accessToken: tokenRefreshResponse.data.accessToken,
-        });
-
-        await setJWT(
-          tokenRefreshResponse.data.accessToken,
-          authContext.authState.refreshToken
-        );
-
         return Promise.resolve();
       })
       .catch((e) => {
-        authContext.setAuthState({
-          accessToken: null,
-          refreshToken: null,
-        });
+        authContext.logout();
       });
   };
 
