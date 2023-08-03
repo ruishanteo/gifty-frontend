@@ -20,10 +20,8 @@ import logo from "../assets/logo.png";
 import { useLogin } from "../api/auth";
 
 const loginValidationSchema = Yup.object().shape({
-  email: Yup.string()
-    .email("Please enter a valid email")
-    .required("Email is required"),
-  password: Yup.string().required("Password is required"),
+  email: Yup.string().email("Please enter a valid email").required("Required"),
+  password: Yup.string().required("Required"),
 });
 
 export function Login({ navigation }) {
