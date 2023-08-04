@@ -14,13 +14,48 @@ export function Events({ navigation }) {
   registerTranslation("en-GB", enGB);
 
   const events = [
-    { name: "Event 0", date: moment("28122023", "DDMMYYYY") },
-    { name: "Event 5", date: moment("01082023", "DDMMYYYY") },
-    { name: "Event 6", date: moment("04082023", "DDMMYYYY") },
-    { name: "Event 7", date: moment("02082023", "DDMMYYYY") },
-    { name: "Event 8", date: moment("05082023", "DDMMYYYY") },
-    { name: "Event 9", date: moment("03082023", "DDMMYYYY") },
-    { name: "Event 10", date: moment("06082023", "DDMMYYYY") },
+    {
+      name: "Event 0",
+      date: moment("28122023", "DDMMYYYY"),
+      reminder: true,
+      makeTop: true,
+    },
+    {
+      name: "Event 5",
+      date: moment("01082023", "DDMMYYYY"),
+      reminder: true,
+      makeTop: true,
+    },
+    {
+      name: "Event 6",
+      date: moment("04082023", "DDMMYYYY"),
+      reminder: true,
+      makeTop: true,
+    },
+    {
+      name: "Event 7",
+      date: moment("02082023", "DDMMYYYY"),
+      reminder: true,
+      makeTop: false,
+    },
+    {
+      name: "Event 8",
+      date: moment("05082023", "DDMMYYYY"),
+      reminder: false,
+      makeTop: false,
+    },
+    {
+      name: "Event 9",
+      date: moment("03082023", "DDMMYYYY"),
+      reminder: false,
+      makeTop: false,
+    },
+    {
+      name: "Event 10",
+      date: moment("06082023", "DDMMYYYY"),
+      reminder: false,
+      makeTop: false,
+    },
   ];
 
   const sortedEvents = [
@@ -37,7 +72,7 @@ export function Events({ navigation }) {
   ];
 
   const dateDiff = ({ event }) => {
-    const rawDiff = event.date.diff(moment(), "days");
+    const rawDiff = Math.ceil(event.date.diff(moment(), "days", true));
     return (
       <View
         flexDirection="row"
@@ -62,9 +97,21 @@ export function Events({ navigation }) {
   };
 
   const EventView = ({ event, navigation }) => {
+    const formattedDate = React.useMemo(
+      () => (event.date ? moment(event.date).format("DD MMM YYYY") : ""),
+      [event.date]
+    );
+
     return (
       <Card
-        onPress={() => navigation.navigate("DetailedEvent", { event })}
+        onPress={() =>
+          navigation.navigate("DetailedEvent", {
+            event: {
+              ...event,
+              date: formattedDate,
+            },
+          })
+        }
         style={{
           height: 150,
           width: "49%",

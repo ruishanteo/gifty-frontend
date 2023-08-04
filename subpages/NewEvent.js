@@ -51,12 +51,7 @@ export function NewEvent() {
   };
 
   return (
-    <View
-      style={{
-        justifyContent: "center",
-        flex: 1,
-      }}
-    >
+    <View style={{ marginBottom: -35 }}>
       <Button
         onPress={() => setOpen(true)}
         buttonColor={theme.colors.secondary}
@@ -162,10 +157,5 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
     width: "100%",
-  },
-  titleText: {
-    fontSize: 30,
-    fontWeight: "bold",
-    paddingVertical: 20,
   },
 });
