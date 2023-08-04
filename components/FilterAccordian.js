@@ -1,5 +1,5 @@
 import React from "react";
-import { FlatList, View } from "react-native";
+import { View } from "react-native";
 import { useTheme } from "react-native-paper";
 import { ListItem } from "@rneui/themed";
 
