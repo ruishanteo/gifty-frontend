@@ -9,21 +9,32 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 
 import { NewEvent } from "../subpages/NewEvent.js";
 
-export function Events() {
+export function Events({ navigation }) {
   const theme = useTheme();
   registerTranslation("en-GB", enGB);
 
   const events = [
-    { name: "Event 1", date: moment("28072023", "DDMMYYYY") },
-    { name: "Event 2", date: moment("29072023", "DDMMYYYY") },
-    { name: "Event 3", date: moment("30072023", "DDMMYYYY") },
-    { name: "Event 4", date: moment("31072023", "DDMMYYYY") },
+    { name: "Event 0", date: moment("28122023", "DDMMYYYY") },
     { name: "Event 5", date: moment("01082023", "DDMMYYYY") },
     { name: "Event 6", date: moment("04082023", "DDMMYYYY") },
+    { name: "Event 7", date: moment("02082023", "DDMMYYYY") },
+    { name: "Event 8", date: moment("05082023", "DDMMYYYY") },
+    { name: "Event 9", date: moment("03082023", "DDMMYYYY") },
+    { name: "Event 10", date: moment("06082023", "DDMMYYYY") },
   ];
 
-  // const sortedEvents = events.sort((a , b) =>
-  //a.date.diff(moment(), "days") > b.date.diff(moment(), "days"))
+  const sortedEvents = [
+    ...events
+      .filter((d) => d.date.diff(moment(), "days") >= 0)
+      .sort((a, b) => {
+        return a.date.diff(moment(), "days") - b.date.diff(moment(), "days");
+      }),
+    ...events
+      .filter((d) => d.date.diff(moment(), "days") < 0)
+      .sort((a, b) => {
+        return b.date.diff(moment(), "days") - a.date.diff(moment(), "days");
+      }),
+  ];
 
   const dateDiff = ({ event }) => {
     const rawDiff = event.date.diff(moment(), "days");
@@ -50,57 +61,64 @@ export function Events() {
     );
   };
 
-  const EventView = ({ event }) => (
-    <Card
-      style={{
-        height: 150,
-        width: "49%",
-        borderRadius: 15,
-        backgroundColor: theme.colors.tertiary,
-      }}
-    >
-      <Card.Title
+  const EventView = ({ event, navigation }) => {
+    return (
+      <Card
+        onPress={() => navigation.navigate("DetailedEvent", { event })}
         style={{
-          backgroundColor: theme.colors.quaternary,
-          width: "100%",
-          borderTopEndRadius: 15,
-          borderTopStartRadius: 15,
+          height: 150,
+          width: "49%",
+          borderRadius: 15,
+          backgroundColor: theme.colors.tertiary,
         }}
-        titleStyle={{ textAlign: "center", color: theme.colors.background }}
-        titleVariant="titleMedium"
-        title={event.name}
-      />
-      {dateDiff({ event })}
-      <Card.Title
-        titleStyle={{ textAlign: "center" }}
-        title={moment(event.date).format("DD MMM YYYY")}
-      />
-      {console.log(event)}
-    </Card>
-  );
+      >
+        <Card.Title
+          style={{
+            backgroundColor: theme.colors.quaternary,
+            width: "100%",
+            borderTopEndRadius: 15,
+            borderTopStartRadius: 15,
+            height: "20%",
+          }}
+          titleStyle={{ textAlign: "center", color: theme.colors.background }}
+          titleVariant="titleMedium"
+          title={event.name}
+        />
+        <View
+          style={{
+            alignItems: "center",
+            justifyContent: "center",
+            height: "70%",
+          }}
+        >
+          <Text>{dateDiff({ event })}</Text>
+          <Text>{moment(event.date).format("DD MMM YYYY")}</Text>
+        </View>
+      </Card>
+    );
+  };
 
   return (
     <SafeAreaView
       style={{
         alignItems: "center",
         justifyContent: "center",
-        flex: 1,
+        marginHorizontal: 15,
       }}
     >
-      <Text variant="titleLarge" style={{ marginBottom: 20 }}>
-        Events
-      </Text>
-      <View
-        style={{
-          justifyContent: "center",
-          alignItems: "center",
-          flex: 1,
-          marginHorizontal: 15,
-        }}
-      >
+      <View>
+        <Text
+          variant="titleLarge"
+          style={{ marginBottom: 20, textAlign: "center" }}
+        >
+          Events
+        </Text>
         <FlatList
-          data={events}
-          renderItem={({ item }) => <EventView event={item} />}
+          style={{ height: "80%" }}
+          data={sortedEvents}
+          renderItem={({ item }) => (
+            <EventView event={item} navigation={navigation} />
+          )}
           keyExtractor={(item) => item.name}
           numColumns={2}
           ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
