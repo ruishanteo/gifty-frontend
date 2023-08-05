@@ -10,14 +10,15 @@ import { Home } from "../pages/Home.js";
 import { Profile } from "../pages/Profile.js";
 import { Wishlist } from "../pages/Wishlist.js";
 
+import { WishResult } from "../subpages/WishResult.js";
+import { DetailedEvent } from "../subpages/DetailedEvent.js";
 import { DetailedListing } from "../subpages/DetailedListing.js";
 
+import { GiftedHistory } from "../subpages/GiftedHistory.js";
+import { SavedList } from "../subpages/SavedList.js";
 import { Settings } from "../subpages/Settings.js";
 import { EditProfile } from "../subpages/EditProfile.js";
 import { TNC } from "../subpages/TNC.js";
-import { WishResult } from "../subpages/WishResult.js";
-import { GiftedHistory } from "../subpages/GiftedHistory.js";
-import { SavedList } from "../subpages/SavedList.js";
 import { EditAvatar } from "../subpages/EditAvatar.js";
 
 const Tab = createBottomTabNavigator();
@@ -111,6 +112,24 @@ function WishlistStackScreen() {
   );
 }
 
+const EventsStack = createNativeStackNavigator();
+function EventsStackScreen() {
+  return (
+    <EventsStack.Navigator>
+      <EventsStack.Screen
+        name="Events"
+        component={Events}
+        options={{ headerShown: false }}
+      />
+      <EventsStack.Screen
+        name="DetailedEvent"
+        component={DetailedEvent}
+        options={{ headerShown: false }}
+      />
+    </EventsStack.Navigator>
+  );
+}
+
 export function BottomNav() {
   const theme = useTheme();
   theme.colors.onSecondaryContainer = "transparent";
@@ -130,8 +149,8 @@ export function BottomNav() {
       }}
     >
       <Tab.Screen
-        name="Events"
-        component={Events}
+        name="EventsStack"
+        component={EventsStackScreen}
         options={{
           tabBarLabel: "Events",
           tabBarIcon: ({ color }) => (
