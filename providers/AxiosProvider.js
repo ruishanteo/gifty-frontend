@@ -3,14 +3,15 @@ import axios from "axios";
 import createAuthRefreshInterceptor from "axios-auth-refresh";
 
 import { AuthContext } from "./AuthProvider";
+import { NotificationContext } from "./NotificationProvider";
 import { API_URL } from "../config/config";
-import { setJWT } from "../storage/securestorage";
 
 const AxiosContext = createContext();
 const { Provider } = AxiosContext;
 
 function AxiosProvider({ children }) {
   const authContext = useContext(AuthContext);
+  const { showNotification } = useContext(NotificationContext);
 
   const publicAxios = axios.create({
     baseURL: `${API_URL}/public/`,
@@ -33,6 +34,36 @@ function AxiosProvider({ children }) {
     }
   );
 
+  protectedAxios.interceptors.response.use(
+    (response) => {
+      return response.data;
+    },
+    (error) => {
+      showNotification({
+        title: "Request failed",
+        description:
+          error.response?.data?.message || error.message || "Please try again.",
+        type: "error",
+      });
+      return Promise.reject(error);
+    }
+  );
+
+  publicAxios.interceptors.response.use(
+    (response) => {
+      return response.data;
+    },
+    (error) => {
+      showNotification({
+        title: "Request failed",
+        description:
+          error.response?.data?.message || error.message || "Please try again.",
+        type: "error",
+      });
+      return Promise.reject(error);
+    }
+  );
+
   const refreshAuthLogic = (failedRequest) => {
     const data = {
       refreshToken: authContext.authState.refreshToken,
@@ -44,9 +75,9 @@ function AxiosProvider({ children }) {
     };
     return axios(options)
       .then(async (tokenRefreshResponse) => {
-        await authContext.setTokens(tokenRefreshResponse.data.tokens);
+        await authContext.setTokens(tokenRefreshResponse.tokens);
         failedRequest.response.config.headers.Authorization =
-          tokenRefreshResponse.data.accessToken;
+          tokenRefreshResponse.tokens.accessToken;
         return Promise.resolve();
       })
       .catch((e) => {

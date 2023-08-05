@@ -14,6 +14,7 @@ import { AuthProvider } from "./providers/AuthProvider.js";
 import { useAuth } from "./providers/hooks.js";
 import { AxiosProvider } from "./providers/AxiosProvider.js";
 import { UserProvider } from "./providers/UserProvider.js";
+import { QueryProvider } from "./providers/QueryProvider.js";
 
 async function cacheFonts(fonts) {
   for (let i = 0; i < fonts.length; i++) {
@@ -104,17 +105,19 @@ export default function App() {
 
   return (
     <PaperProvider theme={paperTheme}>
-      <AuthProvider>
-        <AxiosProvider>
-          <NotificationProvider>
-            <NavigationContainer
-              theme={{ colors: { background: paperTheme.colors.background } }}
-            >
-              <GetRoutes />
-            </NavigationContainer>
-          </NotificationProvider>
-        </AxiosProvider>
-      </AuthProvider>
+      <NotificationProvider>
+        <AuthProvider>
+          <AxiosProvider>
+            <QueryProvider>
+              <NavigationContainer
+                theme={{ colors: { background: paperTheme.colors.background } }}
+              >
+                <GetRoutes />
+              </NavigationContainer>
+            </QueryProvider>
+          </AxiosProvider>
+        </AuthProvider>
+      </NotificationProvider>
     </PaperProvider>
   );
 }

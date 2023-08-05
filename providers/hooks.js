@@ -4,6 +4,7 @@ import { AuthContext } from "./AuthProvider";
 import { AxiosContext } from "./AxiosProvider";
 import { NotificationContext } from "./NotificationProvider";
 import { UserContext } from "./UserProvider";
+import { QueryContext } from "./QueryProvider";
 
 export function useAuth() {
   return useContext(AuthContext);
@@ -19,4 +20,8 @@ export function useUser() {
 
 export function useNotification() {
   return useContext(NotificationContext);
+}
+
+export function useQueryContext() {
+  return useContext(QueryContext);
 }
