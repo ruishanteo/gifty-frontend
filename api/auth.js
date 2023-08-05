@@ -14,20 +14,14 @@ export function useLogin() {
     return await publicAxios
       .post("auth/login", loginRequest)
       .then((res) => {
-        setTokens(res.data.data.tokens);
+        setTokens(res.tokens);
         showNotification({
           title: "Login successful",
-          description: `Welcome back ${res.data.data.user.username}!`,
+          description: `Welcome back ${res.user.username}!`,
           type: "success",
         });
       })
-      .catch((error) => {
-        showNotification({
-          title: "Login failed",
-          description: error.response.data?.message || "Please try again.",
-          type: "error",
-        });
-      });
+      .catch(() => {});
   };
 }
 
@@ -40,20 +34,14 @@ export function useRegister() {
     return await publicAxios
       .post("auth/register", registerRequest)
       .then((res) => {
-        setTokens(res.data.data.tokens);
+        setTokens(res.tokens);
         showNotification({
           title: "Register successful",
           description: "Welcome to gifty!",
           type: "success",
         });
       })
-      .catch((error) => {
-        showNotification({
-          title: "Registration failed",
-          description: error.response.data?.message || "Please try again.",
-          type: "error",
-        });
-      });
+      .catch(() => {});
   };
 }
 
@@ -74,13 +62,7 @@ export function useUpdateUser() {
         });
         return res;
       })
-      .catch((error) => {
-        showNotification({
-          title: "Update failed",
-          description: error.response.data?.message || "Please try again.",
-          type: "error",
-        });
-      });
+      .catch(() => {});
   };
 }
 
@@ -101,13 +83,7 @@ export function useUpdatePassword() {
         });
         return res;
       })
-      .catch((error) => {
-        showNotification({
-          title: "Update failed",
-          description: error.response.data?.message || "Please try again.",
-          type: "error",
-        });
-      });
+      .catch(() => {});
   };
 }
 
@@ -117,7 +93,6 @@ export function useUpdateAvatar() {
   const { showNotification } = useNotification();
 
   return async (updateRequest) => {
-    console.log(updateRequest);
     return await protectedAxios
       .put("auth/updateAvatar", updateRequest)
       .then((res) => {
@@ -129,12 +104,6 @@ export function useUpdateAvatar() {
         });
         return res;
       })
-      .catch((error) => {
-        showNotification({
-          title: "Update failed",
-          description: error.response.data?.message || "Please try again.",
-          type: "error",
-        });
-      });
+      .catch(() => {});
   };
 }
