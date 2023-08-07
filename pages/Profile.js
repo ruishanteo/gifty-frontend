@@ -127,18 +127,23 @@ export function Profile({ navigation }) {
                 icon="chevron-right"
                 contentStyle={{ flexDirection: "row-reverse" }}
                 onPress={() => navigation.navigate("GiftedHistory")}
+                disabled={giftedListings.length === 0}
               >
                 View more
               </Button>
             </View>
             <Card.Content>
-              <FlatList
-                data={giftedListings}
-                renderItem={({ item }) => <Item item={item} />}
-                keyExtractor={(item) => item.id}
-                horizontal={true}
-                ItemSeparatorComponent={() => <View style={{ width: 5 }} />}
-              />
+              {giftedListings.length === 0 ? (
+                <Text>No gifted gifts found!</Text>
+              ) : (
+                <FlatList
+                  data={giftedListings}
+                  renderItem={({ item }) => <Item item={item} />}
+                  keyExtractor={(item) => item.id}
+                  horizontal={true}
+                  ItemSeparatorComponent={() => <View style={{ width: 5 }} />}
+                />
+              )}
             </Card.Content>
           </Card>
 
@@ -170,18 +175,23 @@ export function Profile({ navigation }) {
                 icon="chevron-right"
                 contentStyle={{ flexDirection: "row-reverse" }}
                 onPress={() => navigation.navigate("SavedList")}
+                disabled={savedListings.length === 0}
               >
                 View more
               </Button>
             </View>
             <Card.Content>
-              <FlatList
-                data={savedListings}
-                renderItem={({ item }) => <Item item={item} />}
-                keyExtractor={(item) => item.id}
-                horizontal={true}
-                ItemSeparatorComponent={() => <View style={{ width: 5 }} />}
-              />
+              {savedListings.length === 0 ? (
+                <Text>No saved gifts found!</Text>
+              ) : (
+                <FlatList
+                  data={savedListings}
+                  renderItem={({ item }) => <Item item={item} />}
+                  keyExtractor={(item) => item.id}
+                  horizontal={true}
+                  ItemSeparatorComponent={() => <View style={{ width: 5 }} />}
+                />
+              )}
             </Card.Content>
           </Card>
         </View>
