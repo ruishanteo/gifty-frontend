@@ -7,7 +7,12 @@ export function Listing({ navigation, listing }) {
 
   return (
     <Card
-      onPress={() => navigation.navigate("DetailedListing", { listing })}
+      onPress={() =>
+        navigation.navigate("DetailedListing", {
+          listing,
+          listingId: listing.id,
+        })
+      }
       style={{
         backgroundColor: theme.colors.surface,
         alignItems: "center",

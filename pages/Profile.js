@@ -20,35 +20,28 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 
 import { useUser } from "../providers/hooks";
 import UserAvatar from "../components/UserAvatar";
+import { useGiftedListings, useSavedListings } from "../api/listing";
 
 export function Profile({ navigation }) {
   const theme = useTheme();
   const { user } = useUser();
+  const { isLoading: savedLoading, data: savedData } = useSavedListings();
+  const { isLoading: giftedLoading, data: giftedData } = useGiftedListings();
 
   const windowWidth = Dimensions.get("window").width;
 
-  const listings = [
-    {
-      id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
-      title: "First Item First Item First Item First Item",
-      source: "https://reactnative.dev/img/tiny_logo.png",
-    },
-    {
-      id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63",
-      title: "Second Item Second Item Second Item Second Item",
-      source: "https://reactnative.dev/img/tiny_logo.png",
-    },
-    {
-      id: "58694a0f-3da1-471f-bd96-145571e29d72",
-      title: "Third Item Third Item Third Item Third Item",
-      source:
-        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADMAAAAzCAYAAAA6oTAqAAAAEXRFWHRTb2Z0d2FyZQBwbmdjcnVzaEB1SfMAAABQSURBVGje7dSxCQBACARB+2/ab8BEeQNhFi6WSYzYLYudDQYGBgYGBgYGBgYGBgYGBgZmcvDqYGBgmhivGQYGBgYGBgYGBgYGBgYGBgbmQw+P/eMrC5UTVAAAAABJRU5ErkJggg==",
-    },
-  ];
+  if (savedLoading || giftedLoading) return null;
+  const savedListings = savedData.listing.slice(0, 3);
+  const giftedListings = giftedData.listing.slice(0, 3);
 
   const Item = ({ item }) => (
     <TouchableOpacity
-      onPress={() => navigation.navigate("DetailedListing", { listing: item })}
+      onPress={() =>
+        navigation.navigate("DetailedListing", {
+          listing: item,
+          listingId: item.id,
+        })
+      }
     >
       <View
         style={{
@@ -140,7 +133,7 @@ export function Profile({ navigation }) {
             </View>
             <Card.Content>
               <FlatList
-                data={listings}
+                data={giftedListings}
                 renderItem={({ item }) => <Item item={item} />}
                 keyExtractor={(item) => item.id}
                 horizontal={true}
@@ -183,7 +176,7 @@ export function Profile({ navigation }) {
             </View>
             <Card.Content>
               <FlatList
-                data={listings}
+                data={savedListings}
                 renderItem={({ item }) => <Item item={item} />}
                 keyExtractor={(item) => item.id}
                 horizontal={true}

@@ -12,14 +12,19 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 
 import { Listing } from "../components/Listing";
 import { FilterAccordian } from "../components/FilterAccordian";
+import { useListings } from "../api/listing";
 
 export const Explore = ({ navigation }) => {
   const theme = useTheme();
 
+  const { isLoading, data } = useListings();
   const [openDrawer, setOpenDrawer] = React.useState(false);
   const [searchQuery, setSearchQuery] = React.useState("");
 
   const windowWidth = Dimensions.get("window").width;
+
+  if (isLoading) return null;
+  const listings = data.listing;
 
   const onChangeSearch = (query) => {
     setSearchQuery(query);
@@ -27,28 +32,6 @@ export const Explore = ({ navigation }) => {
 
   //filter properties- types
   const types = ["Sort", "Category", "Platform"];
-
-  //listing array
-  const listings = [
-    {
-      id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
-      title: "First Item First Item First Item First Item",
-      source: "https://reactnative.dev/img/tiny_logo.png",
-    },
-    {
-      id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63",
-      title: "Second Item Second Item Second Item Second Item",
-      source: "https://reactnative.dev/img/tiny_logo.png",
-      description:
-        "Enim commodo eiusmod laboris officia qui aliqua id eiusmod commodo. Veniam duis pariatur ex ut ex tempor nisi cillum ullamco mollit nisi reprehenderit velit cupidatat. Ex dolor deserunt amet voluptate commodo ea nostrud commodo quis sit sit et. Consectetur nisi aliqua aute cupidatat anim consequat nostrud ea aute elit aliquip sint adipisicing id. Lorem tempor incididunt ullamco officia.",
-    },
-    {
-      id: "58694a0f-3da1-471f-bd96-145571e29d72",
-      title: "Third Item Third Item Third Item Third Item",
-      source:
-        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADMAAAAzCAYAAAA6oTAqAAAAEXRFWHRTb2Z0d2FyZQBwbmdjcnVzaEB1SfMAAABQSURBVGje7dSxCQBACARB+2/ab8BEeQNhFi6WSYzYLYudDQYGBgYGBgYGBgYGBgYGBgZmcvDqYGBgmhivGQYGBgYGBgYGBgYGBgYGBgbmQw+P/eMrC5UTVAAAAABJRU5ErkJggg==",
-    },
-  ];
 
   return (
     <SafeAreaView>
