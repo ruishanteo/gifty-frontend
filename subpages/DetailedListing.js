@@ -15,7 +15,10 @@ import {
   useSaveListing,
   useUngiftListing,
   useUnsaveListing,
+  useUnwishListing,
+  useWishListing,
 } from "../api/listing";
+import { usePersons } from "../api/person";
 
 const platformProfileURL = {
   Amazon:
@@ -27,11 +30,16 @@ export const DetailedListing = ({ route, navigation }) => {
   const { listingId } = route.params;
 
   const theme = useTheme();
-  const { isLoading, data } = useListing(listingId);
-  const useGiftMutation = useGiftListing();
-  const useUngiftMutation = useUngiftListing();
-  const useSaveMutation = useSaveListing();
-  const useUnsaveMutation = useUnsaveListing();
+  const { isLoading: isListingLoading, data: listingData } =
+    useListing(listingId);
+  const { isLoading: isPersonLoading, data: personData } = usePersons();
+
+  const giftMutation = useGiftListing();
+  const ungiftMutation = useUngiftListing();
+  const saveMutation = useSaveListing();
+  const unsaveMutation = useUnsaveListing();
+  const wishListingMutation = useWishListing();
+  const unwishListingMutation = useUnwishListing();
 
   const [openDrawer, setOpenDrawer] = React.useState(false);
 
@@ -44,10 +52,10 @@ export const DetailedListing = ({ route, navigation }) => {
     }
   };
 
-  if (isLoading) return null;
-  const listing = data.listing;
+  if (isListingLoading || isPersonLoading) return null;
+  const listing = listingData.listing;
+  const personList = personData.persons;
 
-  const list = [{ title: "List Item 1" }, { title: "List Item 2" }];
   const selectedItems = [];
 
   return (
@@ -106,23 +114,23 @@ export const DetailedListing = ({ route, navigation }) => {
         <IconButton
           onPress={() =>
             listing.isGifted
-              ? useUngiftMutation.mutate(listing.id)
-              : useGiftMutation.mutate(listing.id)
+              ? ungiftMutation.mutate(listing.id)
+              : giftMutation.mutate(listing.id)
           }
           icon={listing.isGifted ? "gift" : "gift-outline"}
           iconColor={theme.colors.secondary}
         />
         <IconButton
           onPress={() => setOpenDrawer(true)}
-          icon={listing.isGifted ? "heart" : "heart-outline"}
+          icon={listing.wishlisted.length > 0 ? "heart" : "heart-outline"}
           iconColor={theme.colors.secondary}
         />
 
         <IconButton
           onPress={() =>
             listing.isSaved
-              ? useUnsaveMutation.mutate(listing.id)
-              : useSaveMutation.mutate(listing.id)
+              ? unsaveMutation.mutate(listing.id)
+              : saveMutation.mutate(listing.id)
           }
           icon={listing.isSaved ? "bookmark" : "bookmark-outline"}
           iconColor={theme.colors.secondary}
@@ -143,34 +151,44 @@ export const DetailedListing = ({ route, navigation }) => {
             />
           </ListItem.Content>
         </ListItem>
-        {list.map((l, i) => (
-          <ListItem bottomDivider key={i}>
-            <View
-              flexDirection="row"
-              style={{
-                alignItems: "center",
-                width: "90%",
-                marginLeft: 20,
-                marginBottom: 20,
-                gap: 20,
-              }}
-            >
-              <ListItem.CheckBox
-                key={i}
-                checked={true}
-                // checked={selectedItems.includes(l.title)}
-                checkedIcon="dot-circle-o"
-                uncheckedIcon="circle-o"
-                onPress={() => {
-                  selectedItems.push(l.title);
+        {personList.map((person, index) => {
+          const wishlisted = listing.wishlisted.includes(person.id);
+          return (
+            <ListItem bottomDivider key={index}>
+              <View
+                flexDirection="row"
+                style={{
+                  alignItems: "center",
+                  width: "90%",
+                  marginLeft: 20,
+                  marginBottom: 20,
+                  gap: 20,
                 }}
-              />
-              <ListItem.Content>
-                <ListItem.Title>{l.title}</ListItem.Title>
-              </ListItem.Content>
-            </View>
-          </ListItem>
-        ))}
+              >
+                <ListItem.CheckBox
+                  key={index}
+                  checked={wishlisted}
+                  checkedIcon="dot-circle-o"
+                  uncheckedIcon="circle-o"
+                  onPress={() => {
+                    wishlisted
+                      ? unwishListingMutation.mutate({
+                          id: listing.id,
+                          personId: person.id,
+                        })
+                      : wishListingMutation.mutate({
+                          id: listing.id,
+                          personId: person.id,
+                        });
+                  }}
+                />
+                <ListItem.Content>
+                  <ListItem.Title>{person.name}</ListItem.Title>
+                </ListItem.Content>
+              </View>
+            </ListItem>
+          );
+        })}
       </BottomSheet>
     </SafeAreaView>
   );
