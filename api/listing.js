@@ -2,12 +2,12 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 
 import { useAxios, useNotification, useQueryContext } from "../providers/hooks";
 
-export function useListings() {
+export function useListings(params) {
   const { protectedAxios } = useAxios();
 
   return useQuery({
     queryKey: ["listings"],
-    queryFn: () => protectedAxios.get("/listing"),
+    queryFn: () => protectedAxios.get("/listing", { params }),
   });
 }
 

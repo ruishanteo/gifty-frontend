@@ -14,15 +14,15 @@ export const SavedList = ({ navigation }) => {
   const [searchQuery, setSearchQuery] = React.useState("");
   const { isLoading, data, refetch } = useSavedListings(searchQuery);
 
+  useEffect(() => {
+    refetch();
+  }, [refetch, searchQuery]);
+
   const windowWidth = Dimensions.get("window").width;
 
   const onChangeSearch = (query) => {
     setSearchQuery(query);
   };
-
-  useEffect(() => {
-    refetch();
-  }, [refetch, searchQuery]);
 
   if (isLoading) return null;
   const listings = data.listing;

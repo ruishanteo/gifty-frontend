@@ -17,9 +17,15 @@ import { useListings } from "../api/listing";
 export const Explore = ({ navigation }) => {
   const theme = useTheme();
 
-  const { isLoading, data } = useListings();
   const [openDrawer, setOpenDrawer] = React.useState(false);
   const [searchQuery, setSearchQuery] = React.useState("");
+  const { isLoading, data, refetch } = useListings({
+    search: searchQuery,
+  });
+
+  React.useEffect(() => {
+    refetch();
+  }, [refetch, searchQuery]);
 
   const windowWidth = Dimensions.get("window").width;
 
