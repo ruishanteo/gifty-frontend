@@ -8,71 +8,39 @@ import moment from "moment";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { NewEvent } from "../subpages/NewEvent.js";
+import { useEvents } from "../api/event.js";
 
 export function Events({ navigation }) {
   const theme = useTheme();
+  const { isLoading, data } = useEvents();
   registerTranslation("en-GB", enGB);
 
-  const events = [
-    {
-      name: "Event 0",
-      date: moment("28122023", "DDMMYYYY"),
-      reminder: true,
-      makeTop: true,
-    },
-    {
-      name: "Event 5",
-      date: moment("01082023", "DDMMYYYY"),
-      reminder: true,
-      makeTop: true,
-    },
-    {
-      name: "Event 6",
-      date: moment("04082023", "DDMMYYYY"),
-      reminder: true,
-      makeTop: true,
-    },
-    {
-      name: "Event 7",
-      date: moment("02082023", "DDMMYYYY"),
-      reminder: true,
-      makeTop: false,
-    },
-    {
-      name: "Event 8",
-      date: moment("05082023", "DDMMYYYY"),
-      reminder: false,
-      makeTop: false,
-    },
-    {
-      name: "Event 9",
-      date: moment("03082023", "DDMMYYYY"),
-      reminder: false,
-      makeTop: false,
-    },
-    {
-      name: "Event 10",
-      date: moment("06082023", "DDMMYYYY"),
-      reminder: false,
-      makeTop: false,
-    },
-  ];
+  if (isLoading) return null;
+
+  const events = data.events.map((event) => ({
+    ...event,
+    date: moment(event.date),
+  }));
+
+  const countDateDiff = (event) => {
+    return Math.ceil(event.date.diff(moment(), "days", true)) - 1;
+  };
 
   const sortedEvents = [
     ...events
-      .filter((d) => d.date.diff(moment(), "days") >= 0)
+      .filter((d) => countDateDiff(d) >= 0)
       .sort((a, b) => {
-        return a.date.diff(moment(), "days") - b.date.diff(moment(), "days");
+        return countDateDiff(a) - countDateDiff(b);
       }),
     ...events
-      .filter((d) => d.date.diff(moment(), "days") < 0)
+      .filter((d) => countDateDiff(d) < 0)
       .sort((a, b) => {
-        return b.date.diff(moment(), "days") - a.date.diff(moment(), "days");
+        return countDateDiff(b) - countDateDiff(a);
       }),
   ];
 
   const dateDiff = ({ event }) => {
-    const rawDiff = Math.ceil(event.date.diff(moment(), "days", true));
+    const rawDiff = countDateDiff(event);
     return (
       <View
         flexDirection="row"
@@ -160,17 +128,21 @@ export function Events({ navigation }) {
         >
           Events
         </Text>
-        <FlatList
-          style={{ height: "80%" }}
-          data={sortedEvents}
-          renderItem={({ item }) => (
-            <EventView event={item} navigation={navigation} />
-          )}
-          keyExtractor={(item) => item.name}
-          numColumns={2}
-          ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
-          columnWrapperStyle={{ justifyContent: "space-between" }}
-        />
+        {events.length === 0 ? (
+          <Text>No events found!</Text>
+        ) : (
+          <FlatList
+            style={{ height: "80%" }}
+            data={sortedEvents}
+            renderItem={({ item }) => (
+              <EventView event={item} navigation={navigation} />
+            )}
+            keyExtractor={(item) => item.name}
+            numColumns={2}
+            ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
+            columnWrapperStyle={{ justifyContent: "space-between" }}
+          />
+        )}
         <NewEvent />
       </View>
     </SafeAreaView>

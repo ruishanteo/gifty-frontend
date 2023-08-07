@@ -1,34 +1,27 @@
 import React from "react";
 import { StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
-import { Button, Switch, Text, useTheme } from "react-native-paper";
+import { Button, HelperText, Switch, Text, useTheme } from "react-native-paper";
 import { DatePickerModal } from "react-native-paper-dates";
 import Modal from "react-native-modal";
 
 import moment from "moment";
+import { Formik } from "formik";
+import * as Yup from "yup";
 
 import Layout from "../components/Layout";
+import { useCreateEvent } from "../api/event";
+
+const createEventValidationSchema = Yup.object().shape({
+  name: Yup.string().required("Required"),
+  date: Yup.string().required("Required"),
+});
 
 export function NewEvent() {
   const theme = useTheme();
 
-  const [date, setDate] = React.useState(undefined);
   const [open, setOpen] = React.useState(false);
   const [openDatePicker, setOpenDatePicker] = React.useState(false);
-  const [isSwitchOn, setIsSwitchOn] = React.useState(false);
-
-  const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
-
-  const onDismissSingle = React.useCallback(() => {
-    setOpenDatePicker(false);
-  }, [setOpenDatePicker]);
-
-  const onConfirmSingle = React.useCallback(
-    (params) => {
-      setOpenDatePicker(false);
-      setDate(params.date);
-    },
-    [setOpenDatePicker, setDate]
-  );
+  const createEventMutation = useCreateEvent();
 
   const inputFields = (title, object) => {
     return (
@@ -49,6 +42,10 @@ export function NewEvent() {
       </View>
     );
   };
+
+  async function createEvent(values) {
+    await createEventMutation.mutateAsync(values);
+  }
 
   return (
     <View style={{ marginBottom: -35 }}>
@@ -79,58 +76,110 @@ export function NewEvent() {
               onAction={() => setOpen(false)}
               iconName="close"
             >
-              <View
-                style={{
-                  justifyContent: "center",
-                  alignItems: "center",
+              <Formik
+                validationSchema={createEventValidationSchema}
+                validateOnChange={false}
+                validateOnBlur={false}
+                initialValues={{
+                  name: "",
+                  birthday: "",
+                  reminder: false,
                 }}
+                onSubmit={(values) => createEvent(values)}
               >
-                {inputFields(
-                  "Name",
-                  <TextInput
-                    placeholder="Please add name"
-                    multiline={true}
-                    maxLength={50}
-                    numberOfLines={5}
-                  />
-                )}
-
-                {inputFields(
-                  "Date",
-                  <TouchableOpacity onPress={() => setOpenDatePicker(true)}>
-                    {date ? (
-                      <Text>{moment(date).format("DD MMM YYYY")}</Text>
-                    ) : (
-                      <Text>Please select date</Text>
+                {({
+                  isSubmitting,
+                  handleChange,
+                  handleBlur,
+                  handleSubmit,
+                  setFieldValue,
+                  values,
+                  errors,
+                  touched,
+                }) => (
+                  <View
+                    style={{
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    {inputFields(
+                      "Name",
+                      <TextInput
+                        label="name"
+                        multiline={true}
+                        maxLength={50}
+                        numberOfLines={5}
+                        onChangeText={handleChange("name")}
+                        onBlur={handleBlur("name")}
+                        value={values.name}
+                        error={errors.name && touched.name}
+                      />
                     )}
-                  </TouchableOpacity>
-                )}
 
-                {inputFields(
-                  "Reminder",
-                  <Switch value={isSwitchOn} onValueChange={onToggleSwitch} />
-                )}
+                    <HelperText
+                      type="error"
+                      visible={Boolean(errors.name && touched.name)}
+                    >
+                      {errors.name}
+                    </HelperText>
 
-                <Button
-                  buttonColor={theme.colors.quaternary}
-                  textColor={theme.colors.background}
-                  padding={5}
-                  style={{ marginTop: 50 }}
-                  icon="check"
-                >
-                  Done
-                </Button>
-              </View>
+                    {inputFields(
+                      "Date",
+                      <TouchableOpacity onPress={() => setOpenDatePicker(true)}>
+                        {values.date ? (
+                          <Text>
+                            {moment(values.date).format("DD MMM YYYY")}
+                          </Text>
+                        ) : (
+                          <Text>Please select date</Text>
+                        )}
+                      </TouchableOpacity>
+                    )}
+                    <HelperText
+                      type="error"
+                      visible={Boolean(errors.date && touched.date)}
+                    >
+                      {errors.date}
+                    </HelperText>
+
+                    {inputFields(
+                      "Reminder",
+                      <Switch
+                        value={values.reminder}
+                        onValueChange={(value) => {
+                          setFieldValue("reminder", value);
+                        }}
+                      />
+                    )}
+
+                    <DatePickerModal
+                      locale="en-GB"
+                      mode="single"
+                      visible={openDatePicker}
+                      onDismiss={() => setOpenDatePicker(false)}
+                      date={values.date}
+                      onConfirm={(params) => {
+                        setOpenDatePicker(false);
+                        setFieldValue("date", params.date);
+                      }}
+                    />
+
+                    <Button
+                      onPress={handleSubmit}
+                      disabled={isSubmitting}
+                      buttonColor={theme.colors.quaternary}
+                      textColor={theme.colors.background}
+                      padding={5}
+                      style={{ marginTop: 50 }}
+                      icon="check"
+                    >
+                      Done
+                    </Button>
+                  </View>
+                )}
+              </Formik>
             </Layout>
-
-            <DatePickerModal
-              locale="en-GB"
-              mode="single"
-              visible={openDatePicker}
-              onDismiss={onDismissSingle}
-              date={date}
-              onConfirm={onConfirmSingle}
-            />
           </View>
         </View>
       </Modal>
