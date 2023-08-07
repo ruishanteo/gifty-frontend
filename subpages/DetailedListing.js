@@ -51,12 +51,18 @@ export const DetailedListing = ({ route, navigation }) => {
   const selectedItems = [];
 
   return (
-    <SafeAreaView>
-      <ScrollView>
+    <SafeAreaView
+      style={{ height: "100%", justifyContent: "center", alignItems: "center" }}
+    >
+      <ScrollView style={{ height: "90%" }}>
         <IconButton icon="chevron-left" onPress={() => navigation.goBack()} />
 
         <View
-          style={{ alignItems: "center", width: windowWidth }}
+          style={{
+            alignItems: "center",
+            width: windowWidth,
+            flex: 1,
+          }}
           flexDirection="column"
         >
           <Image
@@ -70,102 +76,102 @@ export const DetailedListing = ({ route, navigation }) => {
             <Text variant="titleLarge" numberOfLines={2}>
               {listing.title}
             </Text>
+            <Text variant="titleSmall">${listing.price}</Text>
+            <Text variant="titleSmall">Fulfilled by {listing.platform}</Text>
             <Text variant="bodyLarge">{listing.description}</Text>
           </View>
-          <View
-            flexDirection="row"
-            style={{
-              alignItems: "center",
-              justifyContent: "center",
-              flex: 1,
-              width: "95%",
-            }}
-          >
-            <Avatar.Image
-              size={30}
-              source={{ uri: platformProfileURL[listing.platform] }}
-            />
-
-            <Button
-              onPress={() => handleOpenLink(listing.purchaseUrl)}
-              variant="contained"
-              buttonColor={theme.colors.secondary}
-              textColor={theme.colors.surface}
-              style={{ width: "45%", marginLeft: 10 }}
-            >
-              Learn more
-            </Button>
-
-            <IconButton
-              onPress={() =>
-                listing.isGifted
-                  ? useUngiftMutation.mutate(listing.id)
-                  : useGiftMutation.mutate(listing.id)
-              }
-              icon={listing.isGifted ? "gift" : "gift-outline"}
-              iconColor={theme.colors.secondary}
-            />
-            <IconButton
-              onPress={() => setOpenDrawer(true)}
-              icon={listing.isGifted ? "heart" : "heart-outline"}
-              iconColor={theme.colors.secondary}
-            />
-
-            <IconButton
-              onPress={() =>
-                listing.isSaved
-                  ? useUnsaveMutation.mutate(listing.id)
-                  : useSaveMutation.mutate(listing.id)
-              }
-              icon={listing.isSaved ? "bookmark" : "bookmark-outline"}
-              iconColor={theme.colors.secondary}
-            />
-          </View>
-          <BottomSheet
-            modalProps={{}}
-            onBackdropPress={() => setOpenDrawer(false)}
-            isVisible={openDrawer}
-          >
-            <ListItem>
-              <ListItem.Content>
-                <IconButton
-                  onPress={() => setOpenDrawer(false)}
-                  icon="close"
-                  iconColor={theme.colors.secondary}
-                />
-              </ListItem.Content>
-            </ListItem>
-            {list.map((l, i) => (
-              <ListItem bottomDivider key={i}>
-                <View
-                  flexDirection="row"
-                  style={{
-                    alignItems: "center",
-                    width: "90%",
-                    marginLeft: 20,
-                    marginBottom: 20,
-                    gap: 20,
-                  }}
-                >
-                  <ListItem.CheckBox
-                    key={i}
-                    checked={true}
-                    // checked={selectedItems.includes(l.title)}
-                    checkedIcon="dot-circle-o"
-                    uncheckedIcon="circle-o"
-                    onPress={() => {
-                      selectedItems.push(l.title);
-                    }}
-                  />
-                  <ListItem.Content>
-                    <ListItem.Title>{l.title}</ListItem.Title>
-                  </ListItem.Content>
-                </View>
-              </ListItem>
-            ))}
-          </BottomSheet>
         </View>
       </ScrollView>
+
+      <View
+        flexDirection="row"
+        style={{
+          alignItems: "center",
+          justifyContent: "center",
+          flex: 1,
+          width: "95%",
+          gap: 10,
+        }}
+      >
+        <Button
+          onPress={() => handleOpenLink(listing.purchaseUrl)}
+          variant="contained"
+          buttonColor={theme.colors.secondary}
+          textColor={theme.colors.surface}
+          style={{ width: "50%" }}
+        >
+          Learn more
+        </Button>
+
+        <IconButton
+          onPress={() =>
+            listing.isGifted
+              ? useUngiftMutation.mutate(listing.id)
+              : useGiftMutation.mutate(listing.id)
+          }
+          icon={listing.isGifted ? "gift" : "gift-outline"}
+          iconColor={theme.colors.secondary}
+        />
+        <IconButton
+          onPress={() => setOpenDrawer(true)}
+          icon={listing.isGifted ? "heart" : "heart-outline"}
+          iconColor={theme.colors.secondary}
+        />
+
+        <IconButton
+          onPress={() =>
+            listing.isSaved
+              ? useUnsaveMutation.mutate(listing.id)
+              : useSaveMutation.mutate(listing.id)
+          }
+          icon={listing.isSaved ? "bookmark" : "bookmark-outline"}
+          iconColor={theme.colors.secondary}
+        />
+      </View>
+
+      <BottomSheet
+        modalProps={{}}
+        onBackdropPress={() => setOpenDrawer(false)}
+        isVisible={openDrawer}
+      >
+        <ListItem>
+          <ListItem.Content>
+            <IconButton
+              onPress={() => setOpenDrawer(false)}
+              icon="close"
+              iconColor={theme.colors.secondary}
+            />
+          </ListItem.Content>
+        </ListItem>
+        {list.map((l, i) => (
+          <ListItem bottomDivider key={i}>
+            <View
+              flexDirection="row"
+              style={{
+                alignItems: "center",
+                width: "90%",
+                marginLeft: 20,
+                marginBottom: 20,
+                gap: 20,
+              }}
+            >
+              <ListItem.CheckBox
+                key={i}
+                checked={true}
+                // checked={selectedItems.includes(l.title)}
+                checkedIcon="dot-circle-o"
+                uncheckedIcon="circle-o"
+                onPress={() => {
+                  selectedItems.push(l.title);
+                }}
+              />
+              <ListItem.Content>
+                <ListItem.Title>{l.title}</ListItem.Title>
+              </ListItem.Content>
+            </View>
+          </ListItem>
+        ))}
+      </BottomSheet>
     </SafeAreaView>
   );
 };
