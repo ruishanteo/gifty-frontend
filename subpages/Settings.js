@@ -7,6 +7,7 @@ import Modal from "react-native-modal";
 
 import { useAuth } from "../providers/hooks";
 import Layout from "../components/Layout";
+import { ConfirmModal } from "../components/ConfirmModal";
 
 export const Settings = ({ navigation }) => {
   const theme = useTheme();
@@ -115,54 +116,11 @@ export const Settings = ({ navigation }) => {
             </ListItem.Content>
           </ListItem>
 
-          <Modal
-            animationType="slide"
-            visible={open}
-            onRequestClose={() => setOpen(false)}
-          >
-            <View style={styles.centeredView}>
-              <View
-                style={[
-                  styles.modalView,
-                  { backgroundColor: theme.colors.tertiary },
-                ]}
-              >
-                <Layout
-                  title="Are you sure?"
-                  onAction={() => setOpen(false)}
-                  iconName="close"
-                >
-                  <View
-                    style={{
-                      justifyContent: "center",
-                      alignItems: "center",
-                      gap: 20,
-                    }}
-                  >
-                    <Text>This action is irreversible.</Text>
-                    <View flexDirection="row" style={{ gap: 15 }}>
-                      <Button
-                        buttonColor={theme.colors.quaternary}
-                        textColor={theme.colors.background}
-                        icon="close"
-                        onPress={() => setOpen(false)}
-                      >
-                        Cancel
-                      </Button>
-                      <Button
-                        buttonColor={theme.colors.quaternary}
-                        textColor={theme.colors.background}
-                        icon="check"
-                        onPress={() => console.log("delete account")}
-                      >
-                        Confirm
-                      </Button>
-                    </View>
-                  </View>
-                </Layout>
-              </View>
-            </View>
-          </Modal>
+          <ConfirmModal
+            action={console.log("delete account")}
+            open={open}
+            setOpen={setOpen}
+          />
         </View>
       </Layout>
     </SafeAreaView>
