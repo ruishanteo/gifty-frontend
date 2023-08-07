@@ -146,17 +146,19 @@ export const Explore = ({ navigation }) => {
             />
           </View>
 
-          <FlatList
-            style={{ height: "100%", marginHorizontal: 15 }}
-            data={listings}
-            renderItem={({ item }) => (
-              <Listing listing={item} navigation={navigation} />
-            )}
-            keyExtractor={(item) => item.id}
-            numColumns={2}
-            ItemSeparatorComponent={() => <View style={{ height: "2%" }} />}
-            columnWrapperStyle={{ justifyContent: "space-between" }}
-          />
+          <View style={{ marginHorizontal: 15 }}>
+            <FlatList
+              style={{ height: "100%" }}
+              data={listings}
+              renderItem={({ item }) => (
+                <Listing listing={item} navigation={navigation} />
+              )}
+              keyExtractor={(item) => item.id}
+              numColumns={2}
+              ItemSeparatorComponent={() => <View style={{ height: 15 }} />}
+              columnWrapperStyle={{ justifyContent: "space-between" }}
+            />
+          </View>
 
           <BottomSheet
             onBackdropPress={() => setOpenDrawer(false)}
