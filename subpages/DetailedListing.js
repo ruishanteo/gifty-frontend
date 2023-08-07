@@ -154,7 +154,6 @@ export const DetailedListing = ({ route, navigation }) => {
                     checkedIcon="dot-circle-o"
                     uncheckedIcon="circle-o"
                     onPress={() => {
-                      console.log("pressed", l);
                       selectedItems.push(l.title);
                     }}
                   />
