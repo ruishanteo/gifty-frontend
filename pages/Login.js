@@ -38,7 +38,9 @@ export function Login({ navigation }) {
           }}
           source={{ uri: Image.resolveAssetSource(logo).uri }}
         />
-        <Text variant="headlineMedium">Welcome back</Text>
+        <Text variant="headlineMedium" style={{ marginBottom: 15 }}>
+          Welcome back
+        </Text>
         <Formik
           validationSchema={loginValidationSchema}
           validateOnChange={false}
@@ -104,10 +106,16 @@ export function Login({ navigation }) {
         </Formik>
         <Text>Don't have an account?</Text>
         <Button
-          style={{ marginTop: -5 }}
+          style={{ marginTop: -5, height: 40 }}
           onPress={() => navigation.navigate("Register")}
         >
           Register
+        </Button>
+        <Button
+          style={{ marginTop: -10 }}
+          onPress={() => navigation.navigate("ResetPassword")}
+        >
+          Reset password
         </Button>
       </KeyboardAvoidingView>
     </ScrollView>

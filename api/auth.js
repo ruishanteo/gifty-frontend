@@ -128,3 +128,38 @@ export function useDeleteAccount() {
       .catch(() => {});
   };
 }
+
+export function useGetOTP() {
+  const { publicAxios } = useAxios();
+  const { showNotification } = useNotification();
+
+  return async (values) => {
+    return await publicAxios.post("auth/getOTP", values).then((res) => {
+      showNotification({
+        title: "OTP Sent",
+        description: "Check your email for the OTP",
+        type: "success",
+      });
+      return res;
+    });
+  };
+}
+
+export function useResetPassword() {
+  const { publicAxios } = useAxios();
+  const { showNotification } = useNotification();
+
+  return async (resetRequest) => {
+    return await publicAxios
+      .post("auth/resetPassword", resetRequest)
+      .then((res) => {
+        showNotification({
+          title: "Reset Password Successful",
+          description:
+            "Resetted your password. Please log in with new password",
+          type: "success",
+        });
+        return res;
+      });
+  };
+}

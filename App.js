@@ -15,6 +15,7 @@ import { useAuth } from "./providers/hooks.js";
 import { AxiosProvider } from "./providers/AxiosProvider.js";
 import { UserProvider } from "./providers/UserProvider.js";
 import { QueryProvider } from "./providers/QueryProvider.js";
+import { ResetPassword } from "./pages/ResetPassword.js";
 
 async function cacheFonts(fonts) {
   for (let i = 0; i < fonts.length; i++) {
@@ -38,6 +39,7 @@ function GetRoutes() {
           <Stack.Navigator>
             <Stack.Screen name="Login" component={Login} />
             <Stack.Screen name="Register" component={Register} />
+            <Stack.Screen name="ResetPassword" component={ResetPassword} />
           </Stack.Navigator>
         </>
       )}
