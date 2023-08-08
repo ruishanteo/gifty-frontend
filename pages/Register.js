@@ -54,7 +54,9 @@ export function Register({ navigation }) {
           }}
           source={{ uri: Image.resolveAssetSource(logo).uri }}
         />
-        <Text variant="headlineMedium">Get Started</Text>
+        <Text variant="headlineMedium" style={{ marginBottom: 15 }}>
+          Get Started{" "}
+        </Text>
         <Formik
           validationSchema={registerValidationSchema}
           validateOnChange={false}

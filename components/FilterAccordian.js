@@ -5,11 +5,9 @@ import { ListItem } from "@rneui/themed";
 
 import { FilterChip } from "./FilterChip.js";
 
-export const FilterAccordian = ({ type }) => {
+export const FilterAccordian = ({ filterProp }) => {
   const theme = useTheme();
   const [isExpanded, setIsExpanded] = React.useState(false);
-  //use type to query for the array of chips associated to type
-  const setChips = ["clothes", "accessories", "decor"];
 
   return (
     <ListItem.Accordion
@@ -17,7 +15,7 @@ export const FilterAccordian = ({ type }) => {
       content={
         <ListItem.Content>
           <ListItem.Title style={{ color: theme.colors.font }}>
-            {type}
+            {filterProp.label}
           </ListItem.Title>
         </ListItem.Content>
       }
@@ -34,8 +32,8 @@ export const FilterAccordian = ({ type }) => {
           padding: 10,
         }}
       >
-        {setChips.map((filterProp, index) => (
-          <FilterChip key={index} type={type} filterProp={filterProp} />
+        {filterProp.chips.map((chip, index) => (
+          <FilterChip key={index} filterProp={filterProp} chip={chip} />
         ))}
       </View>
     </ListItem.Accordion>

@@ -7,7 +7,12 @@ export function Listing({ navigation, listing }) {
 
   return (
     <Card
-      onPress={() => navigation.navigate("DetailedListing", { listing })}
+      onPress={() =>
+        navigation.navigate("DetailedListing", {
+          listing,
+          listingId: listing.id,
+        })
+      }
       style={{
         backgroundColor: theme.colors.surface,
         alignItems: "center",
@@ -33,9 +38,23 @@ export function Listing({ navigation, listing }) {
             uri: listing.source,
           }}
         />
-        <Text numberOfLines={2} style={{ marginTop: 10 }}>
-          {listing.title}
-        </Text>
+        <View
+          style={{
+            height: 80,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Text numberOfLines={2} style={{ marginTop: 10 }}>
+            {listing.title}
+          </Text>
+          <Text numberOfLines={2} style={{ marginTop: 5 }}>
+            ${listing.price}
+          </Text>
+          <Text variant="bodySmall" numberOfLines={2} style={{ marginTop: 5 }}>
+            Fulfilled by {listing.platform}
+          </Text>
+        </View>
       </View>
     </Card>
   );

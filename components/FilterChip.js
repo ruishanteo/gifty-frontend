@@ -1,19 +1,32 @@
 import React from "react";
 import { Chip } from "@rneui/themed";
+import { useFormikContext } from "formik";
 
-export const FilterChip = ({ type, filterProp }) => {
-  const [isPressed, setIsPressed] = React.useState(false);
+export const FilterChip = ({ filterProp, chip }) => {
+  const { setFieldValue, values } = useFormikContext();
+
+  const isChipPressed = filterProp.allowMultiple
+    ? values[filterProp.type].includes(chip.value)
+    : values[filterProp.type] === chip.value;
 
   const handlePress = () => {
-    console.log("Icon chip was pressed!");
-    setIsPressed(!isPressed);
+    if (!filterProp.allowMultiple) {
+      setFieldValue(filterProp.type, isChipPressed ? undefined : chip.value);
+    } else {
+      setFieldValue(
+        filterProp.type,
+        isChipPressed
+          ? values[filterProp.type].filter((v) => v !== chip.value)
+          : [...values[filterProp.type], chip.value]
+      );
+    }
   };
 
   return (
     <Chip
-      title={filterProp}
+      title={chip.display}
       onPress={handlePress}
-      type={isPressed ? "solid" : "outline"}
+      type={isChipPressed ? "solid" : "outline"}
     />
   );
 };

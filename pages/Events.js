@@ -3,12 +3,15 @@ import { FlatList, View } from "react-native";
 import { Card, Text, useTheme } from "react-native-paper";
 import { enGB, registerTranslation } from "react-native-paper-dates";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Image } from "@rneui/themed";
+
 import moment from "moment";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { NewEvent } from "../subpages/NewEvent.js";
 import { useEvents } from "../api/event.js";
+import noPageFound from "../assets/noPageFound.png";
 
 export function Events({ navigation }) {
   const theme = useTheme();
@@ -114,14 +117,16 @@ export function Events({ navigation }) {
   };
 
   return (
-    <SafeAreaView
-      style={{
-        alignItems: "center",
-        justifyContent: "center",
-        marginHorizontal: 15,
-      }}
-    >
-      <View>
+    <SafeAreaView>
+      <View
+        style={{
+          alignItems: "center",
+          justifyContent: "center",
+          marginHorizontal: 15,
+          width: "95%",
+          height: "98%",
+        }}
+      >
         <Text
           variant="titleLarge"
           style={{ marginBottom: 20, textAlign: "center" }}
@@ -129,7 +134,18 @@ export function Events({ navigation }) {
           Events
         </Text>
         {events.length === 0 ? (
-          <Text>No events found!</Text>
+          <>
+            <Image
+              containerStyle={{ width: 250, aspectRatio: 1 }}
+              source={{ uri: Image.resolveAssetSource(noPageFound).uri }}
+            />
+            <Text
+              variant="titleSmall"
+              style={{ marginTop: -120, marginLeft: 50 }}
+            >
+              No events found!
+            </Text>
+          </>
         ) : (
           <FlatList
             style={{ height: "80%" }}
@@ -143,8 +159,8 @@ export function Events({ navigation }) {
             columnWrapperStyle={{ justifyContent: "space-between" }}
           />
         )}
-        <NewEvent />
       </View>
+      <NewEvent />
     </SafeAreaView>
   );
 }
