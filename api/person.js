@@ -36,6 +36,32 @@ export function useCreatePerson() {
   });
 }
 
+export function useUpdatePerson(id) {
+  const { protectedAxios } = useAxios();
+  const { showNotification } = useNotification();
+  const { queryClient } = useQueryContext();
+
+  return useMutation({
+    onMutate: async (updatedPerson) => {
+      await queryClient.cancelQueries(["persons"]);
+      return { updatedPerson };
+    },
+    onError: (_, __, context) => {
+      console.log("Failed to update person", context.updatedPerson);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["persons"]);
+      showNotification({
+        title: "Success",
+        description: "Updated person!",
+        type: "success",
+      });
+    },
+    mutationFn: (updatedPerson) =>
+      protectedAxios.put(`/person/${id}`, { ...updatedPerson, id: id }),
+  });
+}
+
 export function useDeletePerson(id) {
   const { protectedAxios } = useAxios();
   const { showNotification } = useNotification();

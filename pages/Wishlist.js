@@ -14,58 +14,167 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 
 import Layout from "../components/Layout";
-import { useCreatePerson, useDeletePerson, usePersons } from "../api/person";
+import {
+  useCreatePerson,
+  useDeletePerson,
+  usePersons,
+  useUpdatePerson,
+} from "../api/person";
 
+function FormModal({ title, open, setOpen, initialValues, onSubmit }) {
+  const theme = useTheme();
+  return (
+    <Modal
+      animationType="slide"
+      visible={open}
+      onRequestClose={() => setOpen(false)}
+    >
+      <Formik
+        validationSchema={Yup.object({
+          name: Yup.string().required("Required"),
+        })}
+        validateOnChange={false}
+        validateOnBlur={false}
+        initialValues={initialValues || { name: "" }}
+        onSubmit={(values) => onSubmit(values)}
+      >
+        {({
+          isSubmitting,
+          handleChange,
+          handleBlur,
+          handleSubmit,
+          values,
+          errors,
+          touched,
+        }) => (
+          <View style={styles.centeredView}>
+            <View
+              style={[
+                styles.modalView,
+                { backgroundColor: theme.colors.tertiary },
+              ]}
+            >
+              <Layout
+                title={title}
+                onAction={() => setOpen(false)}
+                iconName="close"
+              >
+                <View
+                  style={{
+                    justifyContent: "center",
+                    alignItems: "center",
+                    gap: 20,
+                  }}
+                  flexDirection="row"
+                >
+                  <Text variant="bodyLarge" style={{ width: 60 }}>
+                    Name:
+                  </Text>
+                  <TextInput
+                    mode="flat"
+                    style={{
+                      backgroundColor: theme.colors.tertiary,
+                      width: 200,
+                    }}
+                    theme={{
+                      colors: { onSurfaceVariant: theme.colors.font },
+                    }}
+                    textColor={theme.colors.font}
+                    activeUnderlineColor={theme.colors.font}
+                    placeholder="Add Name"
+                    onChangeText={handleChange("name")}
+                    onBlur={handleBlur("name")}
+                    value={values.name}
+                    error={errors.name && touched.name}
+                  />
+                  <HelperText
+                    type="error"
+                    visible={Boolean(errors.name && touched.name)}
+                  ></HelperText>
+                </View>
+                <Button
+                  onPress={handleSubmit}
+                  loading={isSubmitting}
+                  buttonColor={theme.colors.quaternary}
+                  textColor={theme.colors.background}
+                  icon="check"
+                  style={{ marginTop: 20 }}
+                >
+                  Done
+                </Button>
+              </Layout>
+            </View>
+          </View>
+        )}
+      </Formik>
+    </Modal>
+  );
+}
 function Item({ item, navigation }) {
   const theme = useTheme();
+  const [open, setOpen] = React.useState(false);
   const deletePersonMutation = useDeletePerson(item.id);
+  const updatePersonMutation = useUpdatePerson(item.id);
 
   return (
-    <ListItem.Swipeable
-      bottomDivider
-      onPress={() =>
-        navigation.navigate("WishResult", { friend: item, personId: item.id })
-      }
-      leftContent={() => (
-        <Button
-          onPress={console.log("edit name")}
-          icon="pencil"
-          buttonColor={theme.colors.quaternary}
-          textColor={theme.colors.surface}
-          style={{
-            height: "100%",
-            justifyContent: "center",
-          }}
-        >
-          Edit
-        </Button>
-      )}
-      rightContent={() => (
-        <Button
-          onPress={() => deletePersonMutation.mutateAsync()}
-          icon="delete"
-          buttonColor={theme.colors.quaternary}
-          textColor={theme.colors.surface}
-          style={{
-            height: "100%",
-            justifyContent: "center",
-          }}
-        >
-          Delete
-        </Button>
-      )}
-      containerStyle={{
-        backgroundColor: theme.colors.background,
-        borderColor: theme.colors.secondary,
-      }}
-    >
-      <ListItem.Content>
-        <ListItem.Title style={{ color: theme.colors.font }}>
-          {item.name}
-        </ListItem.Title>
-      </ListItem.Content>
-      <ListItem.Chevron />
-    </ListItem.Swipeable>
+    <>
+      <ListItem.Swipeable
+        bottomDivider
+        onPress={() =>
+          navigation.navigate("WishResult", { friend: item, personId: item.id })
+        }
+        leftContent={() => (
+          <Button
+            onPress={() => setOpen(true)}
+            icon="pencil"
+            buttonColor={theme.colors.quaternary}
+            textColor={theme.colors.surface}
+            style={{
+              height: "100%",
+              justifyContent: "center",
+            }}
+          >
+            Edit
+          </Button>
+        )}
+        rightContent={() => (
+          <Button
+            onPress={() => deletePersonMutation.mutateAsync()}
+            icon="delete"
+            buttonColor={theme.colors.quaternary}
+            textColor={theme.colors.surface}
+            style={{
+              height: "100%",
+              justifyContent: "center",
+            }}
+          >
+            Delete
+          </Button>
+        )}
+        containerStyle={{
+          backgroundColor: theme.colors.background,
+          borderColor: theme.colors.secondary,
+        }}
+      >
+        <ListItem.Content>
+          <ListItem.Title style={{ color: theme.colors.font }}>
+            {item.name}
+          </ListItem.Title>
+        </ListItem.Content>
+        <ListItem.Chevron />
+      </ListItem.Swipeable>
+      <FormModal
+        title="Update Person"
+        open={open}
+        setOpen={setOpen}
+        initialValues={{ name: item.name }}
+        onSubmit={async (values) =>
+          await updatePersonMutation.mutateAsync(values).finally(() => {
+            setOpen(false);
+          })
+        }
+      />
+    </>
   );
 }
 
@@ -122,96 +231,15 @@ export const Wishlist = ({ navigation }) => {
           icon="plus"
         />
       </View>
-
-      <Modal
-        animationType="slide"
-        visible={open}
-        onRequestClose={() => setOpen(false)}
-      >
-        <Formik
-          validationSchema={Yup.object({
-            name: Yup.string().required("Required"),
-          })}
-          validateOnChange={false}
-          validateOnBlur={false}
-          initialValues={{
-            name: "",
-          }}
-          onSubmit={(values) => {
-            createPersonMutation.mutateAsync(values);
-            setOpen(false);
-          }}
-        >
-          {({
-            isSubmitting,
-            handleChange,
-            handleBlur,
-            handleSubmit,
-            values,
-            errors,
-            touched,
-          }) => (
-            <View style={styles.centeredView}>
-              <View
-                style={[
-                  styles.modalView,
-                  { backgroundColor: theme.colors.tertiary },
-                ]}
-              >
-                <Layout
-                  title="Add Person"
-                  onAction={() => setOpen(false)}
-                  iconName="close"
-                >
-                  <View
-                    style={{
-                      justifyContent: "center",
-                      alignItems: "center",
-                      gap: 20,
-                    }}
-                    flexDirection="row"
-                  >
-                    <Text variant="bodyLarge" style={{ width: 60 }}>
-                      Name:
-                    </Text>
-                    <TextInput
-                      mode="flat"
-                      style={{
-                        backgroundColor: theme.colors.tertiary,
-                        width: 200,
-                      }}
-                      theme={{
-                        colors: { onSurfaceVariant: theme.colors.font },
-                      }}
-                      textColor={theme.colors.font}
-                      activeUnderlineColor={theme.colors.font}
-                      placeholder="Add Name"
-                      onChangeText={handleChange("name")}
-                      onBlur={handleBlur("name")}
-                      value={values.name}
-                      error={errors.name && touched.name}
-                    />
-                    <HelperText
-                      type="error"
-                      visible={Boolean(errors.name && touched.name)}
-                    ></HelperText>
-                  </View>
-                  <Button
-                    onPress={handleSubmit}
-                    loading={isSubmitting}
-                    buttonColor={theme.colors.quaternary}
-                    textColor={theme.colors.background}
-                    icon="check"
-                    style={{ marginTop: 20 }}
-                  >
-                    Done
-                  </Button>
-                </Layout>
-              </View>
-            </View>
-          )}
-        </Formik>
-      </Modal>
+      <FormModal
+        title="Add Person"
+        open={open}
+        setOpen={setOpen}
+        onSubmit={(values) => {
+          createPersonMutation.mutateAsync(values);
+          setOpen(false);
+        }}
+      />
     </SafeAreaView>
   );
 };
