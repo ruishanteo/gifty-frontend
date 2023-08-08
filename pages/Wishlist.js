@@ -26,6 +26,20 @@ function Item({ item, navigation }) {
       onPress={() =>
         navigation.navigate("WishResult", { friend: item, personId: item.id })
       }
+      leftContent={() => (
+        <Button
+          onPress={console.log("edit name")}
+          icon="pencil"
+          buttonColor={theme.colors.quaternary}
+          textColor={theme.colors.surface}
+          style={{
+            height: "100%",
+            justifyContent: "center",
+          }}
+        >
+          Edit
+        </Button>
+      )}
       rightContent={() => (
         <Button
           onPress={() => deletePersonMutation.mutateAsync()}
