@@ -90,7 +90,7 @@ export function NewEvent() {
                   birthday: "",
                   reminder: false,
                 }}
-                onSubmit={(values) => createEvent(values)}
+                onSubmit={async (values) => await createEvent(values)}
               >
                 {({
                   isSubmitting,
@@ -119,6 +119,7 @@ export function NewEvent() {
                         onChangeText={handleChange("name")}
                         onBlur={handleBlur("name")}
                         value={values.name}
+                        disabled={isSubmitting}
                         error={errors.name && touched.name}
                       />
                     )}
@@ -132,7 +133,10 @@ export function NewEvent() {
 
                     {inputFields(
                       "Date",
-                      <TouchableOpacity onPress={() => setOpenDatePicker(true)}>
+                      <TouchableOpacity
+                        disabled={isSubmitting}
+                        onPress={() => setOpenDatePicker(true)}
+                      >
                         {values.date ? (
                           <Text>
                             {moment(values.date).format("DD MMM YYYY")}
@@ -153,6 +157,7 @@ export function NewEvent() {
                       "Reminder",
                       <Switch
                         value={values.reminder}
+                        disabled={isSubmitting}
                         onValueChange={(value) => {
                           setFieldValue("reminder", value);
                         }}
@@ -173,6 +178,7 @@ export function NewEvent() {
 
                     <Button
                       onPress={handleSubmit}
+                      loading={isSubmitting}
                       disabled={isSubmitting}
                       buttonColor={theme.colors.quaternary}
                       textColor={theme.colors.background}

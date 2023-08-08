@@ -89,6 +89,7 @@ export function ResetPassword({ navigation }) {
                   onChangeText={handleChange("email")}
                   onBlur={handleBlur("email")}
                   value={values.email}
+                  disabled={isSubmitting}
                   error={errors.email && touched.email}
                 />
                 <HelperText
@@ -105,6 +106,7 @@ export function ResetPassword({ navigation }) {
                       onChangeText={handleChange("otp")}
                       onBlur={handleBlur("otp")}
                       value={values.otp}
+                      disabled={isSubmitting}
                       error={errors.otp && touched.otp}
                     />
                     <HelperText
@@ -119,6 +121,7 @@ export function ResetPassword({ navigation }) {
                       onChangeText={handleChange("newPassword")}
                       onBlur={handleBlur("newPassword")}
                       value={values.newPassword}
+                      disabled={isSubmitting}
                       error={errors.newPassword && touched.newPassword}
                     />
                     <HelperText
@@ -135,6 +138,7 @@ export function ResetPassword({ navigation }) {
                       onChangeText={handleChange("confirmNewPassword")}
                       onBlur={handleBlur("confirmNewPassword")}
                       value={values.confirmNewPassword}
+                      disabled={isSubmitting}
                       error={
                         errors.confirmNewPassword && touched.confirmNewPassword
                       }
@@ -153,6 +157,7 @@ export function ResetPassword({ navigation }) {
               <Button
                 onPress={handleSubmit}
                 loading={isSubmitting}
+                disabled={isSubmitting}
                 mode="contained"
                 textColor={theme.colors.surface}
                 buttonColor={theme.colors.secondary}

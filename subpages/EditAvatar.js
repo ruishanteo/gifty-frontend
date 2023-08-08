@@ -9,6 +9,7 @@ import { Button, IconButton, useTheme } from "react-native-paper";
 import { Icon } from "@rneui/themed";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { createIconSetFromFontello } from "react-native-vector-icons";
+import { Formik } from "formik";
 
 import noseIconConfig from "../assets/noseConfig.json";
 import lipsIconConfig from "../assets/lipsConfig.json";
@@ -89,7 +90,7 @@ const iconMap = {
   },
 };
 
-const PropButton = ({ name, avatarProps, setAvatarProps }) => {
+const PropButton = ({ name, avatarProps, setAvatarProps, disabled }) => {
   const props = iconMap[name];
   const theme = useTheme();
   const colorScheme = useColorScheme();
@@ -125,6 +126,7 @@ const PropButton = ({ name, avatarProps, setAvatarProps }) => {
         <IconButton
           icon="chevron-left"
           onPress={() => updateColorIndex(name, -1)}
+          disabled={disabled}
         />
       )}
 
@@ -139,8 +141,8 @@ const PropButton = ({ name, avatarProps, setAvatarProps }) => {
           height: 40,
           borderRadius: 25,
         }}
-        disabled={!props.styles}
         onPress={() => updateStyleIndex(name)}
+        disabled={!props.styles || disabled}
       >
         {name === "nose" ? (
           <NoseIcon
@@ -167,6 +169,7 @@ const PropButton = ({ name, avatarProps, setAvatarProps }) => {
         <IconButton
           icon="chevron-right"
           onPress={() => updateColorIndex(name, 1)}
+          disabled={disabled}
         />
       )}
     </View>
@@ -188,40 +191,55 @@ export const EditAvatar = ({ navigation }) => {
           title="Edit Avatar"
           onAction={() => navigation.goBack()}
         >
-          <View
-            style={{ justifyContent: "center", alignItems: "center", gap: 10 }}
+          <Formik
+            initialValues={{}}
+            onSubmit={async () => await updateAvatar(avatarProps)}
           >
-            <UserAvatar avatarProps={avatarProps} />
-            {properties.map((property, index) => (
-              <PropButton
-                name={property}
-                key={index}
-                avatarProps={avatarProps}
-                setAvatarProps={setAvatarProps}
-              />
-            ))}
+            {({ isSubmitting, handleSubmit }) => (
+              <View
+                style={{
+                  justifyContent: "center",
+                  alignItems: "center",
+                  gap: 10,
+                }}
+              >
+                <UserAvatar avatarProps={avatarProps} />
+                {properties.map((property, index) => (
+                  <PropButton
+                    disabled={isSubmitting}
+                    name={property}
+                    key={index}
+                    avatarProps={avatarProps}
+                    setAvatarProps={setAvatarProps}
+                  />
+                ))}
 
-            <View flexDirection="row" style={{ gap: 10 }}>
-              <Button
-                onPress={() => updateAvatar(avatarProps)}
-                buttonColor={theme.colors.secondary}
-                textColor={theme.colors.background}
-                style={{ width: 150 }}
-                icon="content-save"
-              >
-                Save
-              </Button>
-              <Button
-                onPress={() => setAvatarProps(user.avatar)}
-                buttonColor={theme.colors.secondary}
-                textColor={theme.colors.background}
-                style={{ width: 150 }}
-                icon="close"
-              >
-                Discard
-              </Button>
-            </View>
-          </View>
+                <View flexDirection="row" style={{ gap: 10 }}>
+                  <Button
+                    onPress={handleSubmit}
+                    loading={isSubmitting}
+                    disabled={isSubmitting}
+                    buttonColor={theme.colors.secondary}
+                    textColor={theme.colors.background}
+                    style={{ width: 150 }}
+                    icon="content-save"
+                  >
+                    Save
+                  </Button>
+                  <Button
+                    onPress={() => setAvatarProps(user.avatar)}
+                    disabled={isSubmitting}
+                    buttonColor={theme.colors.secondary}
+                    textColor={theme.colors.background}
+                    style={{ width: 150 }}
+                    icon="close"
+                  >
+                    Discard
+                  </Button>
+                </View>
+              </View>
+            )}
+          </Formik>
         </Layout>
       </ScrollView>
     </SafeAreaView>

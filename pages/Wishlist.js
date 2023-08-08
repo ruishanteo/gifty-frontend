@@ -36,7 +36,7 @@ function FormModal({ title, open, setOpen, initialValues, onSubmit }) {
         validateOnChange={false}
         validateOnBlur={false}
         initialValues={initialValues || { name: "" }}
-        onSubmit={(values) => onSubmit(values)}
+        onSubmit={async (values) => await onSubmit(values)}
       >
         {({
           isSubmitting,
@@ -71,6 +71,7 @@ function FormModal({ title, open, setOpen, initialValues, onSubmit }) {
                     Name:
                   </Text>
                   <TextInput
+                    disabled={isSubmitting}
                     mode="flat"
                     style={{
                       backgroundColor: theme.colors.tertiary,
@@ -95,6 +96,7 @@ function FormModal({ title, open, setOpen, initialValues, onSubmit }) {
                 <Button
                   onPress={handleSubmit}
                   loading={isSubmitting}
+                  disabled={isSubmitting}
                   buttonColor={theme.colors.quaternary}
                   textColor={theme.colors.background}
                   icon="check"
@@ -235,8 +237,8 @@ export const Wishlist = ({ navigation }) => {
         title="Add Person"
         open={open}
         setOpen={setOpen}
-        onSubmit={(values) => {
-          createPersonMutation.mutateAsync(values);
+        onSubmit={async (values) => {
+          await createPersonMutation.mutateAsync(values);
           setOpen(false);
         }}
       />

@@ -46,7 +46,7 @@ export function Login({ navigation }) {
           validateOnChange={false}
           validateOnBlur={false}
           initialValues={{ email: "", password: "" }}
-          onSubmit={(values) => login(values)}
+          onSubmit={async (values) => await login(values)}
         >
           {({
             isSubmitting,
@@ -65,6 +65,7 @@ export function Login({ navigation }) {
                   onChangeText={handleChange("email")}
                   onBlur={handleBlur("email")}
                   value={values.email}
+                  disabled={isSubmitting}
                   error={errors.email && touched.email}
                 />
                 <HelperText
@@ -79,6 +80,7 @@ export function Login({ navigation }) {
                   onChangeText={handleChange("password")}
                   onBlur={handleBlur("password")}
                   value={values.password}
+                  disabled={isSubmitting}
                   error={errors.password && touched.password}
                 />
                 <HelperText
@@ -90,6 +92,7 @@ export function Login({ navigation }) {
               </View>
               <Button
                 onPress={handleSubmit}
+                loading={isSubmitting}
                 disabled={isSubmitting}
                 mode="contained"
                 textColor={theme.colors.surface}
