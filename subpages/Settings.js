@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
-import { Button, Switch, Text, useTheme } from "react-native-paper";
+import { Button, Switch, useTheme } from "react-native-paper";
 import { ListItem } from "@rneui/themed";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Modal from "react-native-modal";
@@ -8,10 +8,13 @@ import Modal from "react-native-modal";
 import { useAuth } from "../providers/hooks";
 import Layout from "../components/Layout";
 import { ConfirmModal } from "../components/ConfirmModal";
+import { useDeleteAccount } from "../api/auth";
 
 export const Settings = ({ navigation }) => {
   const theme = useTheme();
   const { logout } = useAuth();
+
+  const deleteAccount = useDeleteAccount();
 
   const [open, setOpen] = React.useState(false);
 
@@ -117,7 +120,7 @@ export const Settings = ({ navigation }) => {
           </ListItem>
 
           <ConfirmModal
-            action={console.log("delete account")}
+            action={() => deleteAccount()}
             open={open}
             setOpen={setOpen}
           />

@@ -107,3 +107,24 @@ export function useUpdateAvatar() {
       .catch(() => {});
   };
 }
+
+export function useDeleteAccount() {
+  const { protectedAxios } = useAxios();
+  const { logout } = useAuth();
+  const { showNotification } = useNotification();
+
+  return async () => {
+    return await protectedAxios
+      .delete("auth/deleteUser")
+      .then((res) => {
+        logout();
+        showNotification({
+          title: "Deleted Account Successful",
+          description: "Deleted your account",
+          type: "success",
+        });
+        return res;
+      })
+      .catch(() => {});
+  };
+}
