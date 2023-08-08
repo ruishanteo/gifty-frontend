@@ -1,6 +1,13 @@
 import React from "react";
 import { StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
-import { Button, HelperText, Switch, Text, useTheme } from "react-native-paper";
+import {
+  Button,
+  HelperText,
+  IconButton,
+  Switch,
+  Text,
+  useTheme,
+} from "react-native-paper";
 import { DatePickerModal } from "react-native-paper-dates";
 import Modal from "react-native-modal";
 
@@ -44,20 +51,18 @@ export function NewEvent() {
   };
 
   async function createEvent(values) {
-    await createEventMutation.mutateAsync(values);
+    await createEventMutation.mutateAsync(values).then(() => setOpen(false));
   }
 
   return (
-    <View style={{ marginBottom: -35 }}>
-      <Button
+    <View style={{ alignItems: "flex-end", flex: 1 }}>
+      <IconButton
         onPress={() => setOpen(true)}
-        buttonColor={theme.colors.secondary}
-        textColor={theme.colors.background}
-        padding={5}
+        containerColor={theme.colors.secondary}
+        iconColor={theme.colors.background}
+        size={30}
         icon="plus"
-      >
-        Event
-      </Button>
+      />
 
       <Modal
         animationType="slide"
@@ -107,6 +112,7 @@ export function NewEvent() {
                       "Name",
                       <TextInput
                         label="name"
+                        placeholder="Please add name"
                         multiline={true}
                         maxLength={50}
                         numberOfLines={5}

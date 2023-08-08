@@ -1,5 +1,5 @@
 import React from "react";
-import { TouchableOpacity, View } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { Button, Switch, Text, TextInput, useTheme } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
@@ -12,6 +12,7 @@ import moment from "moment";
 import { Formik, useFormikContext } from "formik";
 import * as Yup from "yup";
 
+import { ConfirmModal } from "../components/ConfirmModal";
 import Layout from "../components/Layout";
 import { useDeleteEvent, useUpdateEvent } from "../api/event";
 
@@ -27,6 +28,7 @@ export const DetailedEvent = ({ route, navigation }) => {
   const deleteEventMutation = useDeleteEvent(event.id);
   registerTranslation("en-GB", enGB);
 
+  const [open, setOpen] = React.useState(false);
   const [openDatePicker, setOpenDatePicker] = React.useState(false);
 
   async function updateEvent(values) {
@@ -157,11 +159,16 @@ export const DetailedEvent = ({ route, navigation }) => {
                   mode="contained"
                   icon="delete"
                   buttonColor={theme.colors.quaternary}
-                  onPress={deleteEvent}
+                  onPress={() => setOpen(true)}
                   style={{ width: "50%" }}
                 >
                   Delete
                 </Button>
+                <ConfirmModal
+                  action={deleteEvent}
+                  open={open}
+                  setOpen={setOpen}
+                />
               </View>
             </View>
           )}
