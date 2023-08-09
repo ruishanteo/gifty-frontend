@@ -15,7 +15,7 @@ export function useListing(id) {
   const { protectedAxios } = useAxios();
 
   return useQuery({
-    queryKey: ["listings", "listing"],
+    queryKey: ["listings", "listing", id],
     queryFn: () => protectedAxios.get(`/listing/${id}`),
   });
 }

@@ -20,6 +20,7 @@ import {
   usePersons,
   useUpdatePerson,
 } from "../api/person";
+import { LoadingIcon } from "../components/LoadingIcon";
 
 function FormModal({ title, open, setOpen, initialValues, onSubmit }) {
   const theme = useTheme();
@@ -196,9 +197,6 @@ export const Wishlist = ({ navigation }) => {
     setSearchQuery(query);
   };
 
-  if (isLoading) return null;
-  const friends = data.persons;
-
   return (
     <SafeAreaView>
       <View style={{ height: "92.5%" }}>
@@ -215,14 +213,18 @@ export const Wishlist = ({ navigation }) => {
           round={true}
         />
 
-        <FlatList
-          data={friends}
-          renderItem={({ item }) => (
-            <Item item={item} navigation={navigation} />
-          )}
-          keyExtractor={(item) => item.id}
-          ItemSeparatorComponent={() => <View style={{ height: 2 }} />}
-        />
+        {isLoading ? (
+          <LoadingIcon fullSize={true} />
+        ) : (
+          <FlatList
+            data={data.persons}
+            renderItem={({ item }) => (
+              <Item item={item} navigation={navigation} />
+            )}
+            keyExtractor={(item) => item.id}
+            ItemSeparatorComponent={() => <View style={{ height: 2 }} />}
+          />
+        )}
       </View>
       <View style={{ alignItems: "flex-end" }}>
         <IconButton

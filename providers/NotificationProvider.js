@@ -9,6 +9,7 @@ import {
   NotifierWrapper,
 } from "react-native-notifier";
 import * as Device from "expo-device";
+import { LoadingIcon } from "../components/LoadingIcon";
 
 const NotificationContext = createContext(null);
 const { Provider } = NotificationContext;
@@ -69,7 +70,7 @@ function NotificationProvider({ children }) {
     });
   }
 
-  if (loading) return null;
+  if (loading) return <LoadingIcon fullSize={true} />;
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>

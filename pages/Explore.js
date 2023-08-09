@@ -15,6 +15,7 @@ import * as Yup from "yup";
 import { Listing } from "../components/Listing";
 import { FilterAccordian } from "../components/FilterAccordian";
 import { useListings } from "../api/listing";
+import { LoadingIcon } from "../components/LoadingIcon";
 
 export const Explore = ({ navigation }) => {
   const theme = useTheme();
@@ -22,16 +23,13 @@ export const Explore = ({ navigation }) => {
   const [openDrawer, setOpenDrawer] = React.useState(false);
   const [searchQuery, setSearchQuery] = React.useState("");
   const [allQueries, setAllQueries] = React.useState();
-  const { isLoading, data, refetch } = useListings(allQueries);
+  const { isLoading, isFetching, data, refetch } = useListings(allQueries);
 
   React.useEffect(() => {
     refetch();
   }, [refetch, searchQuery, allQueries]);
 
   const windowWidth = Dimensions.get("window").width;
-
-  if (isLoading) return null;
-  const listings = data.listing;
 
   const onChangeSearch = (query) => {
     setSearchQuery(query);
@@ -119,45 +117,54 @@ export const Explore = ({ navigation }) => {
         errors,
       }) => (
         <SafeAreaView>
-          <View
-            style={{ alignItems: "center", width: windowWidth }}
-            flexDirection="row"
-          >
-            <SearchBar
-              placeholder="Search"
-              onChangeText={onChangeSearch}
-              value={values.search}
-              containerStyle={{
-                backgroundColor: "transparent",
-                borderBottomColor: "transparent",
-                borderTopColor: "transparent",
+          <View style={{ height: "92.5%" }}>
+            <View
+              style={{
+                alignItems: "center",
+                width: windowWidth,
               }}
-              inputContainerStyle={{
-                backgroundColor: theme.colors.primary,
-                width: windowWidth - 80,
-              }}
-              round={true}
-            />
-            <IconButton
-              onPress={() => setOpenDrawer(true)}
-              iconColor={theme.colors.secondary}
-              icon="tune"
-              size={26}
-            />
-          </View>
+              flexDirection="row"
+            >
+              <SearchBar
+                placeholder="Search"
+                onChangeText={onChangeSearch}
+                value={values.search}
+                containerStyle={{
+                  backgroundColor: "transparent",
+                  borderBottomColor: "transparent",
+                  borderTopColor: "transparent",
+                }}
+                inputContainerStyle={{
+                  backgroundColor: theme.colors.primary,
+                  width: windowWidth - 80,
+                }}
+                round={true}
+              />
+              <IconButton
+                onPress={() => setOpenDrawer(true)}
+                iconColor={theme.colors.secondary}
+                icon="tune"
+                size={26}
+              />
+            </View>
 
-          <View style={{ marginHorizontal: 15 }}>
-            <FlatList
-              style={{ height: "100%" }}
-              data={listings}
-              renderItem={({ item }) => (
-                <Listing listing={item} navigation={navigation} />
+            <View style={{ marginHorizontal: 15 }}>
+              {isLoading || isFetching ? (
+                <LoadingIcon fullSize={true} />
+              ) : (
+                <FlatList
+                  style={{ height: "100%" }}
+                  data={data.listing}
+                  renderItem={({ item }) => (
+                    <Listing listing={item} navigation={navigation} />
+                  )}
+                  keyExtractor={(item) => item.id}
+                  numColumns={2}
+                  ItemSeparatorComponent={() => <View style={{ height: 15 }} />}
+                  columnWrapperStyle={{ justifyContent: "space-between" }}
+                />
               )}
-              keyExtractor={(item) => item.id}
-              numColumns={2}
-              ItemSeparatorComponent={() => <View style={{ height: 15 }} />}
-              columnWrapperStyle={{ justifyContent: "space-between" }}
-            />
+            </View>
           </View>
 
           <BottomSheet

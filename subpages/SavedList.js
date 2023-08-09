@@ -7,6 +7,7 @@ import { SearchBar } from "@rneui/themed";
 import { Listing } from "../components/Listing";
 import { useSavedListings } from "../api/listing";
 import Layout from "../components/Layout";
+import { LoadingIcon } from "../components/LoadingIcon";
 
 export const SavedList = ({ navigation }) => {
   const theme = useTheme();
@@ -23,9 +24,6 @@ export const SavedList = ({ navigation }) => {
   const onChangeSearch = (query) => {
     setSearchQuery(query);
   };
-
-  if (isLoading) return null;
-  const listings = data.listing;
 
   return (
     <SafeAreaView>
@@ -58,17 +56,21 @@ export const SavedList = ({ navigation }) => {
           />
         </View>
 
-        <FlatList
-          style={{ height: "100%", marginHorizontal: 15 }}
-          data={listings}
-          renderItem={({ item }) => (
-            <Listing listing={item} navigation={navigation} />
-          )}
-          keyExtractor={(item) => item.id}
-          numColumns={2}
-          ItemSeparatorComponent={() => <View style={{ height: "2%" }} />}
-          columnWrapperStyle={{ justifyContent: "space-between" }}
-        />
+        {isLoading ? (
+          <LoadingIcon />
+        ) : (
+          <FlatList
+            style={{ height: "100%", marginHorizontal: 15 }}
+            data={data.listing}
+            renderItem={({ item }) => (
+              <Listing listing={item} navigation={navigation} />
+            )}
+            keyExtractor={(item) => item.id}
+            numColumns={2}
+            ItemSeparatorComponent={() => <View style={{ height: "2%" }} />}
+            columnWrapperStyle={{ justifyContent: "space-between" }}
+          />
+        )}
       </Layout>
     </SafeAreaView>
   );

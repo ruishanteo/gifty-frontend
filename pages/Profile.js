@@ -21,6 +21,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { useUser } from "../providers/hooks";
 import UserAvatar from "../components/UserAvatar";
 import { useGiftedListings, useSavedListings } from "../api/listing";
+import { LoadingIcon } from "../components/LoadingIcon";
 
 export function Profile({ navigation }) {
   const theme = useTheme();
@@ -30,9 +31,8 @@ export function Profile({ navigation }) {
 
   const windowWidth = Dimensions.get("window").width;
 
-  if (savedLoading || giftedLoading) return null;
-  const savedListings = savedData.listing.slice(0, 3);
-  const giftedListings = giftedData.listing.slice(0, 3);
+  const savedListings = !savedLoading ? savedData.listing.slice(0, 3) : [];
+  const giftedListings = !giftedLoading ? giftedData.listing.slice(0, 3) : [];
 
   const Item = ({ item }) => (
     <TouchableOpacity
@@ -133,7 +133,9 @@ export function Profile({ navigation }) {
               </Button>
             </View>
             <Card.Content>
-              {giftedListings.length === 0 ? (
+              {giftedLoading ? (
+                <LoadingIcon styles={{ marginBottom: 30 }} />
+              ) : giftedListings.length === 0 ? (
                 <Text>No gifted gifts found!</Text>
               ) : (
                 <FlatList
@@ -181,7 +183,9 @@ export function Profile({ navigation }) {
               </Button>
             </View>
             <Card.Content>
-              {savedListings.length === 0 ? (
+              {savedLoading ? (
+                <LoadingIcon styles={{ marginBottom: 30 }} />
+              ) : savedListings.length === 0 ? (
                 <Text>No saved gifts found!</Text>
               ) : (
                 <FlatList
