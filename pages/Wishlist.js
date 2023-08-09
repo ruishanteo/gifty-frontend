@@ -8,7 +8,7 @@ import {
   TextInput,
   useTheme,
 } from "react-native-paper";
-import { ListItem, SearchBar } from "@rneui/themed";
+import { Image, ListItem, SearchBar } from "@rneui/themed";
 import Modal from "react-native-modal";
 import { Formik } from "formik";
 import * as Yup from "yup";
@@ -20,6 +20,7 @@ import {
   usePersons,
   useUpdatePerson,
 } from "../api/person";
+import noWishlist from "../assets/noWishlist.png";
 import { LoadingIcon } from "../components/LoadingIcon";
 
 function FormModal({ title, open, setOpen, initialValues, onSubmit }) {
@@ -215,6 +216,19 @@ export const Wishlist = ({ navigation }) => {
 
         {isLoading ? (
           <LoadingIcon fullSize={true} />
+        ) : data.persons.length === 0 ? (
+          <View
+            style={{
+              alignItems: "center",
+              justifyContent: "center",
+              height: "100%",
+            }}
+          >
+            <Image
+              containerStyle={{ width: 250, aspectRatio: 1 }}
+              source={{ uri: Image.resolveAssetSource(noWishlist).uri }}
+            />
+          </View>
         ) : (
           <FlatList
             data={data.persons}

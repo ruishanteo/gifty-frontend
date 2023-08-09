@@ -20,6 +20,9 @@ export function Home() {
           gifty
         </Text>
       </View>
+      <View style={{ backgroundColor: theme.colors.background, height: "92%" }}>
+        <Text>Content</Text>
+      </View>
     </SafeAreaView>
   );
 }

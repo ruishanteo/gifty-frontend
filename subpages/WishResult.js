@@ -1,11 +1,13 @@
 import { FlatList, View } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Image } from "@rneui/themed";
 
 import Layout from "../components/Layout";
 import { Listing } from "../components/Listing";
 import { LoadingIcon } from "../components/LoadingIcon";
 import { useWishlistedListings } from "../api/listing";
+import noGiftsFound from "../assets/noGiftsFound.png";
 
 export const WishResult = ({ route, navigation }) => {
   const theme = useTheme();
@@ -46,7 +48,17 @@ export const WishResult = ({ route, navigation }) => {
                 columnWrapperStyle={{ justifyContent: "space-between" }}
               />
             ) : (
-              <Text>No results</Text>
+              <View
+                style={{
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Image
+                  containerStyle={{ width: 250, aspectRatio: 1 }}
+                  source={{ uri: Image.resolveAssetSource(noGiftsFound).uri }}
+                />
+              </View>
             )}
 
             <Text variant="titleSmall" style={{ marginVertical: 30 }}>

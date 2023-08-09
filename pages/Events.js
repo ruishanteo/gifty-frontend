@@ -11,7 +11,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 
 import { NewEvent } from "../subpages/NewEvent.js";
 import { useEvents } from "../api/event.js";
-import noPageFound from "../assets/noPageFound.png";
+import noEventsFound from "../assets/noEventsFound.png";
 import { LoadingIcon } from "../components/LoadingIcon.js";
 
 const countDateDiff = (event) => {
@@ -137,18 +137,10 @@ export function Events({ navigation }) {
         {isLoading ? (
           <LoadingIcon />
         ) : events.length === 0 ? (
-          <>
-            <Image
-              containerStyle={{ width: 250, aspectRatio: 1 }}
-              source={{ uri: Image.resolveAssetSource(noPageFound).uri }}
-            />
-            <Text
-              variant="titleSmall"
-              style={{ marginTop: -120, marginLeft: 50 }}
-            >
-              No events found!
-            </Text>
-          </>
+          <Image
+            containerStyle={{ width: 250, aspectRatio: 1 }}
+            source={{ uri: Image.resolveAssetSource(noEventsFound).uri }}
+          />
         ) : (
           <FlatList
             style={{ height: "80%" }}
