@@ -1,6 +1,7 @@
 import React, { createContext, useCallback, useEffect, useState } from "react";
 
 import { clearJWT, getJWT, setJWT } from "../storage/securestorage";
+import { LoadingIcon } from "../components/LoadingIcon";
 
 const AuthContext = createContext(null);
 const { Provider } = AuthContext;
@@ -50,7 +51,7 @@ function AuthProvider({ children }) {
     loadJWT();
   }, [loadJWT]);
 
-  if (loading) return null;
+  if (loading) return <LoadingIcon fullSize={true} />;
 
   return (
     <Provider

@@ -12,22 +12,23 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { NewEvent } from "../subpages/NewEvent.js";
 import { useEvents } from "../api/event.js";
 import noPageFound from "../assets/noPageFound.png";
+import { LoadingIcon } from "../components/LoadingIcon.js";
+
+const countDateDiff = (event) => {
+  return Math.ceil(event.date.diff(moment(), "days", true)) - 1;
+};
 
 export function Events({ navigation }) {
   const theme = useTheme();
   const { isLoading, data } = useEvents();
   registerTranslation("en-GB", enGB);
 
-  if (isLoading) return null;
-
-  const events = data.events.map((event) => ({
-    ...event,
-    date: moment(event.date),
-  }));
-
-  const countDateDiff = (event) => {
-    return Math.ceil(event.date.diff(moment(), "days", true)) - 1;
-  };
+  const events = !isLoading
+    ? data.events.map((event) => ({
+        ...event,
+        date: moment(event.date),
+      }))
+    : [];
 
   const sortedEvents = [
     ...events
@@ -133,7 +134,9 @@ export function Events({ navigation }) {
         >
           Events
         </Text>
-        {events.length === 0 ? (
+        {isLoading ? (
+          <LoadingIcon />
+        ) : events.length === 0 ? (
           <>
             <Image
               containerStyle={{ width: 250, aspectRatio: 1 }}

@@ -68,7 +68,7 @@ export function Register({ navigation }) {
             confirmPassword: "",
             birthday: "",
           }}
-          onSubmit={(values) => register(values)}
+          onSubmit={async (values) => await register(values)}
         >
           {({
             isSubmitting,
@@ -88,6 +88,7 @@ export function Register({ navigation }) {
                   onChangeText={handleChange("username")}
                   onBlur={handleBlur("username")}
                   value={values.username}
+                  disabled={isSubmitting}
                   error={errors.username && touched.username}
                 />
                 <HelperText
@@ -102,6 +103,7 @@ export function Register({ navigation }) {
                   onChangeText={handleChange("email")}
                   onBlur={handleBlur("email")}
                   value={values.email}
+                  disabled={isSubmitting}
                   error={errors.email && touched.email}
                 />
                 <HelperText
@@ -116,6 +118,7 @@ export function Register({ navigation }) {
                   onChangeText={handleChange("password")}
                   onBlur={handleBlur("password")}
                   value={values.password}
+                  disabled={isSubmitting}
                   error={errors.password && touched.password}
                 />
                 <HelperText
@@ -130,6 +133,7 @@ export function Register({ navigation }) {
                   onChangeText={handleChange("confirmPassword")}
                   onBlur={handleBlur("confirmPassword")}
                   value={values.confirmPassword}
+                  disabled={isSubmitting}
                   error={errors.confirmPassword && touched.confirmPassword}
                 />
                 <HelperText
@@ -140,7 +144,10 @@ export function Register({ navigation }) {
                 >
                   {errors.confirmPassword}
                 </HelperText>
-                <TouchableOpacity onPress={() => setOpenDatePicker(true)}>
+                <TouchableOpacity
+                  disabled={isSubmitting}
+                  onPress={() => setOpenDatePicker(true)}
+                >
                   <View
                     style={{
                       width: "100%",
@@ -183,6 +190,7 @@ export function Register({ navigation }) {
               </View>
               <Button
                 onPress={handleSubmit}
+                loading={isSubmitting}
                 disabled={isSubmitting}
                 mode="contained"
                 textColor={theme.colors.surface}

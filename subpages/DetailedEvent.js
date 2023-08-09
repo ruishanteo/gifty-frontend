@@ -43,8 +43,15 @@ export const DetailedEvent = ({ route, navigation }) => {
   }
 
   const EditProp = ({ prop }) => {
-    const { handleChange, handleBlur, setFieldValue, values, errors, touched } =
-      useFormikContext();
+    const {
+      isSubmitting,
+      handleChange,
+      handleBlur,
+      setFieldValue,
+      values,
+      errors,
+      touched,
+    } = useFormikContext();
     return (
       <View
         flexDirection="row"
@@ -69,6 +76,7 @@ export const DetailedEvent = ({ route, navigation }) => {
           {prop === "date" ? (
             <TouchableOpacity
               onPress={() => setOpenDatePicker(true)}
+              disabled={isSubmitting}
               style={{
                 height: "100%",
                 width: "100%",
@@ -83,6 +91,7 @@ export const DetailedEvent = ({ route, navigation }) => {
           ) : prop === "reminder" ? (
             <Switch
               value={values[prop]}
+              disabled={isSubmitting}
               onValueChange={(value) => {
                 setFieldValue("reminder", value);
               }}
@@ -97,6 +106,7 @@ export const DetailedEvent = ({ route, navigation }) => {
               onChangeText={(value) => handleChange(prop)(value)}
               onBlur={() => handleBlur(prop)}
               value={values[prop]}
+              disabled={isSubmitting}
               error={errors[prop] && touched[prop]}
             />
           )}
@@ -120,7 +130,7 @@ export const DetailedEvent = ({ route, navigation }) => {
             date: event.date,
             reminder: event.reminder,
           }}
-          onSubmit={(values) => updateEvent(values)}
+          onSubmit={async (values) => await updateEvent(values)}
         >
           {({ isSubmitting, handleSubmit, setFieldValue, values }) => (
             <View
@@ -147,6 +157,7 @@ export const DetailedEvent = ({ route, navigation }) => {
               <View flexDirection="row" style={{ width: 300, gap: 10 }}>
                 <Button
                   onPress={handleSubmit}
+                  loading={isSubmitting}
                   disabled={isSubmitting}
                   mode="contained"
                   icon="content-save"
@@ -156,6 +167,7 @@ export const DetailedEvent = ({ route, navigation }) => {
                   Save
                 </Button>
                 <Button
+                  disabled={isSubmitting}
                   mode="contained"
                   icon="delete"
                   buttonColor={theme.colors.quaternary}

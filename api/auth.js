@@ -155,8 +155,7 @@ export function useResetPassword() {
       .then((res) => {
         showNotification({
           title: "Reset Password Successful",
-          description:
-            "Resetted your password. Please log in with new password",
+          description: "Successful password reset! Please log in",
           type: "success",
         });
         return res;

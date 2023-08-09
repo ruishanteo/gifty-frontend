@@ -1,19 +1,16 @@
-import { Dimensions, FlatList, View } from "react-native";
+import { FlatList, View } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Listing } from "../components/Listing";
+
 import Layout from "../components/Layout";
+import { Listing } from "../components/Listing";
+import { LoadingIcon } from "../components/LoadingIcon";
 import { useWishlistedListings } from "../api/listing";
 
 export const WishResult = ({ route, navigation }) => {
   const theme = useTheme();
   const { friend, personId } = route.params;
   const { isLoading, data } = useWishlistedListings(personId);
-
-  const windowWidth = Dimensions.get("window").width;
-
-  if (isLoading) return null;
-  const listings = data.listing;
 
   return (
     <SafeAreaView style={{ marginHorizontal: 15 }}>
@@ -32,21 +29,31 @@ export const WishResult = ({ route, navigation }) => {
           <Text variant="headlineLarge">{friend.name}</Text>
         </View>
 
-        <FlatList
-          style={{ marginHorizontal: 15 }}
-          data={listings}
-          renderItem={({ item }) => (
-            <Listing listing={item} navigation={navigation} />
-          )}
-          keyExtractor={(item) => item.id}
-          numColumns={2}
-          ItemSeparatorComponent={() => <View style={{ height: "2%" }} />}
-          columnWrapperStyle={{ justifyContent: "space-between" }}
-        />
+        {isLoading ? (
+          <LoadingIcon styles={{ marginVertical: 50 }} />
+        ) : (
+          <>
+            {data.listing.length > 0 ? (
+              <FlatList
+                style={{ marginHorizontal: 15 }}
+                data={data.listing}
+                renderItem={({ item }) => (
+                  <Listing listing={item} navigation={navigation} />
+                )}
+                keyExtractor={(item) => item.id}
+                numColumns={2}
+                ItemSeparatorComponent={() => <View style={{ height: "2%" }} />}
+                columnWrapperStyle={{ justifyContent: "space-between" }}
+              />
+            ) : (
+              <Text>No results</Text>
+            )}
 
-        <Text variant="titleSmall" style={{ marginVertical: 30 }}>
-          See more
-        </Text>
+            <Text variant="titleSmall" style={{ marginVertical: 30 }}>
+              See more
+            </Text>
+          </>
+        )}
       </Layout>
     </SafeAreaView>
   );

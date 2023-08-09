@@ -19,6 +19,7 @@ import {
   useWishListing,
 } from "../api/listing";
 import { usePersons } from "../api/person";
+import { LoadingIcon } from "../components/LoadingIcon";
 
 const platformProfileURL = {
   Amazon:
@@ -52,11 +53,8 @@ export const DetailedListing = ({ route, navigation }) => {
     }
   };
 
-  if (isListingLoading || isPersonLoading) return null;
+  if (isListingLoading) return <LoadingIcon fullSize={true} />;
   const listing = listingData.listing;
-  const personList = personData.persons;
-
-  const selectedItems = [];
 
   return (
     <SafeAreaView
@@ -151,44 +149,48 @@ export const DetailedListing = ({ route, navigation }) => {
             />
           </ListItem.Content>
         </ListItem>
-        {personList.map((person, index) => {
-          const wishlisted = listing.wishlisted.includes(person.id);
-          return (
-            <ListItem bottomDivider key={index}>
-              <View
-                flexDirection="row"
-                style={{
-                  alignItems: "center",
-                  width: "90%",
-                  marginLeft: 20,
-                  marginBottom: 20,
-                  gap: 20,
-                }}
-              >
-                <ListItem.CheckBox
-                  key={index}
-                  checked={wishlisted}
-                  checkedIcon="dot-circle-o"
-                  uncheckedIcon="circle-o"
-                  onPress={() => {
-                    wishlisted
-                      ? unwishListingMutation.mutate({
-                          id: listing.id,
-                          personId: person.id,
-                        })
-                      : wishListingMutation.mutate({
-                          id: listing.id,
-                          personId: person.id,
-                        });
+        {isPersonLoading ? (
+          <LoadingIcon />
+        ) : (
+          personData.persons.map((person, index) => {
+            const wishlisted = listing.wishlisted.includes(person.id);
+            return (
+              <ListItem bottomDivider key={index}>
+                <View
+                  flexDirection="row"
+                  style={{
+                    alignItems: "center",
+                    width: "90%",
+                    marginLeft: 20,
+                    marginBottom: 20,
+                    gap: 20,
                   }}
-                />
-                <ListItem.Content>
-                  <ListItem.Title>{person.name}</ListItem.Title>
-                </ListItem.Content>
-              </View>
-            </ListItem>
-          );
-        })}
+                >
+                  <ListItem.CheckBox
+                    key={index}
+                    checked={wishlisted}
+                    checkedIcon="dot-circle-o"
+                    uncheckedIcon="circle-o"
+                    onPress={() => {
+                      wishlisted
+                        ? unwishListingMutation.mutate({
+                            id: listing.id,
+                            personId: person.id,
+                          })
+                        : wishListingMutation.mutate({
+                            id: listing.id,
+                            personId: person.id,
+                          });
+                    }}
+                  />
+                  <ListItem.Content>
+                    <ListItem.Title>{person.name}</ListItem.Title>
+                  </ListItem.Content>
+                </View>
+              </ListItem>
+            );
+          })
+        )}
       </BottomSheet>
     </SafeAreaView>
   );

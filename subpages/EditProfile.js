@@ -108,8 +108,8 @@ const UpdateParticular = (name) => {
         validateOnChange={false}
         validateOnBlur={false}
         initialValues={{ [name]: user[nameInUser] }}
-        onSubmit={(values) => {
-          updateUser({ [`new${name}`]: values[name] });
+        onSubmit={async (values) => {
+          await updateUser({ [`new${name}`]: values[name] });
           setOpen(false);
         }}
       >
@@ -147,6 +147,7 @@ const UpdateParticular = (name) => {
             </HelperText>
             <Button
               onPress={handleSubmit}
+              loading={isSubmitting}
               disabled={isSubmitting}
               icon="check"
               mode="contained"
@@ -189,8 +190,8 @@ const UpdatePassword = () => {
           newPassword: "",
           confirmNewPassword: "",
         }}
-        onSubmit={(values) => {
-          updatePassword(values);
+        onSubmit={async (values) => {
+          await updatePassword(values);
           setOpen(false);
         }}
       >
@@ -276,6 +277,7 @@ const UpdatePassword = () => {
             </HelperText>
             <Button
               onPress={handleSubmit}
+              loading={isSubmitting}
               disabled={isSubmitting}
               icon="check"
               mode="contained"
