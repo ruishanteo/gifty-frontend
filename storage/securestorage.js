@@ -13,6 +13,7 @@ export async function deleteKeyFromStorage(key) {
 }
 
 const JWT_TOKEN_KEY = "token";
+const DARK_MODE_KEY = "darkMode";
 
 export async function getJWT() {
   return JSON.parse(await getKeyFromStorage(JWT_TOKEN_KEY));
@@ -27,4 +28,12 @@ export async function setJWT(accessToken, refreshToken) {
 
 export async function clearJWT() {
   await deleteKeyFromStorage(JWT_TOKEN_KEY);
+}
+
+export async function getSavedDarkMode() {
+  return JSON.parse(await getKeyFromStorage(DARK_MODE_KEY));
+}
+
+export async function setSavedDarkMode(darkMode) {
+  await saveKeyToStorage(DARK_MODE_KEY, JSON.stringify(darkMode));
 }

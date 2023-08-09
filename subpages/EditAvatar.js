@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  ScrollView,
-  TouchableOpacity,
-  View,
-  useColorScheme,
-} from "react-native";
+import { ScrollView, TouchableOpacity, View } from "react-native";
 import { Button, IconButton, useTheme } from "react-native-paper";
 import { Icon } from "@rneui/themed";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -15,7 +10,7 @@ import noseIconConfig from "../assets/noseConfig.json";
 import lipsIconConfig from "../assets/lipsConfig.json";
 import UserAvatar from "../components/UserAvatar";
 import Layout from "../components/Layout";
-import { useUser } from "../providers/hooks";
+import { useAppTheme, useUser } from "../providers/hooks";
 import { useUpdateAvatar } from "../api/auth";
 
 const NoseIcon = createIconSetFromFontello(noseIconConfig);
@@ -93,7 +88,7 @@ const iconMap = {
 const PropButton = ({ name, avatarProps, setAvatarProps, disabled }) => {
   const props = iconMap[name];
   const theme = useTheme();
-  const colorScheme = useColorScheme();
+  const { darkMode } = useAppTheme();
 
   const [colorIndex, setColorIndex] = React.useState(0);
   const [styleIndex, setStyleIndex] = React.useState(0);
@@ -148,13 +143,13 @@ const PropButton = ({ name, avatarProps, setAvatarProps, disabled }) => {
           <NoseIcon
             name="nose"
             size={25}
-            color={colorScheme === "dark" ? "white" : "black"}
+            color={darkMode ? "white" : "black"}
           />
         ) : name === "mouth" ? (
           <LipsIcon
             name="lips"
             size={25}
-            color={colorScheme === "dark" ? "white" : "black"}
+            color={darkMode ? "white" : "black"}
           />
         ) : (
           <Icon

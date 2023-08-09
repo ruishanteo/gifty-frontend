@@ -3,9 +3,8 @@ import { StyleSheet, View } from "react-native";
 import { Button, Switch, useTheme } from "react-native-paper";
 import { ListItem } from "@rneui/themed";
 import { SafeAreaView } from "react-native-safe-area-context";
-import Modal from "react-native-modal";
 
-import { useAuth } from "../providers/hooks";
+import { useAppTheme, useAuth } from "../providers/hooks";
 import Layout from "../components/Layout";
 import { ConfirmModal } from "../components/ConfirmModal";
 import { useDeleteAccount } from "../api/auth";
@@ -13,9 +12,8 @@ import { useDeleteAccount } from "../api/auth";
 export const Settings = ({ navigation }) => {
   const theme = useTheme();
   const { logout } = useAuth();
-
   const deleteAccount = useDeleteAccount();
-
+  const { darkMode, toggleDarkModeTheme } = useAppTheme();
   const [open, setOpen] = React.useState(false);
 
   return (
@@ -61,9 +59,7 @@ export const Settings = ({ navigation }) => {
                 Dark Mode
               </ListItem.Title>
             </ListItem.Content>
-            <Switch
-            //value={isSwitchOn} onValueChange={onToggleSwitch}
-            />
+            <Switch value={darkMode} onValueChange={toggleDarkModeTheme} />
           </ListItem>
 
           <ListItem

@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useColorScheme } from "react-native";
-import { MD3DarkTheme, MD3LightTheme, PaperProvider } from "react-native-paper";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import * as SplashScreen from "expo-splash-screen";
@@ -11,11 +9,12 @@ import { Register } from "./pages/Register.js";
 import { Login } from "./pages/Login.js";
 import { NotificationProvider } from "./providers/NotificationProvider.js";
 import { AuthProvider } from "./providers/AuthProvider.js";
-import { useAuth } from "./providers/hooks.js";
+import { useAuth, useAppTheme } from "./providers/hooks.js";
 import { AxiosProvider } from "./providers/AxiosProvider.js";
 import { UserProvider } from "./providers/UserProvider.js";
 import { QueryProvider } from "./providers/QueryProvider.js";
 import { ResetPassword } from "./pages/ResetPassword.js";
+import { ThemeProvider } from "./providers/ThemeProvider.js";
 
 async function cacheFonts(fonts) {
   for (let i = 0; i < fonts.length; i++) {
@@ -27,9 +26,14 @@ async function cacheFonts(fonts) {
 const Stack = createNativeStackNavigator();
 function GetRoutes() {
   const authContext = useAuth();
+  const { paperTheme } = useAppTheme();
 
   return (
-    <>
+    <NavigationContainer
+      theme={{
+        colors: { background: paperTheme.colors.background },
+      }}
+    >
       {authContext?.authState?.authenticated ? (
         <UserProvider>
           <BottomNav />
@@ -43,42 +47,12 @@ function GetRoutes() {
           </Stack.Navigator>
         </>
       )}
-    </>
+    </NavigationContainer>
   );
 }
 
 export default function App() {
   const [appIsReady, setAppIsReady] = useState(false);
-
-  const colorScheme = useColorScheme();
-  const paperTheme =
-    colorScheme === "dark"
-      ? {
-          ...MD3DarkTheme,
-          colors: {
-            ...MD3DarkTheme.colors,
-            primary: "#bc9c9b",
-            secondary: "#d1c1c1",
-            tertiary: "#b5a596",
-            quaternary: "#efd9c6",
-            background: "black",
-            error: "#ff0000",
-            surface: "#78736f",
-            font: "white",
-          },
-        }
-      : {
-          ...MD3LightTheme,
-          colors: {
-            ...MD3LightTheme.colors,
-            primary: "#d1c1c1",
-            secondary: "#bc9c9b",
-            tertiary: "#efd9c6",
-            quaternary: "#b5a596",
-            error: "#ff0000",
-            font: "black",
-          },
-        };
 
   useEffect(() => {
     async function loadResourcesAndDataAsync() {
@@ -106,20 +80,16 @@ export default function App() {
   }
 
   return (
-    <PaperProvider theme={paperTheme}>
+    <ThemeProvider>
       <NotificationProvider>
         <AuthProvider>
           <AxiosProvider>
             <QueryProvider>
-              <NavigationContainer
-                theme={{ colors: { background: paperTheme.colors.background } }}
-              >
-                <GetRoutes />
-              </NavigationContainer>
+              <GetRoutes />
             </QueryProvider>
           </AxiosProvider>
         </AuthProvider>
       </NotificationProvider>
-    </PaperProvider>
+    </ThemeProvider>
   );
 }
