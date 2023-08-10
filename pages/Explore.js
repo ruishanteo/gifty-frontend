@@ -88,8 +88,8 @@ export const Explore = ({ navigation }) => {
       type: "platform",
       label: "Platform",
       chips: [
-        { display: "Shopee", value: "shopee" },
-        { display: "Lazada", value: "lazada" },
+        { display: "Shopee", value: "Shopee" },
+        { display: "Lazada", value: "Lazada" },
       ],
       allowMultiple: false,
     },
