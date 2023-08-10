@@ -163,6 +163,17 @@ export const Explore = ({ navigation }) => {
             <View style={{ marginHorizontal: 15 }}>
               {isLoading || isFetching ? (
                 <LoadingIcon fullSize={true} />
+              ) : data.listing.length === 0 ? (
+                <View
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Text>No results found</Text>
+                </View>
               ) : (
                 <FlatList
                   style={{ height: "100%" }}
