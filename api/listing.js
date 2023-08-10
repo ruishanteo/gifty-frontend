@@ -46,7 +46,7 @@ export function useWishlistedListings(personId, search = "") {
   const { protectedAxios } = useAxios();
 
   return useQuery({
-    queryKey: ["listings", "gifted"],
+    queryKey: ["listings", "wishlisted"],
     queryFn: () => {
       return protectedAxios.get(`/listing/wishlisted/${personId}/${search}`);
     },
