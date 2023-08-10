@@ -82,7 +82,7 @@ export const DetailedListing = ({ route, navigation }) => {
             <Text variant="titleLarge" numberOfLines={2}>
               {listing.title}
             </Text>
-            <Text variant="titleSmall">${listing.price}</Text>
+            <Text variant="titleSmall">${listing.price.toFixed(2)}</Text>
             <Text variant="titleSmall">Fulfilled by {listing.platform}</Text>
             <Text variant="bodyLarge">{listing.description}</Text>
           </View>

@@ -49,7 +49,7 @@ export function Listing({ navigation, listing }) {
             {listing.title}
           </Text>
           <Text numberOfLines={2} style={{ marginTop: 5 }}>
-            ${listing.price}
+            ${listing.price.toFixed(2)}
           </Text>
           <Text variant="bodySmall" numberOfLines={2} style={{ marginTop: 5 }}>
             Fulfilled by {listing.platform}
