@@ -88,6 +88,7 @@ export const Explore = ({ navigation }) => {
       type: "platform",
       label: "Platform",
       chips: [
+        { display: "Amazon", value: "Amazon" },
         { display: "Shopee", value: "Shopee" },
         { display: "Lazada", value: "Lazada" },
       ],
