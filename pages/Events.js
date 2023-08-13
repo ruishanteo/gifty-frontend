@@ -1,10 +1,9 @@
 import React from "react";
-import { Dimensions, FlatList, View } from "react-native";
+import { FlatList, View } from "react-native";
 import { Card, Text, useTheme } from "react-native-paper";
 import { enGB, registerTranslation } from "react-native-paper-dates";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Image } from "@rneui/themed";
-
 import moment from "moment";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";

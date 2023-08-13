@@ -1,26 +1,28 @@
 import React from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
-import { Button, IconButton, Text, useTheme } from "react-native-paper";
+import { Button, Text, useTheme } from "react-native-paper";
 import Modal from "react-native-modal";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Icon, Image, ListItem } from "@rneui/themed";
+import moment from "moment";
 
 import Layout from "../components/Layout";
 import logo from "../assets/logo.png";
 import { Listing } from "../components/Listing";
 import { LoadingIcon } from "../components/LoadingIcon";
 import { useRandomListing } from "../api/listing";
-
-const reminderEvents = [
-  { title: "event 1" },
-  { title: "event 2" },
-  { title: "event 2" },
-];
+import { useReminders } from "../api/event";
 
 export function Home({ navigation }) {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
-  const { data, isLoading, refetch, isFetching } = useRandomListing();
+  const {
+    data: listingData,
+    isLoading: listingLoading,
+    refetch,
+    isFetching: listingFetching,
+  } = useRandomListing();
+  const { data: reminderData, isLoading: reminderLoading } = useReminders();
 
   return (
     <SafeAreaView
@@ -43,7 +45,9 @@ export function Home({ navigation }) {
             <Text variant="titleMedium">Coming soon</Text>
           </View>
           <View style={{ height: "30%" }}>
-            {reminderEvents.length === 0 ? (
+            {reminderLoading ? (
+              <LoadingIcon />
+            ) : reminderData.events.length === 0 ? (
               <View
                 style={{
                   alignItems: "center",
@@ -61,15 +65,17 @@ export function Home({ navigation }) {
                 <Text>You have no upcoming reminders.</Text>
               </View>
             ) : (
-              reminderEvents.map((reminderItem, index) => (
+              reminderData.events.map((reminderItem, index) => (
                 <ListItem
                   key={index}
                   bottomDivider
                   containerStyle={{ backgroundColor: theme.colors.background }}
                 >
                   <ListItem.Content>
-                    <Text variant="bodyLarge">{reminderItem.title}</Text>
-                    <Text variant="bodySmall">date</Text>
+                    <Text variant="bodyLarge">{reminderItem.name}</Text>
+                    <Text variant="bodySmall">
+                      {moment(reminderItem.date).format("DD MMM YYYY")}
+                    </Text>
                   </ListItem.Content>
                 </ListItem>
               ))
@@ -113,12 +119,12 @@ export function Home({ navigation }) {
               onAction={() => setOpen(false)}
               iconName="close"
             >
-              {isLoading || isFetching ? (
+              {listingLoading || listingFetching ? (
                 <LoadingIcon />
               ) : (
                 <View>
                   <Listing
-                    listing={data.listing}
+                    listing={listingData.listing}
                     navigation={navigation}
                     onPress={() => setOpen(false)}
                   />

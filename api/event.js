@@ -11,6 +11,15 @@ export function useEvents() {
   });
 }
 
+export function useReminders() {
+  const { protectedAxios } = useAxios();
+
+  return useQuery({
+    queryKey: ["events", "reminders"],
+    queryFn: () => protectedAxios.get("/event/list/reminder"),
+  });
+}
+
 export function useCreateEvent() {
   const { protectedAxios } = useAxios();
   const { showNotification } = useNotification();
