@@ -1,5 +1,11 @@
 import * as React from "react";
-import { FlatList, SafeAreaView, StyleSheet, View } from "react-native";
+import {
+  Dimensions,
+  FlatList,
+  SafeAreaView,
+  StyleSheet,
+  View,
+} from "react-native";
 import {
   Button,
   HelperText,
@@ -22,6 +28,7 @@ import {
 } from "../api/person";
 import noWishlist from "../assets/noWishlist.png";
 import { LoadingIcon } from "../components/LoadingIcon";
+import { ConfirmModal } from "../components/ConfirmModal";
 
 function FormModal({ title, open, setOpen, initialValues, onSubmit }) {
   const theme = useTheme();
@@ -61,40 +68,30 @@ function FormModal({ title, open, setOpen, initialValues, onSubmit }) {
                 onAction={() => setOpen(false)}
                 iconName="close"
               >
-                <View
+                <TextInput
+                  disabled={isSubmitting}
+                  mode="flat"
                   style={{
-                    justifyContent: "center",
-                    alignItems: "center",
-                    gap: 20,
+                    backgroundColor: theme.colors.tertiary,
+                    width: 250,
                   }}
-                  flexDirection="row"
+                  theme={{
+                    colors: { onSurfaceVariant: theme.colors.font },
+                  }}
+                  textColor={theme.colors.font}
+                  activeUnderlineColor={theme.colors.font}
+                  onChangeText={handleChange("name")}
+                  onBlur={handleBlur("name")}
+                  value={values.name}
+                  error={errors.name && touched.name}
+                  placeholder="Name"
+                />
+                <HelperText
+                  type="error"
+                  visible={Boolean(errors.name && touched.name)}
                 >
-                  <Text variant="bodyLarge" style={{ width: 60 }}>
-                    Name:
-                  </Text>
-                  <TextInput
-                    disabled={isSubmitting}
-                    mode="flat"
-                    style={{
-                      backgroundColor: theme.colors.tertiary,
-                      width: 200,
-                    }}
-                    theme={{
-                      colors: { onSurfaceVariant: theme.colors.font },
-                    }}
-                    textColor={theme.colors.font}
-                    activeUnderlineColor={theme.colors.font}
-                    placeholder="Add Name"
-                    onChangeText={handleChange("name")}
-                    onBlur={handleBlur("name")}
-                    value={values.name}
-                    error={errors.name && touched.name}
-                  />
-                  <HelperText
-                    type="error"
-                    visible={Boolean(errors.name && touched.name)}
-                  ></HelperText>
-                </View>
+                  {errors.name}
+                </HelperText>
                 <Button
                   onPress={handleSubmit}
                   loading={isSubmitting}
@@ -117,9 +114,11 @@ function FormModal({ title, open, setOpen, initialValues, onSubmit }) {
 function Item({ item, navigation }) {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
+  const [confirm, setConfirm] = React.useState(false);
   const deletePersonMutation = useDeletePerson(item.id);
   const updatePersonMutation = useUpdatePerson(item.id);
 
+  const handleConfirm = () => {};
   return (
     <>
       <ListItem.Swipeable
@@ -143,7 +142,7 @@ function Item({ item, navigation }) {
         )}
         rightContent={() => (
           <Button
-            onPress={() => deletePersonMutation.mutateAsync()}
+            onPress={() => setConfirm(true)}
             icon="delete"
             buttonColor={theme.colors.quaternary}
             textColor={theme.colors.surface}
@@ -178,6 +177,11 @@ function Item({ item, navigation }) {
           })
         }
       />
+      <ConfirmModal
+        action={() => deletePersonMutation.mutateAsync()}
+        open={confirm}
+        setOpen={setConfirm}
+      />
     </>
   );
 }
@@ -190,6 +194,9 @@ export const Wishlist = ({ navigation }) => {
 
   const { data, isLoading, refetch } = usePersons(searchQuery);
 
+  const windowHeight = Dimensions.get("window").height;
+  const windowWidth = Dimensions.get("window").width;
+
   React.useEffect(() => {
     refetch();
   }, [refetch, searchQuery]);
@@ -200,7 +207,7 @@ export const Wishlist = ({ navigation }) => {
 
   return (
     <SafeAreaView>
-      <View style={{ height: "92.5%" }}>
+      <View style={{ height: "100%" }}>
         <SearchBar
           placeholder="Search"
           onChangeText={onChangeSearch}
@@ -221,7 +228,7 @@ export const Wishlist = ({ navigation }) => {
             style={{
               alignItems: "center",
               justifyContent: "center",
-              height: "100%",
+              height: "85%",
             }}
           >
             <Image
@@ -237,10 +244,17 @@ export const Wishlist = ({ navigation }) => {
             )}
             keyExtractor={(item) => item.id}
             ItemSeparatorComponent={() => <View style={{ height: 2 }} />}
+            contentContainerStyle={{ paddingBottom: 50 }}
           />
         )}
       </View>
-      <View style={{ alignItems: "flex-end" }}>
+      <View
+        style={{
+          left: windowWidth - 70,
+          top: windowHeight - 140,
+          position: "absolute",
+        }}
+      >
         <IconButton
           onPress={() => setOpen(true)}
           containerColor={theme.colors.secondary}

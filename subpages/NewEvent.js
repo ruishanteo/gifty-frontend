@@ -1,5 +1,11 @@
 import React from "react";
-import { StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
+import {
+  Dimensions,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import {
   Button,
   HelperText,
@@ -30,6 +36,9 @@ export function NewEvent() {
   const [openDatePicker, setOpenDatePicker] = React.useState(false);
   const createEventMutation = useCreateEvent();
 
+  const windowHeight = Dimensions.get("window").height;
+  const windowWidth = Dimensions.get("window").width;
+
   const inputFields = (title, object) => {
     return (
       <View
@@ -55,7 +64,13 @@ export function NewEvent() {
   }
 
   return (
-    <View style={{ alignItems: "flex-end", flex: 1 }}>
+    <View
+      style={{
+        left: windowWidth - 70,
+        top: windowHeight - 140,
+        position: "absolute",
+      }}
+    >
       <IconButton
         onPress={() => setOpen(true)}
         containerColor={theme.colors.secondary}

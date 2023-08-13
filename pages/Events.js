@@ -1,5 +1,5 @@
 import React from "react";
-import { FlatList, View } from "react-native";
+import { Dimensions, FlatList, View } from "react-native";
 import { Card, Text, useTheme } from "react-native-paper";
 import { enGB, registerTranslation } from "react-native-paper-dates";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -121,11 +121,7 @@ export function Events({ navigation }) {
     <SafeAreaView>
       <View
         style={{
-          alignItems: "center",
-          justifyContent: "center",
           marginHorizontal: 15,
-          width: "95%",
-          height: "98%",
         }}
       >
         <Text
@@ -135,15 +131,30 @@ export function Events({ navigation }) {
           Events
         </Text>
         {isLoading ? (
-          <LoadingIcon />
+          <View
+            style={{
+              justifyContent: "center",
+              alignItems: "center",
+              height: "90%",
+            }}
+          >
+            <LoadingIcon />
+          </View>
         ) : events.length === 0 ? (
-          <Image
-            containerStyle={{ width: 250, aspectRatio: 1 }}
-            source={{ uri: Image.resolveAssetSource(noEventsFound).uri }}
-          />
+          <View
+            style={{
+              justifyContent: "center",
+              alignItems: "center",
+              top: "80%",
+            }}
+          >
+            <Image
+              containerStyle={{ width: 250, aspectRatio: 1 }}
+              source={{ uri: Image.resolveAssetSource(noEventsFound).uri }}
+            />
+          </View>
         ) : (
           <FlatList
-            style={{ height: "80%" }}
             data={sortedEvents}
             renderItem={({ item }) => (
               <EventView event={item} navigation={navigation} />
@@ -152,6 +163,7 @@ export function Events({ navigation }) {
             numColumns={2}
             ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
             columnWrapperStyle={{ justifyContent: "space-between" }}
+            contentContainerStyle={{ paddingBottom: 50 }}
           />
         )}
       </View>

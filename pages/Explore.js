@@ -129,7 +129,7 @@ export const Explore = ({ navigation }) => {
         errors,
       }) => (
         <SafeAreaView>
-          <View style={{ height: "92.5%" }}>
+          <View style={{ height: "100%" }}>
             <View
               style={{
                 alignItems: "center",
@@ -176,7 +176,6 @@ export const Explore = ({ navigation }) => {
                 </View>
               ) : (
                 <FlatList
-                  style={{ height: "100%" }}
                   data={data.listing}
                   renderItem={({ item }) => (
                     <Listing listing={item} navigation={navigation} />
@@ -185,6 +184,7 @@ export const Explore = ({ navigation }) => {
                   numColumns={2}
                   ItemSeparatorComponent={() => <View style={{ height: 15 }} />}
                   columnWrapperStyle={{ justifyContent: "space-between" }}
+                  contentContainerStyle={{ paddingBottom: 50 }}
                 />
               )}
             </View>
