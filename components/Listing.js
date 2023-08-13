@@ -2,17 +2,18 @@ import { View } from "react-native";
 import { Card, Text, useTheme } from "react-native-paper";
 import { Image } from "@rneui/themed";
 
-export function Listing({ navigation, listing }) {
+export function Listing({ navigation, listing, onPress }) {
   const theme = useTheme();
 
   return (
     <Card
-      onPress={() =>
+      onPress={() => {
+        if (onPress) onPress();
         navigation.navigate("DetailedListing", {
           listing,
           listingId: listing.id,
-        })
-      }
+        });
+      }}
       style={{
         backgroundColor: theme.colors.surface,
         alignItems: "center",
@@ -32,7 +33,6 @@ export function Listing({ navigation, listing }) {
           containerStyle={{
             width: "100%",
             aspectRatio: 1,
-            flex: 1,
           }}
           source={{
             uri: listing.source,

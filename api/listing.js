@@ -20,6 +20,15 @@ export function useListing(id) {
   });
 }
 
+export function useRandomListing() {
+  const { protectedAxios } = useAxios();
+
+  return useQuery({
+    queryKey: ["listings", "listing", "random"],
+    queryFn: () => protectedAxios.get(`/listing/random/get`),
+  });
+}
+
 export function useSavedListings(search = "") {
   const { protectedAxios } = useAxios();
 

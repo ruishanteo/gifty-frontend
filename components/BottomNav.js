@@ -130,13 +130,31 @@ function EventsStackScreen() {
   );
 }
 
+const HomeStack = createNativeStackNavigator();
+function HomeStackScreen() {
+  return (
+    <HomeStack.Navigator>
+      <HomeStack.Screen
+        name="Home"
+        component={Home}
+        options={{ headerShown: false }}
+      />
+      <HomeStack.Screen
+        name="DetailedListing"
+        component={DetailedListing}
+        options={{ headerShown: false }}
+      />
+    </HomeStack.Navigator>
+  );
+}
+
 export function BottomNav() {
   const theme = useTheme();
   theme.colors.onSecondaryContainer = "transparent";
 
   return (
     <Tab.Navigator
-      initialRouteName="Home"
+      initialRouteName="HomeStack"
       screenOptions={{
         headerShown: false,
         tabBarActiveBackgroundColor: "transparent",
@@ -173,8 +191,8 @@ export function BottomNav() {
         }}
       />
       <Tab.Screen
-        name="Home"
-        component={Home}
+        name="HomeStack"
+        component={HomeStackScreen}
         options={{
           tabBarLabel: "Home",
           tabBarIcon: ({ color }) => (

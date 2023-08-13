@@ -1,13 +1,15 @@
-import { StyleSheet, TouchableOpacity, View } from "react-native";
-import { Text, useTheme } from "react-native-paper";
-import { Icon, Image, ListItem } from "@rneui/themed";
-import { SafeAreaView } from "react-native-safe-area-context";
-import Modal from "react-native-modal";
-
-import logo from "../assets/logo.png";
-import Layout from "../components/Layout";
-import { Listing } from "../components/Listing";
 import React from "react";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { Button, IconButton, Text, useTheme } from "react-native-paper";
+import Modal from "react-native-modal";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Icon, Image, ListItem } from "@rneui/themed";
+
+import Layout from "../components/Layout";
+import logo from "../assets/logo.png";
+import { Listing } from "../components/Listing";
+import { LoadingIcon } from "../components/LoadingIcon";
+import { useRandomListing } from "../api/listing";
 
 const reminderEvents = [
   { title: "event 1" },
@@ -15,17 +17,11 @@ const reminderEvents = [
   { title: "event 2" },
 ];
 
-const listing = {
-  source:
-    "https://www.at-languagesolutions.com/en/wp-content/uploads/2016/06/http-1.jpg",
-  title: "listing",
-  price: 5050,
-  platform: "test",
-};
-
-export function Home() {
+export function Home({ navigation }) {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
+  const { data, isLoading, refetch, isFetching } = useRandomListing();
+
   return (
     <SafeAreaView
       style={{ backgroundColor: theme.colors.tertiary, paddingBottom: -20 }}
@@ -86,7 +82,10 @@ export function Home() {
           </View>
 
           <TouchableOpacity
-            onPress={() => setOpen(true)}
+            onPress={async () => {
+              refetch();
+              setOpen(true);
+            }}
             style={{ alignItems: "center" }}
           >
             <Image
@@ -114,7 +113,26 @@ export function Home() {
               onAction={() => setOpen(false)}
               iconName="close"
             >
-              <Listing listing={listing} />
+              {isLoading || isFetching ? (
+                <LoadingIcon />
+              ) : (
+                <View>
+                  <Listing
+                    listing={data.listing}
+                    navigation={navigation}
+                    onPress={() => setOpen(false)}
+                  />
+                  <Button
+                    icon="reload"
+                    mode="contained"
+                    buttonColor={theme.colors.secondary}
+                    style={{ marginTop: 20 }}
+                    onPress={() => refetch()}
+                  >
+                    Refresh
+                  </Button>
+                </View>
+              )}
             </Layout>
           </View>
         </View>
@@ -145,12 +163,17 @@ const styles = StyleSheet.create({
   },
   modalView: {
     borderRadius: 20,
-    padding: 35,
+    padding: 15,
+    paddingBottom: 25,
     alignItems: "center",
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
     },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    width: "85%",
   },
 });
