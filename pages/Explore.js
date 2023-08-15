@@ -171,11 +171,6 @@ export const Explore = ({ navigation }) => {
                 <LoadingIcon fullSize={true} />
               ) : (
                 <>
-                  <PaginationNav
-                    goToPage={handlePageChange}
-                    currentPageNumber={data.currentPage}
-                    maxPageNumber={data.totalPages}
-                  />
                   {data.listing.length === 0 ? (
                     <View
                       style={{
@@ -188,21 +183,28 @@ export const Explore = ({ navigation }) => {
                       <Text>No results found</Text>
                     </View>
                   ) : (
-                    <View>
-                      <FlatList
-                        data={data.listing}
-                        renderItem={({ item }) => (
-                          <Listing listing={item} navigation={navigation} />
-                        )}
-                        keyExtractor={(item) => item.id}
-                        numColumns={2}
-                        ItemSeparatorComponent={() => (
-                          <View style={{ height: 15 }} />
-                        )}
-                        columnWrapperStyle={{ justifyContent: "space-between" }}
-                        contentContainerStyle={{ paddingBottom: 50 }}
-                      />
-                    </View>
+                    <FlatList
+                      data={data.listing}
+                      renderItem={({ item }) => (
+                        <Listing listing={item} navigation={navigation} />
+                      )}
+                      keyExtractor={(item) => item.id}
+                      numColumns={2}
+                      ItemSeparatorComponent={() => (
+                        <View style={{ height: 15 }} />
+                      )}
+                      columnWrapperStyle={{
+                        justifyContent: "space-between",
+                      }}
+                      contentContainerStyle={{ paddingBottom: 80 }}
+                      ListFooterComponent={
+                        <PaginationNav
+                          goToPage={handlePageChange}
+                          currentPageNumber={data.currentPage}
+                          maxPageNumber={data.totalPages}
+                        />
+                      }
+                    />
                   )}
                 </>
               )}
