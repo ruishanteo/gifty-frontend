@@ -16,6 +16,7 @@ import { Listing } from "../components/Listing";
 import { FilterAccordian } from "../components/FilterAccordian";
 import { useListings } from "../api/listing";
 import { LoadingIcon } from "../components/LoadingIcon";
+import PaginationNav from "../components/PaginationNav";
 
 export const Explore = ({ navigation }) => {
   const theme = useTheme();
@@ -34,6 +35,10 @@ export const Explore = ({ navigation }) => {
   const onChangeSearch = (query) => {
     setSearchQuery(query);
     setAllQueries({ ...allQueries, search: query });
+  };
+
+  const handlePageChange = (page) => {
+    setAllQueries({ ...allQueries, page: page });
   };
 
   const initialValues = {
@@ -164,29 +169,42 @@ export const Explore = ({ navigation }) => {
             <View style={{ marginHorizontal: 15 }}>
               {isLoading || isFetching ? (
                 <LoadingIcon fullSize={true} />
-              ) : data.listing.length === 0 ? (
-                <View
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <Text>No results found</Text>
-                </View>
               ) : (
-                <FlatList
-                  data={data.listing}
-                  renderItem={({ item }) => (
-                    <Listing listing={item} navigation={navigation} />
+                <>
+                  <PaginationNav
+                    goToPage={handlePageChange}
+                    currentPageNumber={data.currentPage}
+                    maxPageNumber={data.totalPages}
+                  />
+                  {data.listing.length === 0 ? (
+                    <View
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <Text>No results found</Text>
+                    </View>
+                  ) : (
+                    <View>
+                      <FlatList
+                        data={data.listing}
+                        renderItem={({ item }) => (
+                          <Listing listing={item} navigation={navigation} />
+                        )}
+                        keyExtractor={(item) => item.id}
+                        numColumns={2}
+                        ItemSeparatorComponent={() => (
+                          <View style={{ height: 15 }} />
+                        )}
+                        columnWrapperStyle={{ justifyContent: "space-between" }}
+                        contentContainerStyle={{ paddingBottom: 50 }}
+                      />
+                    </View>
                   )}
-                  keyExtractor={(item) => item.id}
-                  numColumns={2}
-                  ItemSeparatorComponent={() => <View style={{ height: 15 }} />}
-                  columnWrapperStyle={{ justifyContent: "space-between" }}
-                  contentContainerStyle={{ paddingBottom: 50 }}
-                />
+                </>
               )}
             </View>
           </View>

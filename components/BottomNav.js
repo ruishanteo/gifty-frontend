@@ -161,6 +161,7 @@ export function BottomNav() {
         tabBarShowLabel: false,
         tabBarStyle: {
           backgroundColor: theme.colors.primary,
+          borderColor: "transparent",
         },
         tabBarActiveTintColor: theme.colors.font,
         tabBarInactiveTintColor: theme.colors.secondary,
