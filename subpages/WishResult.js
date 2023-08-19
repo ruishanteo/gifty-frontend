@@ -37,7 +37,7 @@ export const WishResult = ({ route, navigation }) => {
           <>
             {data.listing.length > 0 ? (
               <FlatList
-                style={{ marginHorizontal: 15 }}
+                style={{ marginHorizontal: 15, height: "90%" }}
                 data={data.listing}
                 renderItem={({ item }) => (
                   <Listing listing={item} navigation={navigation} />
@@ -46,6 +46,7 @@ export const WishResult = ({ route, navigation }) => {
                 numColumns={2}
                 ItemSeparatorComponent={() => <View style={{ height: "2%" }} />}
                 columnWrapperStyle={{ justifyContent: "space-between" }}
+                contentContainerStyle={{ paddingBottom: 50 }}
               />
             ) : (
               <View
@@ -60,10 +61,6 @@ export const WishResult = ({ route, navigation }) => {
                 />
               </View>
             )}
-
-            <Text variant="titleSmall" style={{ marginVertical: 30 }}>
-              See more
-            </Text>
           </>
         )}
       </Layout>

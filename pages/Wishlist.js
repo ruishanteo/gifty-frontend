@@ -118,7 +118,6 @@ function Item({ item, navigation }) {
   const deletePersonMutation = useDeletePerson(item.id);
   const updatePersonMutation = useUpdatePerson(item.id);
 
-  const handleConfirm = () => {};
   return (
     <>
       <ListItem.Swipeable
