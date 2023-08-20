@@ -204,6 +204,17 @@ export const Explore = ({ navigation }) => {
                           maxPageNumber={data.totalPages}
                         />
                       }
+                      ListHeaderComponent={
+                        <Text
+                          variant="titleMedium"
+                          style={{
+                            color: theme.colors.secondary,
+                            fontWeight: "bold",
+                          }}
+                        >
+                          DAILY DISCOVER
+                        </Text>
+                      }
                     />
                   )}
                 </>
