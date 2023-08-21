@@ -7,7 +7,7 @@ import {
   TextInput,
   useTheme,
 } from "react-native-paper";
-import { BottomSheet, ListItem, SearchBar } from "@rneui/themed";
+import { BottomSheet, Image, ListItem, SearchBar } from "@rneui/themed";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Formik } from "formik";
 import * as Yup from "yup";
@@ -17,6 +17,7 @@ import { FilterAccordian } from "../components/FilterAccordian";
 import { useListings } from "../api/listing";
 import { LoadingIcon } from "../components/LoadingIcon";
 import PaginationNav from "../components/PaginationNav";
+import noResultsFound from "../assets/noResultsFound.png";
 
 export const Explore = ({ navigation }) => {
   const theme = useTheme();
@@ -166,22 +167,28 @@ export const Explore = ({ navigation }) => {
               />
             </View>
 
-            <View style={{ marginHorizontal: 15 }}>
+            <View
+              style={{
+                marginHorizontal: 15,
+                height: "95%",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
               {isLoading || isFetching ? (
                 <LoadingIcon fullSize={true} />
               ) : (
                 <>
                   {data.listing.length === 0 ? (
-                    <View
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <Text>No results found</Text>
-                    </View>
+                    <>
+                      <Image
+                        containerStyle={{ width: 250, aspectRatio: 1 }}
+                        source={{
+                          uri: Image.resolveAssetSource(noResultsFound).uri,
+                        }}
+                      />
+                      <Text>No results found.</Text>
+                    </>
                   ) : (
                     <FlatList
                       data={data.listing}
