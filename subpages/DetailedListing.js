@@ -151,6 +151,22 @@ export const DetailedListing = ({ route, navigation }) => {
         </ListItem>
         {isPersonLoading ? (
           <LoadingIcon />
+        ) : personData.persons.length === 0 ? (
+          <ListItem>
+            <View
+              style={{
+                alignItems: "center",
+                width: "90%",
+                marginLeft: 20,
+                marginBottom: 20,
+                gap: 20,
+              }}
+            >
+              <ListItem.Title variant="titleMedium">
+                No persons found.
+              </ListItem.Title>
+            </View>
+          </ListItem>
         ) : (
           personData.persons.map((person, index) => {
             const wishlisted = listing.wishlisted.includes(person.id);
