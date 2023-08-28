@@ -28,6 +28,8 @@ export function Login({ navigation }) {
   const theme = useTheme();
   const login = useLogin();
 
+  const [passwordVisible, setPasswordVisible] = React.useState(true);
+
   return (
     <ScrollView>
       <KeyboardAvoidingView behavior="height" style={styles.container}>
@@ -62,7 +64,9 @@ export function Login({ navigation }) {
                 <TextInput
                   mode="outlined"
                   label="Email"
-                  onChangeText={handleChange("email")}
+                  onChangeText={(value) =>
+                    handleChange("email")(value.toLowerCase())
+                  }
                   onBlur={handleBlur("email")}
                   value={values.email}
                   disabled={isSubmitting}
@@ -82,6 +86,13 @@ export function Login({ navigation }) {
                   value={values.password}
                   disabled={isSubmitting}
                   error={errors.password && touched.password}
+                  secureTextEntry={passwordVisible}
+                  right={
+                    <TextInput.Icon
+                      icon={passwordVisible ? "eye-off" : "eye"}
+                      onPress={() => setPasswordVisible(!passwordVisible)}
+                    />
+                  }
                 />
                 <HelperText
                   type="error"
