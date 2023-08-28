@@ -12,6 +12,7 @@ import { Listing } from "../components/Listing";
 import { LoadingIcon } from "../components/LoadingIcon";
 import { useRandomListing } from "../api/listing";
 import { useReminders } from "../api/event";
+import { useNotification } from "../providers/hooks";
 
 export function Home({ navigation }) {
   const theme = useTheme();
@@ -23,6 +24,25 @@ export function Home({ navigation }) {
     isFetching: listingFetching,
   } = useRandomListing();
   const { data: reminderData, isLoading: reminderLoading } = useReminders();
+  const [reminded, setReminded] = React.useState({});
+  const { scheduleEventNotification } = useNotification();
+
+  React.useEffect(() => {
+    async function pushReminders() {
+      if (!reminderLoading && reminderData) {
+        const reminded_copy = { ...reminded };
+        for (let i = 0; i < reminderData.events.length; i++) {
+          const reminderItem = reminderData.events[i];
+          if (!reminded_copy[reminderItem.id]) {
+            await scheduleEventNotification(reminderItem);
+            reminded_copy[reminderItem.id] = true;
+          }
+        }
+        setReminded(reminded_copy);
+      }
+    }
+    pushReminders();
+  }, [reminderData]);
 
   return (
     <SafeAreaView

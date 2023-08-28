@@ -10,6 +10,10 @@ import {
 } from "react-native-notifier";
 import * as Device from "expo-device";
 import { LoadingIcon } from "../components/LoadingIcon";
+import {
+  getScheduledNotifications,
+  setScheduledNotifications,
+} from "../storage/securestorage";
 
 const NotificationContext = createContext(null);
 const { Provider } = NotificationContext;
@@ -39,6 +43,23 @@ function NotificationProvider({ children }) {
     }
     registerForPushNotificationsAsync();
   }, []);
+
+  async function scheduleEventNotification(event) {
+    const scheduledNotifications = await getScheduledNotifications();
+    if (!scheduledNotifications[event.id]) {
+      const reminderDate = new Date(event.date);
+      reminderDate.setDate(reminderDate.getDate() - 1);
+      await Notifications.scheduleNotificationAsync({
+        content: {
+          title: "Event Reminder",
+          body: `Reminder: ${event.name} is due tomorrow!`,
+        },
+        trigger: { date: reminderDate },
+      });
+      scheduledNotifications[event.id] = true;
+      await setScheduledNotifications(scheduledNotifications);
+    }
+  }
 
   async function schedulePushNotification(content, delay = 2) {
     await Notifications.scheduleNotificationAsync({
@@ -80,6 +101,7 @@ function NotificationProvider({ children }) {
             schedulePushNotification,
             pushNotification,
             showNotification,
+            scheduleEventNotification,
           }}
         >
           {children}
