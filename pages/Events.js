@@ -121,6 +121,7 @@ export function Events({ navigation }) {
       <View
         style={{
           marginHorizontal: 15,
+          height: "100%",
         }}
       >
         <Text

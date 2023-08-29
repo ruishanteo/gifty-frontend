@@ -1,19 +1,13 @@
 import * as React from "react";
-import {
-  Dimensions,
-  FlatList,
-  SafeAreaView,
-  StyleSheet,
-  View,
-} from "react-native";
+import { Dimensions, FlatList, StyleSheet, View } from "react-native";
 import {
   Button,
   HelperText,
   IconButton,
-  Text,
   TextInput,
   useTheme,
 } from "react-native-paper";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { Image, ListItem, SearchBar } from "@rneui/themed";
 import Modal from "react-native-modal";
 import { Formik } from "formik";
@@ -250,7 +244,7 @@ export const Wishlist = ({ navigation }) => {
       <View
         style={{
           left: windowWidth - 70,
-          top: windowHeight - 140,
+          bottom: 5,
           position: "absolute",
         }}
       >

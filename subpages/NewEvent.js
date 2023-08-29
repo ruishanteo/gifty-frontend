@@ -67,7 +67,7 @@ export function NewEvent() {
     <View
       style={{
         left: windowWidth - 70,
-        top: windowHeight - 140,
+        bottom: 5,
         position: "absolute",
       }}
     >

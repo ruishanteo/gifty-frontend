@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Dimensions, FlatList, SafeAreaView, View } from "react-native";
+import { Dimensions, FlatList, View } from "react-native";
 import {
   Button,
   IconButton,
@@ -9,6 +9,7 @@ import {
 } from "react-native-paper";
 import { BottomSheet, Image, ListItem, SearchBar } from "@rneui/themed";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { Formik } from "formik";
 import * as Yup from "yup";
 
