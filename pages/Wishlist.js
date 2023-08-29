@@ -2,13 +2,15 @@ import * as React from "react";
 import { Dimensions, FlatList, StyleSheet, View } from "react-native";
 import {
   Button,
+  Divider,
   HelperText,
   IconButton,
+  Text,
   TextInput,
   useTheme,
 } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Image, ListItem, SearchBar } from "@rneui/themed";
+import { Icon, Image, ListItem, SearchBar } from "@rneui/themed";
 import Modal from "react-native-modal";
 import { Formik } from "formik";
 import * as Yup from "yup";
@@ -24,7 +26,7 @@ import noWishlist from "../assets/noWishlist.png";
 import { LoadingIcon } from "../components/LoadingIcon";
 import { ConfirmModal } from "../components/ConfirmModal";
 
-function FormModal({ title, open, setOpen, initialValues, onSubmit }) {
+function CustomFormModal({ title, open, setOpen, initialValues, onSubmit }) {
   const theme = useTheme();
   return (
     <Modal
@@ -159,7 +161,7 @@ function Item({ item, navigation }) {
         </ListItem.Content>
         <ListItem.Chevron />
       </ListItem.Swipeable>
-      <FormModal
+      <CustomFormModal
         title="Update Person"
         open={open}
         setOpen={setOpen}
@@ -184,11 +186,9 @@ export const Wishlist = ({ navigation }) => {
   const [searchQuery, setSearchQuery] = React.useState("");
   const createPersonMutation = useCreatePerson();
   const [open, setOpen] = React.useState(false);
+  const [openSearch, setOpenSearch] = React.useState(false);
 
   const { data, isLoading, refetch } = usePersons(searchQuery);
-
-  const windowHeight = Dimensions.get("window").height;
-  const windowWidth = Dimensions.get("window").width;
 
   React.useEffect(() => {
     refetch();
@@ -200,7 +200,7 @@ export const Wishlist = ({ navigation }) => {
 
   return (
     <SafeAreaView>
-      <View style={{ height: "100%" }}>
+      <View style={{ height: "100%", marginHorizontal: 15 }}>
         <SearchBar
           placeholder="Search"
           onChangeText={onChangeSearch}
@@ -214,6 +214,31 @@ export const Wishlist = ({ navigation }) => {
           round={true}
         />
 
+        <View
+          style={{
+            alignItems: "center",
+            flexDirection: "row",
+            justifyContent: "space-between",
+          }}
+        >
+          <View
+            style={{
+              alignItems: "center",
+              flexDirection: "row",
+              gap: 10,
+            }}
+          >
+            <Icon name="search-web" type="material-community" />
+            <Text variant="titleLarge">Friends</Text>
+          </View>
+          <IconButton
+            onPress={() => setOpenSearch(true)}
+            containerColor={theme.colors.secondary}
+            iconColor={theme.colors.background}
+            size={30}
+            icon="plus"
+          />
+        </View>
         {isLoading ? (
           <LoadingIcon fullSize={true} />
         ) : data.persons.length === 0 ? (
@@ -237,26 +262,63 @@ export const Wishlist = ({ navigation }) => {
             )}
             keyExtractor={(item) => item.id}
             ItemSeparatorComponent={() => <View style={{ height: 2 }} />}
-            contentContainerStyle={{ paddingBottom: 50 }}
+          />
+        )}
+
+        <Divider bold={true} style={{ height: 3 }} />
+        <View
+          style={{
+            alignItems: "center",
+            flexDirection: "row",
+            justifyContent: "space-between",
+          }}
+        >
+          <View
+            style={{
+              alignItems: "center",
+              flexDirection: "row",
+              gap: 10,
+            }}
+          >
+            <Icon name="account-group" type="material-community" />
+            <Text variant="titleLarge">Custom</Text>
+          </View>
+          <IconButton
+            onPress={() => setOpen(true)}
+            containerColor={theme.colors.secondary}
+            iconColor={theme.colors.background}
+            size={30}
+            icon="plus"
+          />
+        </View>
+        {isLoading ? (
+          <LoadingIcon fullSize={true} />
+        ) : data.persons.length === 0 ? (
+          <View
+            style={{
+              alignItems: "center",
+              justifyContent: "center",
+              height: "85%",
+            }}
+          >
+            <Image
+              containerStyle={{ width: 250, aspectRatio: 1 }}
+              source={{ uri: Image.resolveAssetSource(noWishlist).uri }}
+            />
+          </View>
+        ) : (
+          <FlatList
+            data={data.persons}
+            renderItem={({ item }) => (
+              <Item item={item} navigation={navigation} />
+            )}
+            keyExtractor={(item) => item.id}
+            ItemSeparatorComponent={() => <View style={{ height: 2 }} />}
           />
         )}
       </View>
-      <View
-        style={{
-          left: windowWidth - 70,
-          bottom: 5,
-          position: "absolute",
-        }}
-      >
-        <IconButton
-          onPress={() => setOpen(true)}
-          containerColor={theme.colors.secondary}
-          iconColor={theme.colors.background}
-          size={30}
-          icon="plus"
-        />
-      </View>
-      <FormModal
+
+      <CustomFormModal
         title="Add Person"
         open={open}
         setOpen={setOpen}
@@ -265,6 +327,51 @@ export const Wishlist = ({ navigation }) => {
           setOpen(false);
         }}
       />
+
+      <Modal
+        animationType="slide"
+        visible={openSearch}
+        onRequestClose={() => setOpenSearch(false)}
+      >
+        <View style={styles.centeredView}>
+          <View
+            style={[
+              styles.modalView,
+              { backgroundColor: theme.colors.tertiary },
+            ]}
+          >
+            <Layout
+              title="Find Friends"
+              onAction={() => setOpenSearch(false)}
+              iconName="close"
+            >
+              <SearchBar
+                placeholder="Search"
+                onChangeText={onChangeSearch}
+                value={searchQuery}
+                containerStyle={{
+                  backgroundColor: "transparent",
+                  borderBottomColor: "transparent",
+                  borderTopColor: "transparent",
+                }}
+                inputContainerStyle={{
+                  backgroundColor: theme.colors.primary,
+                  width: "100%",
+                }}
+                round={true}
+              />
+              <Button
+                buttonColor={theme.colors.quaternary}
+                textColor={theme.colors.background}
+                icon="check"
+                style={{ marginTop: 20 }}
+              >
+                Done
+              </Button>
+            </Layout>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 };
