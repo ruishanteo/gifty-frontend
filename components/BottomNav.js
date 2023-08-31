@@ -10,6 +10,9 @@ import { Home } from "../pages/Home.js";
 import { Profile } from "../pages/Profile.js";
 import { Wishlist } from "../pages/Wishlist.js";
 
+import { NewPerson } from "../subpages/NewPerson.js";
+import { PublicProfile } from "../subpages/PublicProfile.js";
+import { MyWishResult } from "../subpages/MyWishResult.js";
 import { WishResult } from "../subpages/WishResult.js";
 import { DetailedEvent } from "../subpages/DetailedEvent.js";
 import { DetailedListing } from "../subpages/DetailedListing.js";
@@ -96,6 +99,21 @@ function WishlistStackScreen() {
       <WishlistStack.Screen
         name="Wishlist"
         component={Wishlist}
+        options={{ headerShown: false }}
+      />
+      <WishlistStack.Screen
+        name="NewPerson"
+        component={NewPerson}
+        options={{ headerShown: false }}
+      />
+      <WishlistStack.Screen
+        name="PublicProfile"
+        component={PublicProfile}
+        options={{ headerShown: false }}
+      />
+      <WishlistStack.Screen
+        name="MyWishResult"
+        component={MyWishResult}
         options={{ headerShown: false }}
       />
       <WishlistStack.Screen
