@@ -36,7 +36,6 @@ export function NewEvent() {
   const [openDatePicker, setOpenDatePicker] = React.useState(false);
   const createEventMutation = useCreateEvent();
 
-  const windowHeight = Dimensions.get("window").height;
   const windowWidth = Dimensions.get("window").width;
 
   const inputFields = (title, object) => {
