@@ -15,6 +15,7 @@ import Modal from "react-native-modal";
 import { Formik } from "formik";
 import * as Yup from "yup";
 
+import { useUser } from "../providers/hooks";
 import UserAvatar from "../components/UserAvatar";
 import Layout from "../components/Layout";
 import {
@@ -175,7 +176,6 @@ function Item({ item, navigation }) {
             <Avatar
               size={24}
               rounded
-              // icon={{ name: "home", type: "material-community" }}
               title={item.name.charAt(0).toUpperCase()}
               containerStyle={{ backgroundColor: "gray" }}
             />
@@ -213,6 +213,7 @@ function Item({ item, navigation }) {
 
 export const Wishlist = ({ navigation }) => {
   const theme = useTheme();
+  const { user } = useUser();
   const [searchQuery, setSearchQuery] = React.useState("");
   const { data, isLoading, refetch } = usePersons(searchQuery);
 
@@ -260,7 +261,7 @@ export const Wishlist = ({ navigation }) => {
           >
             <UserAvatar size={24} />
             <ListItem.Title style={{ color: theme.colors.font }}>
-              Name (Me)
+              {user.username} (Me)
             </ListItem.Title>
           </ListItem.Content>
           <ListItem.Chevron />
