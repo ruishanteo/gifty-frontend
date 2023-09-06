@@ -6,8 +6,8 @@ import { SearchBar } from "@rneui/themed";
 
 import { Listing } from "../components/Listing";
 import { LoadingIcon } from "../components/LoadingIcon";
-import { useMyWishlistedListings } from "../api/listing";
 import Layout from "../components/Layout";
+import { useMyWishlistedListings } from "../api/listing";
 
 export const MyWishResult = ({ navigation }) => {
   const theme = useTheme();
@@ -20,6 +20,7 @@ export const MyWishResult = ({ navigation }) => {
   }, [refetch, searchQuery]);
 
   const windowWidth = Dimensions.get("window").width;
+  const windowHeight = Dimensions.get("window").height;
 
   const onChangeSearch = (query) => {
     setSearchQuery(query);
@@ -56,21 +57,24 @@ export const MyWishResult = ({ navigation }) => {
           />
         </View>
 
-        {isLoading ? (
-          <LoadingIcon />
-        ) : (
-          <FlatList
-            style={{ height: "100%", marginHorizontal: 15 }}
-            data={data.listing}
-            renderItem={({ item }) => (
-              <Listing listing={item} navigation={navigation} />
-            )}
-            keyExtractor={(item) => item.id}
-            numColumns={2}
-            ItemSeparatorComponent={() => <View style={{ height: "2%" }} />}
-            columnWrapperStyle={{ justifyContent: "space-between" }}
-          />
-        )}
+        <View style={{ height: "85%" }}>
+          {isLoading ? (
+            <LoadingIcon />
+          ) : (
+            <FlatList
+              style={{ marginHorizontal: 15 }}
+              data={data.listing}
+              renderItem={({ item }) => (
+                <Listing listing={item} navigation={navigation} />
+              )}
+              keyExtractor={(item) => item.id}
+              numColumns={2}
+              ItemSeparatorComponent={() => <View style={{ height: "2%" }} />}
+              columnWrapperStyle={{ justifyContent: "space-between" }}
+              contentContainerStyle={{ paddingBottom: 80 }}
+            />
+          )}
+        </View>
       </Layout>
     </SafeAreaView>
   );
