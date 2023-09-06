@@ -6,13 +6,18 @@ import { Image } from "@rneui/themed";
 import Layout from "../components/Layout";
 import { Listing } from "../components/Listing";
 import { LoadingIcon } from "../components/LoadingIcon";
-import { useWishlistedListings } from "../api/listing";
+import { useMyWishlistedListings, useWishlistedListings } from "../api/listing";
 import noGiftsFound from "../assets/noGiftsFound.png";
 
 export const WishResult = ({ route, navigation }) => {
   const theme = useTheme();
   const { friend, personId } = route.params;
-  const { isLoading, data } = useWishlistedListings(personId);
+  const { isLoading: isWishlistedListingLoading, data: wishlistedListingData } =
+    useWishlistedListings(personId);
+  const {
+    isLoading: isMyWishlistedListingLoading,
+    data: myWishlistedListingData,
+  } = useMyWishlistedListings(friend.userId);
 
   return (
     <SafeAreaView style={{ marginHorizontal: 15 }}>
@@ -22,14 +27,14 @@ export const WishResult = ({ route, navigation }) => {
         iconName="chevron-left"
       >
         <Text variant="bodyLarge">{friend.name}'s Picks: </Text>
-        {isLoading ? (
+        {isMyWishlistedListingLoading ? (
           <LoadingIcon styles={{ marginVertical: 50 }} />
         ) : (
           <>
-            {data.listing.length > 0 ? (
+            {myWishlistedListingData.listing.length > 0 ? (
               <FlatList
-                style={{ marginHorizontal: 15, height: "90%" }}
-                data={data.listing}
+                style={{ marginHorizontal: 15, height: "40%" }}
+                data={myWishlistedListingData.listing}
                 renderItem={({ item }) => (
                   <Listing listing={item} navigation={navigation} />
                 )}
@@ -55,14 +60,14 @@ export const WishResult = ({ route, navigation }) => {
           </>
         )}
         <Text variant="bodyLarge">My Picks: </Text>
-        {isLoading ? (
+        {isWishlistedListingLoading ? (
           <LoadingIcon styles={{ marginVertical: 50 }} />
         ) : (
           <>
-            {data.listing.length > 0 ? (
+            {wishlistedListingData.listing.length > 0 ? (
               <FlatList
-                style={{ marginHorizontal: 15, height: "90%" }}
-                data={data.listing}
+                style={{ marginHorizontal: 15, height: "40%" }}
+                data={wishlistedListingData.listing}
                 renderItem={({ item }) => (
                   <Listing listing={item} navigation={navigation} />
                 )}

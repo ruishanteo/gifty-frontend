@@ -32,7 +32,7 @@ const BouncingBall = ({
   return (
     <Animated.View
       style={{
-        borderRadius: "100%",
+        borderRadius: 100,
         ...styles,
         width: animSize,
         height: animSize,

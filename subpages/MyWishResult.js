@@ -5,15 +5,15 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { SearchBar } from "@rneui/themed";
 
 import { Listing } from "../components/Listing";
-import { useSavedListings } from "../api/listing";
-import Layout from "../components/Layout";
 import { LoadingIcon } from "../components/LoadingIcon";
+import { useMyWishlistedListings } from "../api/listing";
+import Layout from "../components/Layout";
 
 export const MyWishResult = ({ navigation }) => {
   const theme = useTheme();
 
   const [searchQuery, setSearchQuery] = React.useState("");
-  const { isLoading, data, refetch } = useSavedListings(searchQuery);
+  const { isLoading, data, refetch } = useMyWishlistedListings(0, searchQuery);
 
   useEffect(() => {
     refetch();

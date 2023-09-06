@@ -6,7 +6,7 @@ import {
   ScrollView,
   View,
 } from "react-native";
-import { Avatar, Button, IconButton, Text, useTheme } from "react-native-paper";
+import { Button, IconButton, Text, useTheme } from "react-native-paper";
 import { BottomSheet, Image, ListItem } from "@rneui/themed";
 
 import {
@@ -20,12 +20,7 @@ import {
 } from "../api/listing";
 import { usePersons } from "../api/person";
 import { LoadingIcon } from "../components/LoadingIcon";
-
-const platformProfileURL = {
-  Amazon:
-    "https://static.vecteezy.com/system/resources/previews/019/766/223/large_2x/amazon-logo-amazon-icon-transparent-free-png.png",
-  Etsy: "https://1000logos.net/wp-content/uploads/2023/01/Etsy-logo-1536x864.png",
-};
+import { useUser } from "../providers/hooks";
 
 export const DetailedListing = ({ route, navigation }) => {
   const { listingId } = route.params;
@@ -35,6 +30,7 @@ export const DetailedListing = ({ route, navigation }) => {
     useListing(listingId);
   const { isLoading: isPersonLoading, data: personData } = usePersons();
 
+  const { user } = useUser();
   const giftMutation = useGiftListing();
   const ungiftMutation = useUngiftListing();
   const saveMutation = useSaveListing();
@@ -55,6 +51,8 @@ export const DetailedListing = ({ route, navigation }) => {
 
   if (isListingLoading) return <LoadingIcon fullSize={true} />;
   const listing = listingData.listing;
+
+  const selfWishlisted = listing.wishlisted.includes(user.personId);
 
   return (
     <SafeAreaView
@@ -104,7 +102,7 @@ export const DetailedListing = ({ route, navigation }) => {
           variant="contained"
           buttonColor={theme.colors.secondary}
           textColor={theme.colors.surface}
-          style={{ width: "50%" }}
+          style={{ width: "40%" }}
         >
           Learn more
         </Button>
@@ -115,12 +113,29 @@ export const DetailedListing = ({ route, navigation }) => {
               ? ungiftMutation.mutate(listing.id)
               : giftMutation.mutate(listing.id)
           }
-          icon={listing.isGifted ? "gift" : "gift-outline"}
-          iconColor={theme.colors.secondary}
+          icon={listing.isGifted ? "history" : "history"}
+          iconColor={
+            listing.isGifted ? theme.colors.secondary : theme.colors.primary
+          }
         />
         <IconButton
           onPress={() => setOpenDrawer(true)}
-          icon={listing.wishlisted.length > 0 ? "heart" : "heart-outline"}
+          icon={listing.wishlisted.length > 0 ? "gift" : "gift-outline"}
+          iconColor={theme.colors.secondary}
+        />
+        <IconButton
+          onPress={() =>
+            selfWishlisted
+              ? unwishListingMutation.mutate({
+                  id: listing.id,
+                  personId: user.personId,
+                })
+              : wishListingMutation.mutate({
+                  id: listing.id,
+                  personId: user.personId,
+                })
+          }
+          icon={selfWishlisted ? "heart" : "heart-outline"}
           iconColor={theme.colors.secondary}
         />
 

@@ -15,11 +15,12 @@ import Modal from "react-native-modal";
 import { Formik } from "formik";
 import * as Yup from "yup";
 
+import UserAvatar from "../components/UserAvatar";
 import Layout from "../components/Layout";
 import {
-  useCreatePerson,
   useDeletePerson,
   usePersons,
+  useRemoveFriend,
   useUpdatePerson,
 } from "../api/person";
 import noWishlist from "../assets/noWishlist.png";
@@ -114,6 +115,7 @@ function Item({ item, navigation }) {
   const [confirm, setConfirm] = React.useState(false);
   const deletePersonMutation = useDeletePerson(item.id);
   const updatePersonMutation = useUpdatePerson(item.id);
+  const removeFriendMutation = useRemoveFriend(item.userId);
 
   return (
     <>
@@ -122,24 +124,28 @@ function Item({ item, navigation }) {
         onPress={() =>
           navigation.navigate("WishResult", { friend: item, personId: item.id })
         }
-        leftContent={() => (
-          <Button
-            onPress={() => setOpen(true)}
-            icon="pencil"
-            buttonColor={theme.colors.quaternary}
-            textColor={theme.colors.surface}
-            style={{
-              height: "100%",
-              justifyContent: "center",
-            }}
-          >
-            Edit
-          </Button>
-        )}
+        leftContent={
+          !item.user
+            ? () => (
+                <Button
+                  onPress={() => setOpen(true)}
+                  icon="pencil"
+                  buttonColor={theme.colors.quaternary}
+                  textColor={theme.colors.surface}
+                  style={{
+                    height: "100%",
+                    justifyContent: "center",
+                  }}
+                >
+                  Edit
+                </Button>
+              )
+            : null
+        }
         rightContent={() => (
           <Button
             onPress={() => setConfirm(true)}
-            icon="delete"
+            icon={item.user ? "account-off" : "delete"}
             buttonColor={theme.colors.quaternary}
             textColor={theme.colors.surface}
             style={{
@@ -147,7 +153,7 @@ function Item({ item, navigation }) {
               justifyContent: "center",
             }}
           >
-            Delete
+            {item.user ? "Unfollow" : "Delete"}
           </Button>
         )}
         containerStyle={{
@@ -163,11 +169,17 @@ function Item({ item, navigation }) {
             justifyContent: "flex-start",
           }}
         >
-          <Avatar
-            size={24}
-            rounded
-            source={{ uri: "https://randomuser.me/api/portraits/men/36.jpg" }}
-          />
+          {item.user ? (
+            <UserAvatar avatarProps={item.user.avatar} size={24} />
+          ) : (
+            <Avatar
+              size={24}
+              rounded
+              // icon={{ name: "home", type: "material-community" }}
+              title={item.name.charAt(0).toUpperCase()}
+              containerStyle={{ backgroundColor: "gray" }}
+            />
+          )}
           <ListItem.Title style={{ color: theme.colors.font }}>
             {item.name}
           </ListItem.Title>
@@ -187,7 +199,11 @@ function Item({ item, navigation }) {
         }
       />
       <ConfirmModal
-        action={() => deletePersonMutation.mutateAsync()}
+        action={() =>
+          item.user
+            ? removeFriendMutation.mutateAsync()
+            : deletePersonMutation.mutateAsync()
+        }
         open={confirm}
         setOpen={setConfirm}
       />
@@ -242,11 +258,7 @@ export const Wishlist = ({ navigation }) => {
               justifyContent: "flex-start",
             }}
           >
-            <Avatar
-              size={24}
-              rounded
-              source={{ uri: "https://randomuser.me/api/portraits/men/36.jpg" }}
-            />
+            <UserAvatar size={24} />
             <ListItem.Title style={{ color: theme.colors.font }}>
               Name (Me)
             </ListItem.Title>

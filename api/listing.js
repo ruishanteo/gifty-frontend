@@ -57,7 +57,22 @@ export function useWishlistedListings(personId, search = "") {
   return useQuery({
     queryKey: ["listings", "wishlisted"],
     queryFn: () => {
-      return protectedAxios.get(`/listing/wishlisted/${personId}/${search}`);
+      return protectedAxios.get("/listing/wishlisted", {
+        params: { personId, search },
+      });
+    },
+  });
+}
+
+export function useMyWishlistedListings(userId = 0, search = "") {
+  const { protectedAxios } = useAxios();
+
+  return useQuery({
+    queryKey: ["listings", "myWishlisted"],
+    queryFn: () => {
+      return protectedAxios.get("/listing/myWishlisted", {
+        params: { userId, search },
+      });
     },
   });
 }

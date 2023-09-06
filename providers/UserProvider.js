@@ -15,7 +15,7 @@ function UserProvider({ children }) {
 
   const reloadUser = async () => {
     const user = await protectedAxios
-      .get("auth/", {})
+      .get("auth/0", {})
       .then((res) => {
         const currentUser = res.user;
         setUser(currentUser);

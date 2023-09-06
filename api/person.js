@@ -7,7 +7,25 @@ export function usePersons(search = "") {
 
   return useQuery({
     queryKey: ["persons"],
-    queryFn: () => protectedAxios.get(`/person/${search}`),
+    queryFn: () => protectedAxios.get(`/person/list/${search}`),
+  });
+}
+
+export function useUsers(search = "") {
+  const { protectedAxios } = useAxios();
+
+  return useQuery({
+    queryKey: ["persons", "users"],
+    queryFn: () => protectedAxios.get(`/person/user/${search}`),
+  });
+}
+
+export function useUser(userId) {
+  const { protectedAxios } = useAxios();
+
+  return useQuery({
+    queryKey: ["persons", "users", userId],
+    queryFn: () => protectedAxios.get(`auth/${userId}`),
   });
 }
 
@@ -62,6 +80,57 @@ export function useUpdatePerson(id) {
   });
 }
 
+export function useAddFriend(id) {
+  const { protectedAxios } = useAxios();
+  const { showNotification } = useNotification();
+  const { queryClient } = useQueryContext();
+
+  return useMutation({
+    onMutate: async (friendId) => {
+      await queryClient.cancelQueries(["persons"]);
+      return { friendId };
+    },
+    onError: (_, __, context) => {
+      console.log("Failed to add as friend", context.friendId);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["persons"]);
+      showNotification({
+        title: "Success",
+        description: "Added as friend!",
+        type: "success",
+      });
+    },
+    mutationFn: () => protectedAxios.post("/person/friend", { id }),
+  });
+}
+
+export function useRemoveFriend(id) {
+  const { protectedAxios } = useAxios();
+  const { showNotification } = useNotification();
+  const { queryClient } = useQueryContext();
+
+  return useMutation({
+    onMutate: async (friendId) => {
+      await queryClient.cancelQueries(["persons"]);
+      return { friendId };
+    },
+    onError: (_, __, context) => {
+      console.log("Failed to remove friend", context.friendId);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["persons"]);
+      showNotification({
+        title: "Success",
+        description: "Removed friend!",
+        type: "success",
+      });
+    },
+    mutationFn: () =>
+      protectedAxios.delete(`/person/friend/${id}`, { data: { id } }),
+  });
+}
+
 export function useDeletePerson(id) {
   const { protectedAxios } = useAxios();
   const { showNotification } = useNotification();
@@ -82,7 +151,6 @@ export function useDeletePerson(id) {
         type: "success",
       });
     },
-    mutationFn: () =>
-      protectedAxios.delete(`/person/${id}`, { data: { id: id } }),
+    mutationFn: () => protectedAxios.delete(`/person/${id}`, { data: { id } }),
   });
 }

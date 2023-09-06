@@ -8,10 +8,10 @@ import moment from "moment";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
+import { LoadingIcon } from "../components/LoadingIcon.js";
 import { NewEvent } from "../subpages/NewEvent.js";
 import { useEvents } from "../api/event.js";
 import noEventsFound from "../assets/noEventsFound.png";
-import { LoadingIcon } from "../components/LoadingIcon.js";
 
 const countDateDiff = (event) => {
   return Math.ceil(event.date.diff(moment(), "days", true)) - 1;
@@ -145,7 +145,7 @@ export function Events({ navigation }) {
             style={{
               justifyContent: "center",
               alignItems: "center",
-              top: "80%",
+              height: "90%",
             }}
           >
             <Image

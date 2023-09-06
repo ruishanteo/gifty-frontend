@@ -1,5 +1,5 @@
 import React from "react";
-import { Dimensions, StyleSheet, View } from "react-native";
+import { Dimensions, FlatList, StyleSheet, View } from "react-native";
 import {
   Button,
   HelperText,
@@ -7,14 +7,16 @@ import {
   TextInput,
   useTheme,
 } from "react-native-paper";
-import { Avatar, ListItem, SearchBar } from "@rneui/themed";
+import { ListItem, SearchBar } from "@rneui/themed";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Modal from "react-native-modal";
 import { Formik } from "formik";
 import * as Yup from "yup";
 
 import Layout from "../components/Layout";
-import { useCreatePerson } from "../api/person";
+import UserAvatar from "../components/UserAvatar";
+import { useCreatePerson, useUsers } from "../api/person";
+import { LoadingIcon } from "../components/LoadingIcon";
 
 function CustomFormModal({ title, open, setOpen, initialValues, onSubmit }) {
   const theme = useTheme();
@@ -101,10 +103,15 @@ function CustomFormModal({ title, open, setOpen, initialValues, onSubmit }) {
 export const NewPerson = ({ navigation }) => {
   const theme = useTheme();
   const [searchQuery, setSearchQuery] = React.useState("");
+  const { data, isLoading, refetch } = useUsers(searchQuery);
   const createPersonMutation = useCreatePerson();
   const [open, setOpen] = React.useState(false);
 
   const windowWidth = Dimensions.get("window").width;
+
+  React.useEffect(() => {
+    refetch();
+  }, [refetch, searchQuery]);
 
   const onChangeSearch = (query) => {
     setSearchQuery(query);
@@ -131,36 +138,46 @@ export const NewPerson = ({ navigation }) => {
             round={true}
           />
 
-          <ListItem
-            bottomDivider
-            onPress={() => navigation.navigate("PublicProfile")}
-            containerStyle={{
-              backgroundColor: theme.colors.background,
-              borderColor: theme.colors.secondary,
-            }}
-          >
-            <ListItem.Content
-              style={{
-                alignItems: "center",
-                flexDirection: "row",
-                gap: 10,
-                justifyContent: "flex-start",
-              }}
-            >
-              <Avatar
-                size={24}
-                rounded
-                source={{
-                  uri: "https://randomuser.me/api/portraits/men/36.jpg",
-                }}
-              />
-              <ListItem.Title style={{ color: theme.colors.font }}>
-                name
-              </ListItem.Title>
-            </ListItem.Content>
+          {isLoading ? (
+            <LoadingIcon fullSize={true} />
+          ) : (
+            <FlatList
+              data={data.users}
+              renderItem={({ item }) => (
+                <ListItem
+                  bottomDivider
+                  onPress={() =>
+                    navigation.navigate("PublicProfile", {
+                      user: item,
+                      userId: item.id,
+                    })
+                  }
+                  containerStyle={{
+                    backgroundColor: theme.colors.background,
+                    borderColor: theme.colors.secondary,
+                  }}
+                >
+                  <ListItem.Content
+                    style={{
+                      alignItems: "center",
+                      flexDirection: "row",
+                      gap: 10,
+                      justifyContent: "flex-start",
+                    }}
+                  >
+                    <UserAvatar avatarProps={item.avatar} size={24} />
+                    <ListItem.Title style={{ color: theme.colors.font }}>
+                      {item.username}
+                    </ListItem.Title>
+                  </ListItem.Content>
 
-            <ListItem.Chevron />
-          </ListItem>
+                  <ListItem.Chevron />
+                </ListItem>
+              )}
+              keyExtractor={(item) => item.id}
+              ItemSeparatorComponent={() => <View style={{ height: 2 }} />}
+            />
+          )}
         </Layout>
       </View>
       <View
