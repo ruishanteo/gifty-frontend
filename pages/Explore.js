@@ -137,97 +137,93 @@ export const Explore = ({ navigation }) => {
         errors,
       }) => (
         <SafeAreaView>
-          <View style={{ height: "100%" }}>
-            <View
-              style={{
-                alignItems: "center",
-                width: windowWidth,
+          <View
+            style={{
+              alignItems: "center",
+              width: windowWidth,
+            }}
+            flexDirection="row"
+          >
+            <SearchBar
+              placeholder="Search"
+              onChangeText={onChangeSearch}
+              value={values.search}
+              containerStyle={{
+                backgroundColor: "transparent",
+                borderBottomColor: "transparent",
+                borderTopColor: "transparent",
               }}
-              flexDirection="row"
-            >
-              <SearchBar
-                placeholder="Search"
-                onChangeText={onChangeSearch}
-                value={values.search}
-                containerStyle={{
-                  backgroundColor: "transparent",
-                  borderBottomColor: "transparent",
-                  borderTopColor: "transparent",
-                }}
-                inputContainerStyle={{
-                  backgroundColor: theme.colors.primary,
-                  width: windowWidth - 80,
-                }}
-                round={true}
-              />
-              <IconButton
-                onPress={() => setOpenDrawer(true)}
-                iconColor={theme.colors.secondary}
-                icon="tune"
-                size={26}
-              />
-            </View>
+              inputContainerStyle={{
+                backgroundColor: theme.colors.primary,
+                width: windowWidth - 80,
+              }}
+              round={true}
+            />
+            <IconButton
+              onPress={() => setOpenDrawer(true)}
+              iconColor={theme.colors.secondary}
+              icon="tune"
+              size={26}
+            />
+          </View>
 
-            <View
-              style={{
-                marginHorizontal: 15,
-                height: "95%",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              {isLoading || isFetching ? (
-                <LoadingIcon fullSize={true} />
-              ) : (
-                <>
-                  {data.listing.length === 0 ? (
-                    <>
-                      <Image
-                        containerStyle={{ width: 250, aspectRatio: 1 }}
-                        source={{
-                          uri: Image.resolveAssetSource(noResultsFound).uri,
-                        }}
-                      />
-                      <Text>No results found.</Text>
-                    </>
-                  ) : (
-                    <FlatList
-                      data={data.listing}
-                      renderItem={({ item }) => (
-                        <Listing listing={item} navigation={navigation} />
-                      )}
-                      keyExtractor={(item) => item.id}
-                      numColumns={2}
-                      ItemSeparatorComponent={() => (
-                        <View style={{ height: 15 }} />
-                      )}
-                      columnWrapperStyle={{
-                        justifyContent: "space-between",
+          <View
+            style={{
+              marginHorizontal: 15,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            {isLoading || isFetching ? (
+              <LoadingIcon fullSize={true} />
+            ) : (
+              <>
+                {data.listing.length === 0 ? (
+                  <>
+                    <Image
+                      containerStyle={{ width: 250, aspectRatio: 1 }}
+                      source={{
+                        uri: Image.resolveAssetSource(noResultsFound).uri,
                       }}
-                      contentContainerStyle={{ paddingBottom: 80 }}
-                      ListFooterComponent={
-                        <PaginationNav
-                          goToPage={handlePageChange}
-                          currentPageNumber={data.currentPage}
-                          maxPageNumber={data.totalPages}
-                        />
-                      }
-                      ListHeaderComponent={
-                        <Text
-                          variant="titleMedium"
-                          style={{
-                            color: theme.colors.secondary,
-                            fontWeight: "bold",
-                          }}
-                        >
-                          DAILY DISCOVER
-                        </Text>
-                      }
                     />
-                  )}
-                </>
-              )}
-            </View>
+                    <Text>No results found.</Text>
+                  </>
+                ) : (
+                  <FlatList
+                    data={data.listing}
+                    renderItem={({ item }) => (
+                      <Listing listing={item} navigation={navigation} />
+                    )}
+                    keyExtractor={(item) => item.id}
+                    numColumns={2}
+                    ItemSeparatorComponent={() => (
+                      <View style={{ height: 15 }} />
+                    )}
+                    columnWrapperStyle={{
+                      justifyContent: "space-between",
+                    }}
+                    ListFooterComponent={
+                      <PaginationNav
+                        goToPage={handlePageChange}
+                        currentPageNumber={data.currentPage}
+                        maxPageNumber={data.totalPages}
+                      />
+                    }
+                    ListHeaderComponent={
+                      <Text
+                        variant="titleMedium"
+                        style={{
+                          color: theme.colors.secondary,
+                          fontWeight: "bold",
+                        }}
+                      >
+                        DAILY DISCOVER
+                      </Text>
+                    }
+                  />
+                )}
+              </>
+            )}
           </View>
 
           <BottomSheet
