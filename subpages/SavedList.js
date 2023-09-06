@@ -56,21 +56,23 @@ export const SavedList = ({ navigation }) => {
           />
         </View>
 
-        {isLoading ? (
-          <LoadingIcon />
-        ) : (
-          <FlatList
-            style={{ height: "100%", marginHorizontal: 15 }}
-            data={data.listing}
-            renderItem={({ item }) => (
-              <Listing listing={item} navigation={navigation} />
-            )}
-            keyExtractor={(item) => item.id}
-            numColumns={2}
-            ItemSeparatorComponent={() => <View style={{ height: "2%" }} />}
-            columnWrapperStyle={{ justifyContent: "space-between" }}
-          />
-        )}
+        <View style={{ height: "85%" }}>
+          {isLoading ? (
+            <LoadingIcon />
+          ) : (
+            <FlatList
+              data={data.listing}
+              renderItem={({ item }) => (
+                <Listing listing={item} navigation={navigation} />
+              )}
+              keyExtractor={(item) => item.id}
+              numColumns={2}
+              contentContainerStyle={{ paddingBottom: 100 }}
+              ItemSeparatorComponent={() => <View style={{ height: "2%" }} />}
+              columnWrapperStyle={{ justifyContent: "space-between" }}
+            />
+          )}
+        </View>
       </Layout>
     </SafeAreaView>
   );
