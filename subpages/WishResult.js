@@ -26,36 +26,44 @@ export const WishResult = ({ route, navigation }) => {
         onAction={() => navigation.goBack()}
         iconName="chevron-left"
       >
-        <Text variant="bodyLarge">{friend.name}'s Picks: </Text>
-        {isMyWishlistedListingLoading ? (
-          <LoadingIcon styles={{ marginVertical: 50 }} />
-        ) : (
+        {friend.user && (
           <>
-            {myWishlistedListingData.listing.length > 0 ? (
-              <FlatList
-                style={{ marginHorizontal: 15, height: "40%" }}
-                data={myWishlistedListingData.listing}
-                renderItem={({ item }) => (
-                  <Listing listing={item} navigation={navigation} />
-                )}
-                keyExtractor={(item) => item.id}
-                numColumns={2}
-                ItemSeparatorComponent={() => <View style={{ height: "2%" }} />}
-                columnWrapperStyle={{ justifyContent: "space-between" }}
-                contentContainerStyle={{ paddingBottom: 50 }}
-              />
+            <Text variant="bodyLarge">{friend.name}'s Picks: </Text>
+            {isMyWishlistedListingLoading ? (
+              <LoadingIcon styles={{ marginVertical: 50 }} />
             ) : (
-              <View
-                style={{
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <Image
-                  containerStyle={{ width: 250, aspectRatio: 1 }}
-                  source={{ uri: Image.resolveAssetSource(noGiftsFound).uri }}
-                />
-              </View>
+              <>
+                {myWishlistedListingData.listing.length > 0 ? (
+                  <FlatList
+                    style={{ marginHorizontal: 15, height: "40%" }}
+                    data={myWishlistedListingData.listing}
+                    renderItem={({ item }) => (
+                      <Listing listing={item} navigation={navigation} />
+                    )}
+                    keyExtractor={(item) => item.id}
+                    numColumns={2}
+                    ItemSeparatorComponent={() => (
+                      <View style={{ height: "2%" }} />
+                    )}
+                    columnWrapperStyle={{ justifyContent: "space-between" }}
+                    contentContainerStyle={{ paddingBottom: 50 }}
+                  />
+                ) : (
+                  <View
+                    style={{
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Image
+                      containerStyle={{ width: 250, aspectRatio: 1 }}
+                      source={{
+                        uri: Image.resolveAssetSource(noGiftsFound).uri,
+                      }}
+                    />
+                  </View>
+                )}
+              </>
             )}
           </>
         )}
