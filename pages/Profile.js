@@ -107,7 +107,7 @@ export function Profile({ navigation }) {
               style={{ padding: 10, alignItems: "center" }}
             >
               <MaterialCommunityIcons
-                name="gift-outline"
+                name="clock-time-eight-outline"
                 color={theme.colors.secondary}
                 size={25}
               />

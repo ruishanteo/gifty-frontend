@@ -113,10 +113,10 @@ export const DetailedListing = ({ route, navigation }) => {
               ? ungiftMutation.mutate(listing.id)
               : giftMutation.mutate(listing.id)
           }
-          icon={listing.isGifted ? "history" : "history"}
-          iconColor={
-            listing.isGifted ? theme.colors.secondary : theme.colors.primary
+          icon={
+            listing.isGifted ? "clock-time-eight" : "clock-time-eight-outline"
           }
+          iconColor={theme.colors.secondary}
         />
         <IconButton
           onPress={() => setOpenDrawer(true)}
