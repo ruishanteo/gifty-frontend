@@ -13,6 +13,55 @@ export const TNC = ({ navigation }) => {
       >
         <View style={{ marginHorizontal: 15 }}>
           <Text>
+            {`
+Last Updated: 6th September 2023
+
+Welcome to Gifty! These terms and conditions ("Terms") govern your use of the Gifty mobile application ("App") and the services provided by Gifty ("Services"). By using the App and Services, you agree to comply with and be bound by these Terms. If you do not agree with these Terms, please do not use the App and Services.
+
+
+1. Acceptance of Terms
+
+By using Gifty, you acknowledge that you have read, understood, and agree to these Terms and our Privacy Policy. If you are using Gifty on behalf of an organization, you represent and warrant that you have the authority to bind that organization to these Terms.
+
+2. Description of Gifty
+
+Gifty is a mobile application that allows users to browse and compile product listings from various e-commerce platforms, including but not limited to Shopee, Amazon, Lazada, and others. Users can create wish lists, save product listings, and interact with the content.
+
+3. Use of the App and Services
+
+You must be at least 18 years old or the legal age of majority in your jurisdiction to use Gifty.
+You agree to use the App and Services only for lawful purposes and in compliance with all applicable laws and regulations.
+You are responsible for maintaining the security of your account and password.
+
+4. User Content
+
+Gifty allows users to create wish lists and interact with product listings. By using the App and Services, you grant Gifty a non-exclusive, royalty-free, worldwide, transferable, and sublicensable right to use, store, display, reproduce, and distribute your user-generated content for the purpose of providing the Services.
+
+5. Intellectual Property
+
+All content, trademarks, logos, and intellectual property displayed on Gifty are the property of Gifty or its licensors. You may not use, reproduce, or distribute any content from Gifty without prior written permission.
+
+6. Privacy
+
+We take your privacy seriously. Please review our Privacy Policy to understand how we collect, use, and protect your personal information.
+
+7. Disclaimers
+
+Gifty does not endorse, warrant, or guarantee the accuracy or availability of product listings from third-party e-commerce platforms.
+Gifty is not responsible for the quality, safety, or legality of products listed on the App.
+Gifty is not affiliated with or endorsed by the e-commerce platforms whose listings are compiled in the App.
+8. Termination
+
+We reserve the right to terminate or suspend your access to the App and Services at our discretion, without notice, for any reason, including if you violate these Terms.
+
+9. Changes to Terms
+
+Gifty may update these Terms from time to time. We will notify you of any changes by posting the new Terms on the App. Your continued use of the App and Services after the changes become effective constitutes your acceptance of the updated Terms.
+
+10. Contact Us
+
+If you have any questions or concerns about these Terms or the App, please contact us at gifty.discover@gmail.com.
+`}
             Ullamco cupidatat mollit fugiat aliquip voluptate magna ipsum
             ullamco dolor amet minim. Lorem sint consequat veniam Lorem ea
             aliqua. Elit est et anim ullamco dolore ad veniam minim esse ullamco
