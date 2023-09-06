@@ -120,7 +120,11 @@ export const DetailedListing = ({ route, navigation }) => {
         />
         <IconButton
           onPress={() => setOpenDrawer(true)}
-          icon={listing.wishlisted.length > 0 ? "gift" : "gift-outline"}
+          icon={
+            listing.wishlisted.filter((id) => id !== user.personId).length > 0
+              ? "gift"
+              : "gift-outline"
+          }
           iconColor={theme.colors.secondary}
         />
         <IconButton

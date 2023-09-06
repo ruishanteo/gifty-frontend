@@ -6,8 +6,8 @@ import { SearchBar } from "@rneui/themed";
 
 import { Listing } from "../components/Listing";
 import { LoadingIcon } from "../components/LoadingIcon";
-import Layout from "../components/Layout";
 import { useMyWishlistedListings } from "../api/listing";
+import Layout from "../components/Layout";
 
 export const MyWishResult = ({ navigation }) => {
   const theme = useTheme();
@@ -20,7 +20,6 @@ export const MyWishResult = ({ navigation }) => {
   }, [refetch, searchQuery]);
 
   const windowWidth = Dimensions.get("window").width;
-  const windowHeight = Dimensions.get("window").height;
 
   const onChangeSearch = (query) => {
     setSearchQuery(query);
@@ -62,16 +61,15 @@ export const MyWishResult = ({ navigation }) => {
             <LoadingIcon />
           ) : (
             <FlatList
-              style={{ marginHorizontal: 15 }}
               data={data.listing}
               renderItem={({ item }) => (
                 <Listing listing={item} navigation={navigation} />
               )}
               keyExtractor={(item) => item.id}
               numColumns={2}
+              contentContainerStyle={{ paddingBottom: 160 }}
               ItemSeparatorComponent={() => <View style={{ height: "2%" }} />}
               columnWrapperStyle={{ justifyContent: "space-between" }}
-              contentContainerStyle={{ paddingBottom: 80 }}
             />
           )}
         </View>

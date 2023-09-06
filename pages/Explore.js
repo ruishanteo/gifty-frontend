@@ -25,7 +25,7 @@ export const Explore = ({ navigation }) => {
 
   const [openDrawer, setOpenDrawer] = React.useState(false);
   const [searchQuery, setSearchQuery] = React.useState("");
-  const [allQueries, setAllQueries] = React.useState();
+  const [allQueries, setAllQueries] = React.useState({});
   const { isLoading, isFetching, data, refetch } = useListings(allQueries);
 
   React.useEffect(() => {

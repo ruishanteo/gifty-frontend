@@ -6,7 +6,7 @@ export function useListings(params) {
   const { protectedAxios } = useAxios();
 
   return useQuery({
-    queryKey: ["listings"],
+    queryKey: ["listings", ...Object.values(params)],
     queryFn: () => protectedAxios.get("/listing", { params }),
   });
 }
@@ -33,7 +33,7 @@ export function useSavedListings(search = "") {
   const { protectedAxios } = useAxios();
 
   return useQuery({
-    queryKey: ["listings", "saved"],
+    queryKey: ["listings", "saved", search],
     queryFn: () => {
       return protectedAxios.get(`/listing/saved/${search}`);
     },
@@ -44,7 +44,7 @@ export function useGiftedListings(search = "") {
   const { protectedAxios } = useAxios();
 
   return useQuery({
-    queryKey: ["listings", "gifted"],
+    queryKey: ["listings", "gifted", search],
     queryFn: () => {
       return protectedAxios.get(`/listing/gifted/${search}`);
     },
@@ -55,7 +55,7 @@ export function useWishlistedListings(personId, search = "") {
   const { protectedAxios } = useAxios();
 
   return useQuery({
-    queryKey: ["listings", "wishlisted"],
+    queryKey: ["listings", "wishlisted", personId, search],
     queryFn: () => {
       return protectedAxios.get("/listing/wishlisted", {
         params: { personId, search },
@@ -68,7 +68,7 @@ export function useMyWishlistedListings(userId = 0, search = "") {
   const { protectedAxios } = useAxios();
 
   return useQuery({
-    queryKey: ["listings", "myWishlisted"],
+    queryKey: ["listings", "myWishlisted", userId, search],
     queryFn: () => {
       return protectedAxios.get("/listing/myWishlisted", {
         params: { userId, search },
