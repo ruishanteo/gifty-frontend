@@ -125,23 +125,39 @@ function Item({ item, navigation }) {
         onPress={() =>
           navigation.navigate("WishResult", { friend: item, personId: item.id })
         }
-        leftContent={
-          !item.user
-            ? () => (
-                <Button
-                  onPress={() => setOpen(true)}
-                  icon="pencil"
-                  buttonColor={theme.colors.quaternary}
-                  textColor={theme.colors.surface}
-                  style={{
-                    height: "100%",
-                    justifyContent: "center",
-                  }}
-                >
-                  Edit
-                </Button>
-              )
-            : null
+        leftContent={() =>
+          item.user ? (
+            <Button
+              onPress={() =>
+                navigation.navigate("PublicProfile", {
+                  user: item.user,
+                  userId: item.user.id,
+                })
+              }
+              icon="eye"
+              buttonColor={theme.colors.quaternary}
+              textColor={theme.colors.surface}
+              style={{
+                height: "100%",
+                justifyContent: "center",
+              }}
+            >
+              View
+            </Button>
+          ) : (
+            <Button
+              onPress={() => setOpen(true)}
+              icon="pencil"
+              buttonColor={theme.colors.quaternary}
+              textColor={theme.colors.surface}
+              style={{
+                height: "100%",
+                justifyContent: "center",
+              }}
+            >
+              Edit
+            </Button>
+          )
         }
         rightContent={() => (
           <Button
