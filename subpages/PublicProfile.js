@@ -35,7 +35,9 @@ export const PublicProfile = ({ route, navigation }) => {
         onAction={() => navigation.goBack()}
       >
         <View style={{ marginHorizontal: 15, height: windowHeight * 0.85 }}>
-          {myWishlistedListingData.listing.length === 0 ? (
+          {isMyWishlistedListingLoading ? (
+            <LoadingIcon />
+          ) : myWishlistedListingData.listing.length === 0 ? (
             <Text variant="bodyLarge" style={{ fontWeight: "bold" }}>
               No wishlisted listing
             </Text>
