@@ -10,8 +10,8 @@ This app is designed to help you find the perfect gift ideas for the special peo
 <img src="https://github.com/ruishanteo/gifty-frontend/assets/32407747/a580aa5f-e89f-4194-a0a2-62be74f3aa6d" width="200" alt="Events Page">
 
 - **Wishlists:** Save gift ideas for different people in your wishlist. Keep track of your gift inspiration in one place.
-<img src="https://github.com/ruishanteo/gifty-frontend/assets/32407747/db14e5e8-1b53-4bdc-b67d-3828d61052ef" width="200" alt="Wishlist">
-<img src="https://github.com/ruishanteo/gifty-frontend/assets/32407747/dbe0a2ff-6e6d-4162-b4a2-51d7e4a89852" width="200" alt="Samantha's Wishlist">
+<img src="https://github.com/ruishanteo/gifty-frontend/assets/111447603/2ac14f3e-2e44-466e-87e8-23f98b3116a4" width="200" alt="Wishlist">
+<img src="https://github.com/ruishanteo/gifty-frontend/assets/111447603/43eb769f-77cc-45f2-bca1-d90a779a80c4" width="200" alt="Samantha's Wishlist">
 
 - **Explore:** Scroll through thousands of gift ideas from top shopping platforms to find the perfect idea.
 <img src="https://github.com/ruishanteo/gifty-frontend/assets/32407747/9c8db65b-2a83-4cc0-a6b5-ef11f391a2e9" width="200" alt="Explore Page">
